@@ -1,0 +1,488 @@
+/* ==========================================================================
+   Unkad Platform — globals.css
+   Same design tokens as unkad.com, extended with app components.
+   Phone-first: every layout works at 320px on a weak connection.
+   ========================================================================== */
+
+/* ---- Design tokens (shared with the marketing site) ---------------------- */
+
+:root {
+  --bg: #FCFBF8;
+  --text: #1A1917;
+  --muted: #6B6862;
+  --accent: #0F6B5C;
+  --rule: #E5E2DA;
+  --card: #FFFFFF;
+  --danger: #A03D2E;
+
+  --serif: Charter, Georgia, 'Times New Roman', serif;
+  --mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+
+  --measure: 42rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #141312;
+    --text: #E8E6E1;
+    --muted: #A5A19A;
+    --accent: #4DB6A5;
+    --rule: #2E2C29;
+    --card: #1C1B19;
+    --danger: #D07B6B;
+  }
+}
+
+:root[data-theme="light"] {
+  --bg: #FCFBF8;
+  --text: #1A1917;
+  --muted: #6B6862;
+  --accent: #0F6B5C;
+  --rule: #E5E2DA;
+  --card: #FFFFFF;
+  --danger: #A03D2E;
+}
+
+:root[data-theme="dark"] {
+  --bg: #141312;
+  --text: #E8E6E1;
+  --muted: #A5A19A;
+  --accent: #4DB6A5;
+  --rule: #2E2C29;
+  --card: #1C1B19;
+  --danger: #D07B6B;
+}
+
+/* ---- Base ---------------------------------------------------------------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--serif);
+  font-size: 1.125rem;
+  line-height: 1.6;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+h1, h2, h3 {
+  font-weight: 600;
+  line-height: 1.25;
+  text-wrap: balance;
+  letter-spacing: -0.01em;
+}
+
+h1 { font-size: 1.7rem; margin: 0 0 1rem; }
+h2 { font-size: 1.25rem; margin: 2.25rem 0 0.75rem; }
+h3 { font-size: 1.05rem; margin: 1.5rem 0 0.5rem; }
+
+p, ul, ol {
+  margin: 0 0 1.1em;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--rule);
+  margin: 2.5rem 0;
+}
+
+strong { font-weight: 600; }
+
+.eyebrow {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 2.5rem 0 0.75rem;
+}
+
+.muted { color: var(--muted); }
+
+.mono {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+}
+
+/* ---- Layout -------------------------------------------------------------- */
+
+.container {
+  max-width: var(--measure);
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+
+main {
+  padding-block: 1.75rem 4rem;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  background: var(--accent);
+  color: var(--bg);
+  padding: 0.5rem 1rem;
+  z-index: 10;
+}
+
+.skip-link:focus { left: 0; }
+
+/* ---- Brand mark ----------------------------------------------------------- */
+
+.mark .cell { fill: currentColor; }
+.mark .seed { fill: var(--accent); }
+
+/* ---- Header --------------------------------------------------------------- */
+
+.site-header {
+  border-bottom: 1px solid var(--rule);
+}
+
+.site-header .container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 1.1rem;
+  padding-block: 0.9rem;
+}
+
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: 1.02rem;
+  color: var(--text);
+  margin-right: auto;
+}
+
+.wordmark:hover { text-decoration: none; color: var(--accent); }
+
+.nav-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 1rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-list a,
+.lang-toggle,
+.header-btn {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--muted);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.nav-list a:hover,
+.lang-toggle:hover,
+.header-btn:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.nav-list a[aria-current="page"] { color: var(--text); }
+
+/* ---- Cards / panels -------------------------------------------------------- */
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.card h3 { margin-top: 0; }
+
+.task-text {
+  font-size: 1.25rem;
+  line-height: 1.5;
+}
+
+.mode-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.9rem;
+}
+
+@media (max-width: 34rem) {
+  .mode-grid { grid-template-columns: 1fr; }
+}
+
+.mode-card {
+  display: block;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 1.1rem 1.25rem;
+  color: var(--text);
+  transition: border-color 0.2s ease;
+}
+
+.mode-card:hover {
+  border-color: var(--accent);
+  text-decoration: none;
+}
+
+.mode-card .mode-name {
+  font-weight: 700;
+  font-size: 1.15rem;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.mode-card .mode-name .so { color: var(--accent); }
+
+.mode-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+/* ---- Stats ----------------------------------------------------------------- */
+
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.75rem 2.5rem;
+  margin: 1.75rem 0;
+}
+
+.stat .n {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  display: block;
+  line-height: 1.1;
+}
+
+.stat .label {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ---- Forms ------------------------------------------------------------------ */
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  max-width: 26rem;
+}
+
+.form label {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+.form input,
+.form textarea,
+.form select {
+  width: 100%;
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  color: var(--text);
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 0.6rem 0.75rem;
+  transition: border-color 0.2s ease;
+}
+
+.form textarea {
+  min-height: 9rem;
+  line-height: 1.55;
+  resize: vertical;
+}
+
+.form input:focus,
+.form textarea:focus,
+.form select:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.form-wide { max-width: 100%; }
+
+.hint {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin: 0;
+}
+
+/* ---- Buttons ---------------------------------------------------------------- */
+
+.btn {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 0.92rem;
+  color: var(--bg);
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  padding: 0.65rem 1.3rem;
+  cursor: pointer;
+  text-align: center;
+  transition: opacity 0.2s ease;
+}
+
+.btn:hover { opacity: 0.9; text-decoration: none; color: var(--bg); }
+
+.btn-quiet {
+  background: transparent;
+  color: var(--accent);
+}
+
+.btn-quiet:hover { color: var(--accent); }
+
+.btn-danger {
+  background: transparent;
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+.btn-danger:hover { color: var(--danger); }
+
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.btn-row .btn { flex: 1 1 10rem; }
+
+/* ---- Status badges ----------------------------------------------------------- */
+
+.badge {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: 4px;
+  padding: 0.15rem 0.45rem;
+  border: 1px solid var(--rule);
+  color: var(--muted);
+}
+
+.badge-accepted { color: var(--accent); border-color: var(--accent); }
+.badge-rejected { color: var(--danger); border-color: var(--danger); }
+
+/* ---- Tables (leaderboard, admin) ---------------------------------------------- */
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.98rem;
+}
+
+.table th {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: left;
+  font-weight: 400;
+  padding: 0.5rem 0.6rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.table td {
+  padding: 0.55rem 0.6rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.table .num { text-align: right; font-family: var(--mono); font-size: 0.85rem; }
+
+/* ---- Notices ------------------------------------------------------------------- */
+
+.notice {
+  border-left: 3px solid var(--accent);
+  background: var(--card);
+  border-radius: 0 6px 6px 0;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.notice-error {
+  border-left-color: var(--danger);
+  color: var(--danger);
+}
+
+/* ---- Footer --------------------------------------------------------------------- */
+
+.site-footer {
+  border-top: 1px solid var(--rule);
+  margin-top: 2rem;
+}
+
+.site-footer .container {
+  padding-block: 1.5rem 2rem;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.site-footer p { margin: 0 0 0.4em; }
+.site-footer a { color: var(--muted); }
+.site-footer a:hover { color: var(--accent); }
