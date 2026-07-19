@@ -665,6 +665,307 @@ main {
   color: var(--danger);
 }
 
+/* ---- App shell (signed-in) ----------------------------------------------------------------------- */
+
+.shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  display: none;
+}
+
+.shell-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.shell-content {
+  flex: 1;
+  padding-block: 1.75rem 5.5rem; /* room for the tab bar on phones */
+}
+
+/* Mobile top bar */
+.mobile-top {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8rem 1.1rem;
+  border-bottom: 1px solid var(--rule);
+  background: color-mix(in srgb, var(--bg) 85%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.mobile-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+/* Bottom tab bar (phones) */
+.tabbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  display: flex;
+  border-top: 1px solid var(--rule);
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.55rem 0 0.5rem;
+  color: var(--muted);
+}
+
+.tab:hover { text-decoration: none; color: var(--accent); }
+.tab.is-current { color: var(--accent); }
+
+.tab-icon { display: block; line-height: 0; }
+
+.tab-label {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+}
+
+/* Desktop: sidebar replaces top/tab bars */
+@media (min-width: 60rem) {
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    width: 15rem;
+    flex-shrink: 0;
+    border-right: 1px solid var(--rule);
+    padding: 1.25rem 1rem;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+  }
+
+  .mobile-top,
+  .tabbar {
+    display: none;
+  }
+
+  .shell-content {
+    padding-block: 2.5rem 4rem;
+  }
+}
+
+.sidebar-brand {
+  font-size: 1.05rem;
+  padding: 0.25rem 0.6rem 1.1rem;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.side-link {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  color: var(--muted);
+  padding: 0.55rem 0.6rem;
+  border-radius: var(--radius);
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.side-link:hover {
+  color: var(--text);
+  background: var(--accent-soft);
+  text-decoration: none;
+}
+
+.side-link.is-current {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.side-icon { display: block; line-height: 0; }
+
+.sidebar-user {
+  margin-top: auto;
+  border-top: 1px solid var(--rule);
+  padding-top: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.user-line {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--text);
+  padding: 0.3rem 0.6rem;
+  border-radius: var(--radius);
+}
+
+.user-line:hover { background: var(--accent-soft); text-decoration: none; }
+
+.user-meta { display: flex; flex-direction: column; line-height: 1.25; }
+.user-name { font-size: 0.92rem; font-weight: 600; }
+.user-rep { font-family: var(--mono); font-size: 0.68rem; color: var(--muted); }
+
+.sidebar-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0.6rem;
+}
+
+/* ---- Unug identicons ------------------------------------------------------------------------------ */
+
+.avatar {
+  color: var(--text);
+  flex-shrink: 0;
+  display: block;
+  border-radius: 6px;
+}
+
+.avatar .a-cell { fill: currentColor; opacity: 0.82; }
+.avatar .a-seed { fill: var(--accent); }
+
+.row-user {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.profile-head {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+/* ---- Greeting / landing --------------------------------------------------------------------------- */
+
+.greeting {
+  font-size: clamp(1.6rem, 5vw, 2rem);
+  margin-bottom: 0.4rem;
+}
+
+.landing-hero {
+  padding-block: 1.5rem 1rem;
+}
+
+.landing-title {
+  font-size: clamp(2.2rem, 8vw, 3.1rem);
+  font-weight: 700;
+  margin-bottom: 0.6rem;
+}
+
+.landing-sub {
+  font-size: 1.18rem;
+  line-height: 1.55;
+  max-width: 34rem;
+  text-wrap: pretty;
+  margin-bottom: 1.5rem;
+}
+
+/* ---- Corpus progress ------------------------------------------------------------------------------ */
+
+.progress-card { margin-top: 1.5rem; }
+
+.progress-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.7rem;
+}
+
+.progress-track {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--rule);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--accent);
+  transition: width 0.6s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+/* ---- Sparkline ------------------------------------------------------------------------------------ */
+
+.sparkline { display: block; }
+.sparkline .spark-bar { fill: var(--accent); }
+.sparkline .spark-empty { fill: var(--rule); }
+
+/* ---- Leaderboard podium --------------------------------------------------------------------------- */
+
+.podium {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 1rem;
+  margin: 2rem 0 2.25rem;
+}
+
+.podium-spot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  padding: 1.1rem 1.2rem 0.9rem;
+  min-width: 7.5rem;
+}
+
+.podium-spot.rank-1 {
+  border-color: var(--accent);
+  padding-block: 1.5rem 1.1rem;
+}
+
+.podium-rank { font-size: 0.7rem; color: var(--muted); }
+.rank-1 .podium-rank { color: var(--accent); }
+
+.podium-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-align: center;
+  max-width: 9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.podium-rep { font-size: 0.75rem; color: var(--muted); }
+
+@media (max-width: 34rem) {
+  .podium { gap: 0.5rem; }
+  .podium-spot { min-width: 0; flex: 1; padding: 0.9rem 0.5rem 0.75rem; }
+}
+
 /* ---- Footer -------------------------------------------------------------------------------------- */
 
 .site-footer {

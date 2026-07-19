@@ -16,6 +16,7 @@ const dict = {
     so: 'Aynu af-Soomaaliga u qorno da’da AI-ga.',
     en: 'Let’s write Somali into the age of AI.',
   },
+  navHome: { so: 'Guriga', en: 'Home' },
   navContribute: { so: 'Wax ku dar', en: 'Contribute' },
   navValidate: { so: 'Hubi', en: 'Validate' },
   navDashboard: { so: 'Bogagayga', en: 'Dashboard' },
@@ -133,6 +134,18 @@ const dict = {
     en: 'I agree that my contributions are released under the open CC BY-SA 4.0 license.',
   },
   finish: { so: 'Dhammee', en: 'Finish' },
+
+  // Home (signed-in)
+  greeting: { so: 'Nabad,', en: 'Nabad,' },
+  todayLabel: { so: 'maanta', en: 'today' },
+  streakLabel: { so: 'maalmo isku xigta', en: 'day streak' },
+  corpusProgress: { so: 'Horumarka kaydka', en: 'Corpus progress' },
+  goalSuffix: { so: 'jumlado — yoolka olole', en: 'sentences — campaign goal' },
+  tasksAvailable: { so: 'hawlo diyaar ah', en: 'tasks open' },
+  keepGoing: { so: 'Shaqo wanaagsan — sii wad.', en: 'Good work — keep going.' },
+  last14: { so: '14-kii maalmood ee u dambeeyay', en: 'Last 14 days' },
+  acceptanceRate: { so: 'Heerka aqbalaadda', en: 'Acceptance rate' },
+  byRegister: { so: 'Noocyada qoraalka (la aqbalay)', en: 'By register (accepted)' },
 
   // Dashboard
   dashboardTitle: { so: 'Bogagayga', en: 'My dashboard' },

@@ -1,53 +1,75 @@
 import Link from 'next/link';
-import { count, eq } from 'drizzle-orm';
-import { db } from '@/lib/db';
-import { submissions, users } from '@/lib/schema';
+import { redirect } from 'next/navigation';
 import { getLang } from '@/lib/lang';
 import { makeT } from '@/lib/i18n';
 import { getCurrentUser } from '@/lib/auth';
+import { CORPUS_GOAL, corpusStats } from '@/lib/stats';
 import UnkadMark from '@/components/UnkadMark';
 
 export default async function LandingPage() {
+  const user = await getCurrentUser();
+  if (user && user.consentAt && user.onboardingCompletedAt) redirect('/home');
+
   const lang = await getLang();
   const t = makeT(lang);
-  const user = await getCurrentUser();
-
-  const [[acceptedCount], [pendingCount], [contributorCount]] = await Promise.all([
-    db.select({ n: count() }).from(submissions).where(eq(submissions.status, 'accepted')),
-    db.select({ n: count() }).from(submissions).where(eq(submissions.status, 'pending')),
-    db.select({ n: count() }).from(users),
-  ]);
+  const corpus = await corpusStats();
+  const pct = Math.min(100, (corpus.accepted / CORPUS_GOAL) * 100);
 
   return (
     <div className="container">
-      <div style={{ paddingTop: '1.25rem' }}>
-        <UnkadMark size={44} className="hero-mark" />
+      <div className="landing-hero">
+        <UnkadMark size={52} className="hero-mark" animated />
         {/* VERIFY SOMALI: campaign name and all Somali copy */}
-        <h1 style={{ fontSize: '2.2rem', marginTop: '1rem' }} lang="so">
+        <h1 className="landing-title" lang="so">
           {t('heroTitle')}
         </h1>
-        <p style={{ fontSize: '1.2rem' }}>{t('heroSub')}</p>
+        <p className="landing-sub">{t('heroSub')}</p>
+        <div className="btn-row" style={{ maxWidth: '24rem' }}>
+          <Link className="btn" href="/join">
+            {t('ctaStart')}
+          </Link>
+          <Link className="btn btn-quiet" href="/login">
+            {t('login')}
+          </Link>
+        </div>
+      </div>
+
+      <div className="card progress-card">
+        <div className="progress-head">
+          <span className="eyebrow" style={{ margin: 0 }}>
+            {t('corpusProgress')}
+          </span>
+          <span className="mono tnum">
+            {corpus.accepted.toLocaleString()} / {CORPUS_GOAL.toLocaleString()}
+          </span>
+        </div>
+        <div
+          className="progress-track"
+          role="progressbar"
+          aria-valuenow={corpus.accepted}
+          aria-valuemin={0}
+          aria-valuemax={CORPUS_GOAL}
+        >
+          <div className="progress-fill" style={{ width: `${Math.max(0.75, pct)}%` }} />
+        </div>
+        <p className="hint tnum">
+          {pct.toFixed(1)}% · {t('goalSuffix')}
+        </p>
       </div>
 
       <div className="stats">
         <div className="stat">
-          <span className="n">{acceptedCount.n.toLocaleString()}</span>
+          <span className="n">{corpus.accepted.toLocaleString()}</span>
           <span className="label">{t('statSentences')}</span>
         </div>
         <div className="stat">
-          <span className="n">{contributorCount.n.toLocaleString()}</span>
+          <span className="n">{corpus.contributors.toLocaleString()}</span>
           <span className="label">{t('statContributors')}</span>
         </div>
         <div className="stat">
-          <span className="n">{pendingCount.n.toLocaleString()}</span>
+          <span className="n">{corpus.pending.toLocaleString()}</span>
           <span className="label">{t('statPending')}</span>
         </div>
-      </div>
-
-      <div className="btn-row" style={{ maxWidth: '26rem' }}>
-        <Link className="btn" href={user ? '/contribute' : '/join'}>
-          {t('ctaStart')}
-        </Link>
       </div>
 
       <span className="eyebrow">{t('ctaHow')}</span>
