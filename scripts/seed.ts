@@ -1,8 +1,7 @@
 // Dev/pilot seed: an admin account and a starter batch of prompts.
 //
 // !! VERIFY SOMALI !! — all Somali prompt text below is draft and must be
-// reviewed by trusted reviewers before the pilot. English fallbacks are
-// canonical until then.
+// reviewed by trusted reviewers before the pilot.
 //
 // Run: npm run db:seed
 
@@ -83,11 +82,23 @@ const WRITE_PROMPTS: Array<{
   },
 ];
 
-const TRANSLATE_SOURCES: Array<{ register: 'conversational' | 'formal' | 'instructional'; topic: string; en: string }> = [
+const TRANSLATE_SOURCES: Array<{
+  register: 'conversational' | 'formal' | 'instructional';
+  topic: string;
+  en: string;
+}> = [
   { register: 'conversational', topic: 'daily-life', en: 'Where is the nearest market?' },
   { register: 'conversational', topic: 'daily-life', en: 'How much does this cost?' },
-  { register: 'instructional', topic: 'health', en: 'Drink clean water and wash your hands before eating.' },
-  { register: 'instructional', topic: 'health', en: 'Take this medicine twice a day after meals.' },
+  {
+    register: 'instructional',
+    topic: 'health',
+    en: 'Drink clean water and wash your hands before eating.',
+  },
+  {
+    register: 'instructional',
+    topic: 'health',
+    en: 'Take this medicine twice a day after meals.',
+  },
   { register: 'formal', topic: 'education', en: 'The school year begins in September.' },
   { register: 'conversational', topic: 'family', en: 'My grandmother tells the best stories.' },
   { register: 'formal', topic: 'law', en: 'Every citizen has the right to education.' },
@@ -97,22 +108,24 @@ const TRANSLATE_SOURCES: Array<{ register: 'conversational' | 'formal' | 'instru
 ];
 
 async function main() {
-  // Admin account (idempotent).
   const existing = await db.select().from(users).where(eq(users.email, ADMIN_EMAIL));
   if (existing.length === 0) {
-    const passwordHash = await bcrypt.hash(ADMIN_PASSWORD, 10);
+    const passwordHash = await bcrypt.hash(ADMIN_PASSWORD, 12);
     await db.insert(users).values({
       email: ADMIN_EMAIL,
       handle: 'Unkad Admin',
       passwordHash,
       role: 'admin',
+      dialect: 'both',
+      consentAt: new Date(),
+      creditChoice: 'handle',
+      onboardingCompletedAt: new Date(),
     });
     console.log(`Created admin: ${ADMIN_EMAIL} / ${ADMIN_PASSWORD} (dev only — change this)`);
   } else {
     console.log('Admin already exists, skipping.');
   }
 
-  // Prompts (idempotent-ish: skip if any prompts exist).
   const existingPrompts = await db.select({ id: prompts.id }).from(prompts).limit(1);
   if (existingPrompts.length > 0) {
     console.log('Prompts already exist, skipping seed.');

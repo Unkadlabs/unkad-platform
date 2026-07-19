@@ -7,9 +7,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "db:seed": "tsx scripts/seed.ts"
+    "db:seed": "tsx scripts/seed.ts",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

@@ -26,10 +26,7 @@ const dict = {
   join: { so: 'Ku biir', en: 'Join' },
 
   // Landing
-  heroTitle: {
-    so: 'Qor Af-Soomaali',
-    en: 'Qor Af-Soomaali — Write Somali',
-  },
+  heroTitle: { so: 'Qor Af-Soomaali', en: 'Qor Af-Soomaali — Write Somali' },
   heroSub: {
     so: 'Ka qayb qaado dhisidda kaydka ugu weyn ee qoraalka af-Soomaaliga ah — furan, tayo leh, hanti u ah dadka ku hadla af-Soomaaliga.',
     en: 'Help build the largest open, quality-controlled Somali text corpus — a public asset for every Somali speaker.',
@@ -78,6 +75,7 @@ const dict = {
     so: 'Jawaabtu waa inay ugu yaraan 10 xaraf tahay.',
     en: 'Answers must be at least 10 characters.',
   },
+  chars: { so: 'xaraf', en: 'characters' },
 
   // Validation flow
   validateQuestion: {
@@ -92,6 +90,49 @@ const dict = {
     so: 'Wax sugaya hubin ma jiraan. Soo noqo mar dambe.',
     en: 'Nothing waiting for validation. Check back soon.',
   },
+  escalatedNote: {
+    so: 'Qoraalkan waa la isku khilaafay — codkaagu waa kama-dambays.',
+    en: 'Validators disagreed on this one — your vote settles it.',
+  },
+
+  // Onboarding
+  onboardingTitle: { so: 'Soo dhawoow Unkad', en: 'Welcome to Unkad' },
+  stepAccount: { so: 'Akoon', en: 'Account' },
+  stepProfile: { so: 'Xog', en: 'Profile' },
+  stepConsent: { so: 'Ogolaansho', en: 'Consent' },
+  profileTitle: { so: 'Nagu saabsan yara sheeg', en: 'Tell us a little about yourself' },
+  profileWhy: {
+    so: 'Lahjaddaadu waxay ka dhigtaa kaydka mid matalaya dhammaan dadka ku hadla af-Soomaaliga.',
+    en: 'Your dialect helps make the corpus representative of all Somali speakers.',
+  },
+  dialectLabel: { so: 'Lahjadda aad ku hadasho', en: 'Your dialect' },
+  dialectMaxaa: { so: 'Maxaa tiri', en: 'Maxaa tiri (Standard)' },
+  dialectMaay: { so: 'Maay', en: 'Maay' },
+  dialectBoth: { so: 'Labadaba', en: 'Both' },
+  dialectOther: { so: 'Mid kale', en: 'Other' },
+  regionLabel: { so: 'Gobolka / magaalada (ikhtiyaari)', en: 'Region / city (optional)' },
+  countryLabel: { so: 'Dalka aad ku nooshahay (ikhtiyaari)', en: 'Country you live in (optional)' },
+  continue: { so: 'Sii wad', en: 'Continue' },
+
+  consentTitle: { so: 'Ogolaanshaha xogta', en: 'Data consent' },
+  consentBody1: {
+    so: 'Wax kasta oo aad ku darto Unkad waxaa lagu sii daayaa shati furan (CC BY-SA 4.0). Taasi waxay la macno tahay in cid kastaa — cilmi-baarayaal, horumariyayaal, iyo bulshada Soomaaliyeed — ay si xor ah u isticmaali karaan.',
+    en: 'Everything you contribute to Unkad is released under an open license (CC BY-SA 4.0). That means anyone — researchers, developers, and the Somali community itself — can use it freely.',
+  },
+  consentBody2: {
+    so: 'Xogtaada gaarka ah (iimaylka, furaha sirta) waligeed lama sii daayo. Waxaa la sii daayaa oo keliya qoraalka aad ku darto kaydka.',
+    en: 'Your personal data (email, password) is never released. Only the text you contribute to the corpus is.',
+  },
+  creditLabel: { so: 'Sidee baa lagugu magacaabaa?', en: 'How should we credit you?' },
+  creditHandle: { so: 'Magaca la arki karo', en: 'My display name' },
+  creditRealName: { so: 'Magacayga dhabta ah', en: 'My real name' },
+  creditAnonymous: { so: 'Magac la’aan (qarsoodi)', en: 'Anonymous' },
+  creditNameLabel: { so: 'Magacaaga dhabta ah', en: 'Your real name' },
+  agreeLabel: {
+    so: 'Waan ogolahay in wax-ku-biirintayda lagu sii daayo shati furan (CC BY-SA 4.0).',
+    en: 'I agree that my contributions are released under the open CC BY-SA 4.0 license.',
+  },
+  finish: { so: 'Dhammee', en: 'Finish' },
 
   // Dashboard
   dashboardTitle: { so: 'Bogagayga', en: 'My dashboard' },
@@ -131,6 +172,14 @@ const dict = {
   errEmailTaken: { so: 'Iimaylkan hore ayaa loo isticmaalay.', en: 'That email is already registered.' },
   errBadLogin: { so: 'Iimayl ama furaha sirta ayaa khaldan.', en: 'Wrong email or password.' },
   errRequired: { so: 'Fadlan buuxi dhammaan meelaha.', en: 'Please fill in all fields.' },
+  errLocked: {
+    so: 'Akoonkan waa la xannibay 15 daqiiqo — isku day badan oo khaldan. Sug kadibna mar kale isku day.',
+    en: 'Account locked for 15 minutes after too many failed attempts. Please wait and try again.',
+  },
+  errConsentRequired: {
+    so: 'Si aad wax ugu darto, waa inaad ogolaato shatiga furan.',
+    en: 'You must accept the open license to contribute.',
+  },
 } as const;
 
 export type TKey = keyof typeof dict;
@@ -141,4 +190,19 @@ export function t(lang: Lang, key: TKey): string {
 
 export function makeT(lang: Lang) {
   return (key: TKey) => t(lang, key);
+}
+
+export function dialectLabel(lang: Lang, dialect: string | null): string {
+  switch (dialect) {
+    case 'maxaa_tiri':
+      return t(lang, 'dialectMaxaa');
+    case 'maay':
+      return t(lang, 'dialectMaay');
+    case 'both':
+      return t(lang, 'dialectBoth');
+    case 'other':
+      return t(lang, 'dialectOther');
+    default:
+      return '—';
+  }
 }

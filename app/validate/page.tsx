@@ -1,18 +1,15 @@
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
-import { getCurrentUser } from '@/lib/auth';
+import { requireOnboarded, isReviewer } from '@/lib/auth';
 import { getLang } from '@/lib/lang';
-import { makeT } from '@/lib/i18n';
+import { makeT, dialectLabel } from '@/lib/i18n';
 import { nextSubmissionToValidate, castValidation } from '@/lib/actions';
 
 export default async function ValidatePage() {
-  const user = await getCurrentUser();
-  if (!user) redirect('/login');
-
+  const user = await requireOnboarded();
   const lang = await getLang();
   const t = makeT(lang);
-  const isReviewer = user.role === 'reviewer' || user.role === 'admin';
-  const item = await nextSubmissionToValidate(user.id, isReviewer);
+  const reviewer = isReviewer(user);
+  const item = await nextSubmissionToValidate(user.id, reviewer);
 
   return (
     <div className="container">
@@ -25,11 +22,24 @@ export default async function ValidatePage() {
         <p className="muted">{t('nothingToValidate')}</p>
       ) : (
         <>
-          <div className="card">
-            <p className="mono muted" style={{ marginBottom: '0.5rem' }}>
+          {item.submission.status === 'escalated' && reviewer && (
+            <p className="notice">{t('escalatedNote')}</p>
+          )}
+
+          <div className="card rise">
+            <div className="chip-row">
+              <span className="chip">{item.prompt.register}</span>
+              <span className="chip chip-plain">{item.prompt.topic}</span>
+              {item.submission.dialect && (
+                <span className="chip chip-plain" lang="so">
+                  {dialectLabel(lang, item.submission.dialect)}
+                </span>
+              )}
+            </div>
+            <p className="mono muted" style={{ margin: 0 }}>
               {item.submission.mode === 'translate' ? t('sourceWas') : t('promptWas')}
             </p>
-            <p className="muted">
+            <p className="muted" style={{ marginTop: '0.3rem' }}>
               {item.submission.mode === 'translate'
                 ? item.submission.textEn
                 : lang === 'so'

@@ -1,26 +1,35 @@
-import { redirect } from 'next/navigation';
-import { count, desc, eq } from 'drizzle-orm';
-import { db } from '@/lib/db';
-import { prompts, submissions, users } from '@/lib/schema';
-import { getCurrentUser } from '@/lib/auth';
-import { addPrompts } from '@/lib/actions';
+// Admin console (English-only internal tool): corpus stats, batch prompt
+// upload, source registry, role management, and the audit trail.
 
-type Props = { searchParams: Promise<{ added?: string }> };
+import { count, desc } from 'drizzle-orm';
+import { db } from '@/lib/db';
+import { prompts, submissions, users, sources, auditLog } from '@/lib/schema';
+import { requireRole } from '@/lib/auth';
+import { addPrompts, addSource, setUserRole } from '@/lib/actions';
+
+type Props = {
+  searchParams: Promise<{ added?: string; rolechanged?: string; roleerr?: string }>;
+};
 
 export default async function AdminPage({ searchParams }: Props) {
-  const user = await getCurrentUser();
-  if (!user || user.role !== 'admin') redirect('/');
-  const { added } = await searchParams;
+  await requireRole('admin');
+  const { added, rolechanged, roleerr } = await searchParams;
 
-  const [[promptCount], [userCount], statusCounts, recentPrompts] = await Promise.all([
-    db.select({ n: count() }).from(prompts),
-    db.select({ n: count() }).from(users),
-    db
-      .select({ status: submissions.status, n: count() })
-      .from(submissions)
-      .groupBy(submissions.status),
-    db.select().from(prompts).orderBy(desc(prompts.createdAt)).limit(10),
-  ]);
+  const [[promptCount], [userCount], statusCounts, registerCounts, sourceList, recentAudit] =
+    await Promise.all([
+      db.select({ n: count() }).from(prompts),
+      db.select({ n: count() }).from(users),
+      db
+        .select({ status: submissions.status, n: count() })
+        .from(submissions)
+        .groupBy(submissions.status),
+      db
+        .select({ register: prompts.register, n: count() })
+        .from(prompts)
+        .groupBy(prompts.register),
+      db.select().from(sources).orderBy(desc(sources.createdAt)).limit(10),
+      db.select().from(auditLog).orderBy(desc(auditLog.createdAt)).limit(15),
+    ]);
 
   const byStatus = Object.fromEntries(statusCounts.map((r) => [r.status, r.n]));
 
@@ -29,6 +38,8 @@ export default async function AdminPage({ searchParams }: Props) {
       <h1>Admin</h1>
 
       {added && <p className="notice">Added {added} prompts.</p>}
+      {rolechanged && <p className="notice">Role updated.</p>}
+      {roleerr && <p className="notice notice-error">No user with that email.</p>}
 
       <div className="stats">
         <div className="stat">
@@ -57,6 +68,15 @@ export default async function AdminPage({ searchParams }: Props) {
         </div>
       </div>
 
+      <span className="eyebrow">Register coverage (prompts)</span>
+      <div className="chip-row">
+        {registerCounts.map((r) => (
+          <span key={r.register} className="chip chip-plain">
+            {r.register}: {r.n}
+          </span>
+        ))}
+      </div>
+
       <span className="eyebrow">Add prompts (batch)</span>
       <form className="form form-wide" action={addPrompts}>
         <div className="mode-grid">
@@ -79,13 +99,19 @@ export default async function AdminPage({ searchParams }: Props) {
             </select>
           </div>
         </div>
-        <div>
-          <label htmlFor="topic">Topic</label>
-          <input id="topic" name="topic" defaultValue="general" />
+        <div className="mode-grid">
+          <div>
+            <label htmlFor="topic">Topic</label>
+            <input id="topic" name="topic" defaultValue="general" />
+          </div>
+          <div>
+            <label htmlFor="sourceId">Source id (transcribe mode only)</label>
+            <input id="sourceId" name="sourceId" placeholder="uuid from source registry" />
+          </div>
         </div>
         <div>
           <label htmlFor="batch">
-            One prompt per line: somali || english || source-text (translate mode only)
+            One prompt per line: somali || english || source-sentence (translate mode only)
           </label>
           <textarea id="batch" name="batch" required />
         </div>
@@ -94,25 +120,104 @@ export default async function AdminPage({ searchParams }: Props) {
         </button>
       </form>
 
-      <span className="eyebrow">Recent prompts</span>
-      <table className="table">
-        <thead>
-          <tr>
-            <th>Mode</th>
-            <th>Register</th>
-            <th>Prompt</th>
-          </tr>
-        </thead>
-        <tbody>
-          {recentPrompts.map((p) => (
-            <tr key={p.id}>
-              <td className="mono">{p.mode}</td>
-              <td className="mono">{p.register}</td>
-              <td lang="so">{p.textSo.slice(0, 80)}</td>
+      <span className="eyebrow">Source registry (transcribe)</span>
+      <form className="form form-wide" action={addSource}>
+        <div className="mode-grid">
+          <div>
+            <label htmlFor="title">Title *</label>
+            <input id="title" name="title" required />
+          </div>
+          <div>
+            <label htmlFor="license">License *</label>
+            <input id="license" name="license" required placeholder="Public domain / CC BY 4.0" />
+          </div>
+        </div>
+        <div className="mode-grid">
+          <div>
+            <label htmlFor="author">Author</label>
+            <input id="author" name="author" />
+          </div>
+          <div>
+            <label htmlFor="year">Year</label>
+            <input id="year" name="year" type="number" />
+          </div>
+        </div>
+        <div>
+          <label htmlFor="url">URL</label>
+          <input id="url" name="url" type="url" />
+        </div>
+        <div>
+          <label htmlFor="notes">Provenance notes</label>
+          <input id="notes" name="notes" placeholder="How was the license verified?" />
+        </div>
+        <button className="btn" type="submit" style={{ maxWidth: '14rem' }}>
+          Register source
+        </button>
+      </form>
+
+      {sourceList.length > 0 && (
+        <div className="table-wrap" style={{ marginTop: '1rem' }}>
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>License</th>
+                <th>Id</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sourceList.map((s) => (
+                <tr key={s.id}>
+                  <td>{s.title}</td>
+                  <td className="mono">{s.license}</td>
+                  <td className="mono">{s.id.slice(0, 8)}…</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      <span className="eyebrow">Roles</span>
+      <form className="form" action={setUserRole}>
+        <div>
+          <label htmlFor="roleEmail">User email</label>
+          <input id="roleEmail" name="email" type="email" required />
+        </div>
+        <div>
+          <label htmlFor="role">Role</label>
+          <select id="role" name="role">
+            <option value="contributor">contributor</option>
+            <option value="reviewer">reviewer (trusted)</option>
+            <option value="admin">admin</option>
+          </select>
+        </div>
+        <button className="btn" type="submit">
+          Set role
+        </button>
+      </form>
+
+      <span className="eyebrow">Audit log</span>
+      <div className="table-wrap">
+        <table className="table">
+          <thead>
+            <tr>
+              <th>When</th>
+              <th>Action</th>
+              <th>Meta</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {recentAudit.map((entry) => (
+              <tr key={entry.id}>
+                <td className="mono">{entry.createdAt.toISOString().slice(0, 16).replace('T', ' ')}</td>
+                <td className="mono">{entry.action}</td>
+                <td className="mono muted">{entry.meta ? JSON.stringify(entry.meta).slice(0, 60) : ''}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

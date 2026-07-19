@@ -1,12 +1,10 @@
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
-import { getCurrentUser } from '@/lib/auth';
+import { requireOnboarded } from '@/lib/auth';
 import { getLang } from '@/lib/lang';
 import { makeT } from '@/lib/i18n';
 
 export default async function ContributeHubPage() {
-  const user = await getCurrentUser();
-  if (!user) redirect('/login');
+  await requireOnboarded();
 
   const lang = await getLang();
   const t = makeT(lang);

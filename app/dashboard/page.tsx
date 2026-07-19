@@ -1,15 +1,12 @@
-import { redirect } from 'next/navigation';
 import { count, desc, eq } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import { submissions, validations } from '@/lib/schema';
-import { getCurrentUser } from '@/lib/auth';
+import { requireUser } from '@/lib/auth';
 import { getLang } from '@/lib/lang';
-import { makeT } from '@/lib/i18n';
+import { makeT, dialectLabel } from '@/lib/i18n';
 
 export default async function DashboardPage() {
-  const user = await getCurrentUser();
-  if (!user) redirect('/login');
-
+  const user = await requireUser();
   const lang = await getLang();
   const t = makeT(lang);
 
@@ -25,7 +22,6 @@ export default async function DashboardPage() {
 
   const accepted = mine.filter((s) => s.status === 'accepted').length;
   const pending = mine.filter((s) => s.status === 'pending' || s.status === 'escalated').length;
-  const rejected = mine.filter((s) => s.status === 'rejected').length;
 
   const badge = (status: string) =>
     status === 'accepted'
@@ -40,7 +36,15 @@ export default async function DashboardPage() {
   return (
     <div className="container">
       <h1>{t('dashboardTitle')}</h1>
-      <p className="muted">{user.handle}</p>
+      <div className="chip-row">
+        <span className="chip chip-plain">{user.handle}</span>
+        {user.dialect && (
+          <span className="chip" lang="so">
+            {dialectLabel(lang, user.dialect)}
+          </span>
+        )}
+        {user.region && <span className="chip chip-plain">{user.region}</span>}
+      </div>
 
       <div className="stats">
         <div className="stat">
@@ -67,22 +71,17 @@ export default async function DashboardPage() {
       ) : (
         <div>
           {mine.map((s) => (
-            <div key={s.id} className="card" style={{ padding: '0.85rem 1rem' }}>
+            <div key={s.id} className="card" style={{ padding: '0.9rem 1.1rem' }}>
               <p style={{ margin: 0 }} lang="so">
                 {s.textSo.length > 140 ? s.textSo.slice(0, 140) + '…' : s.textSo}
               </p>
-              <p style={{ margin: '0.4rem 0 0' }}>
+              <p style={{ margin: '0.45rem 0 0' }}>
                 <span className={badge(s.status)}>{statusLabel(s.status)}</span>{' '}
                 <span className="mono muted">{s.mode}</span>
               </p>
             </div>
           ))}
         </div>
-      )}
-      {rejected > 0 && (
-        <p className="hint">
-          {t('rejected')}: {rejected}
-        </p>
       )}
     </div>
   );
