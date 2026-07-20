@@ -8,6 +8,7 @@ import { getCurrentUser } from '@/lib/auth';
 import './globals.css';
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://qor.unkad.com'),
   title: {
     default: 'Unkad — Qor Af-Soomaali',
     template: '%s — Unkad',
