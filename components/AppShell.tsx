@@ -9,9 +9,10 @@ import { usePathname } from 'next/navigation';
 import UnkadMark from './UnkadMark';
 import UnugAvatar from './UnugAvatar';
 import LangToggle from './LangToggle';
+import ThemeToggle from './ThemeToggle';
 import { logout } from '@/lib/actions';
 import type { Lang } from '@/lib/i18n';
-import { IconHome, IconPen, IconCheck, IconChart, IconTrophy, IconGear } from './icons';
+import { IconHome, IconPen, IconCheck, IconChart, IconTrophy, IconSeal, IconGear } from './icons';
 
 type NavItem = {
   href: string;
@@ -32,6 +33,7 @@ export default function AppShell({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const isReviewer = user.role === 'reviewer' || user.role === 'admin';
 
   const items: NavItem[] = [
     { href: '/home', label: labels.home, icon: <IconHome />, tab: true },
@@ -40,6 +42,9 @@ export default function AppShell({
     { href: '/dashboard', label: labels.dashboard, icon: <IconChart />, tab: true },
     { href: '/leaderboard', label: labels.leaderboard, icon: <IconTrophy /> },
   ];
+  if (isReviewer) {
+    items.push({ href: '/review', label: labels.review, icon: <IconSeal /> });
+  }
   if (user.role === 'admin') {
     items.push({ href: '/admin', label: labels.admin, icon: <IconGear /> });
   }
@@ -78,6 +83,7 @@ export default function AppShell({
           </Link>
           <div className="sidebar-actions">
             <LangToggle lang={lang} />
+            <ThemeToggle darkLabel={labels.themeDark} lightLabel={labels.themeLight} />
             <form action={logout}>
               <button className="header-btn" type="submit">
                 {labels.logout}
@@ -95,6 +101,7 @@ export default function AppShell({
           </Link>
           <div className="mobile-top-actions">
             <LangToggle lang={lang} />
+            <ThemeToggle darkLabel={labels.themeDark} lightLabel={labels.themeLight} />
             <form action={logout}>
               <button className="header-btn" type="submit">
                 {labels.logout}

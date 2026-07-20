@@ -39,6 +39,18 @@ export const statusEnum = pgEnum('status', ['pending', 'accepted', 'rejected', '
 export const verdictEnum = pgEnum('verdict', ['approve', 'reject']);
 export const dialectEnum = pgEnum('dialect', ['maxaa_tiri', 'maay', 'both', 'other']);
 export const creditEnum = pgEnum('credit_choice', ['handle', 'real_name', 'anonymous']);
+// The sectors from the platform concept note — corpus coverage targets.
+export const sectorEnum = pgEnum('sector', [
+  'health',
+  'education',
+  'agriculture',
+  'law',
+  'media',
+  'religion',
+  'culture',
+  'technology',
+  'general',
+]);
 
 // ---- Users & auth ----------------------------------------------------------
 
@@ -120,6 +132,7 @@ export const prompts = pgTable(
     id: uuid('id').primaryKey().defaultRandom(),
     mode: modeEnum('mode').notNull(),
     register: registerEnum('register').notNull(),
+    sector: sectorEnum('sector').notNull().default('general'),
     topic: text('topic').notNull(),
     textSo: text('text_so').notNull(),
     textEn: text('text_en').notNull(),
@@ -148,11 +161,15 @@ export const submissions = pgTable(
     mode: modeEnum('mode').notNull(),
     textSo: text('text_so').notNull(),
     textEn: text('text_en'),
-    // Contributor's dialect at submission time (provenance snapshot).
+    // Provenance snapshots taken at submission time.
     dialect: dialectEnum('dialect'),
+    sector: sectorEnum('sector'),
     charCount: integer('char_count').notNull().default(0),
     status: statusEnum('status').notNull().default('pending'),
     license: text('license').notNull().default('CC-BY-SA-4.0'),
+    // Linguist sign-off (second tier, after peer acceptance).
+    verifiedAt: timestamp('verified_at'),
+    verifiedBy: uuid('verified_by').references(() => users.id),
     // Set when the item ships in a public dataset release.
     releaseId: uuid('release_id').references(() => releases.id),
     createdAt: timestamp('created_at').notNull().defaultNow(),

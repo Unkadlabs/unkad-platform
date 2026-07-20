@@ -2,9 +2,10 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { requireOnboarded } from '@/lib/auth';
 import { getLang } from '@/lib/lang';
-import { makeT } from '@/lib/i18n';
+import { makeT, sectorLabel } from '@/lib/i18n';
 import { nextPromptFor, submitContribution } from '@/lib/actions';
 import SomaliTextarea from '@/components/SomaliTextarea';
+import Editor from '@/components/Editor';
 
 const MODES = ['write', 'translate', 'transcribe'] as const;
 type Mode = (typeof MODES)[number];
@@ -43,7 +44,10 @@ export default async function ContributeModePage({ params, searchParams }: Props
         <>
           <div className="card rise">
             <div className="chip-row">
-              <span className="chip">{prompt.register}</span>
+              <span className="chip" lang="so">
+                {sectorLabel(lang, prompt.sector)}
+              </span>
+              <span className="chip chip-plain">{prompt.register}</span>
               <span className="chip chip-plain">{prompt.topic}</span>
             </div>
             {mode === 'translate' && (
@@ -75,14 +79,38 @@ export default async function ContributeModePage({ params, searchParams }: Props
 
           <form className="form form-wide" action={submitContribution}>
             <input type="hidden" name="promptId" value={prompt.id} />
-            <SomaliTextarea
-              id="textSo"
-              name="textSo"
-              label={t('yourAnswer')}
-              charsLabel={t('chars')}
-              minLength={10}
-            />
-            <p className="hint">{t('minLength')}</p>
+            {mode === 'write' ? (
+              <Editor
+                name="textSo"
+                promptId={prompt.id}
+                minLength={10}
+                labels={{
+                  label: t('yourAnswer'),
+                  bold: t('editorBold'),
+                  italic: t('editorItalic'),
+                  heading: t('editorHeading'),
+                  quote: t('editorQuote'),
+                  list: t('editorList'),
+                  preview: t('editorPreview'),
+                  write: t('editorWrite'),
+                  focus: t('editorFocus'),
+                  words: t('editorWords'),
+                  chars: t('chars'),
+                  draftRestored: t('draftRestored'),
+                }}
+              />
+            ) : (
+              <>
+                <SomaliTextarea
+                  id="textSo"
+                  name="textSo"
+                  label={t('yourAnswer')}
+                  charsLabel={t('chars')}
+                  minLength={10}
+                />
+                <p className="hint">{t('minLength')}</p>
+              </>
+            )}
             <div className="btn-row" style={{ maxWidth: '26rem' }}>
               <button className="btn" type="submit">
                 {t('submit')}

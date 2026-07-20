@@ -15,21 +15,32 @@ export default async function AdminPage({ searchParams }: Props) {
   await requireRole('admin');
   const { added, rolechanged, roleerr } = await searchParams;
 
-  const [[promptCount], [userCount], statusCounts, registerCounts, sourceList, recentAudit] =
-    await Promise.all([
-      db.select({ n: count() }).from(prompts),
-      db.select({ n: count() }).from(users),
-      db
-        .select({ status: submissions.status, n: count() })
-        .from(submissions)
-        .groupBy(submissions.status),
-      db
-        .select({ register: prompts.register, n: count() })
-        .from(prompts)
-        .groupBy(prompts.register),
-      db.select().from(sources).orderBy(desc(sources.createdAt)).limit(10),
-      db.select().from(auditLog).orderBy(desc(auditLog.createdAt)).limit(15),
-    ]);
+  const [
+    [promptCount],
+    [userCount],
+    statusCounts,
+    registerCounts,
+    sectorCounts,
+    sourceList,
+    recentAudit,
+  ] = await Promise.all([
+    db.select({ n: count() }).from(prompts),
+    db.select({ n: count() }).from(users),
+    db
+      .select({ status: submissions.status, n: count() })
+      .from(submissions)
+      .groupBy(submissions.status),
+    db
+      .select({ register: prompts.register, n: count() })
+      .from(prompts)
+      .groupBy(prompts.register),
+    db
+      .select({ sector: prompts.sector, n: count() })
+      .from(prompts)
+      .groupBy(prompts.sector),
+    db.select().from(sources).orderBy(desc(sources.createdAt)).limit(10),
+    db.select().from(auditLog).orderBy(desc(auditLog.createdAt)).limit(15),
+  ]);
 
   const byStatus = Object.fromEntries(statusCounts.map((r) => [r.status, r.n]));
 
@@ -68,11 +79,18 @@ export default async function AdminPage({ searchParams }: Props) {
         </div>
       </div>
 
-      <span className="eyebrow">Register coverage (prompts)</span>
+      <span className="eyebrow">Coverage (prompts)</span>
       <div className="chip-row">
         {registerCounts.map((r) => (
           <span key={r.register} className="chip chip-plain">
             {r.register}: {r.n}
+          </span>
+        ))}
+      </div>
+      <div className="chip-row">
+        {sectorCounts.map((s) => (
+          <span key={s.sector} className="chip">
+            {s.sector}: {s.n}
           </span>
         ))}
       </div>
@@ -98,6 +116,20 @@ export default async function AdminPage({ searchParams }: Props) {
               <option value="technical">technical</option>
             </select>
           </div>
+        </div>
+        <div>
+          <label htmlFor="sector">Sector</label>
+          <select id="sector" name="sector">
+            <option value="general">general</option>
+            <option value="health">health</option>
+            <option value="education">education</option>
+            <option value="agriculture">agriculture</option>
+            <option value="law">law</option>
+            <option value="media">media</option>
+            <option value="religion">religion</option>
+            <option value="culture">culture</option>
+            <option value="technology">technology</option>
+          </select>
         </div>
         <div className="mode-grid">
           <div>

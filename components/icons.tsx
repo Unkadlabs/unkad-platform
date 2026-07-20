@@ -55,6 +55,15 @@ export function IconTrophy({ size = 16 }: IconProps) {
   );
 }
 
+export function IconSeal({ size = 16 }: IconProps) {
+  return (
+    <svg {...base(size)}>
+      <circle cx="8" cy="8" r="5.5" />
+      <path d="M5.8 8.2 7.4 9.8l3-3.4" />
+    </svg>
+  );
+}
+
 export function IconGear({ size = 16 }: IconProps) {
   return (
     <svg {...base(size)}>

@@ -168,6 +168,7 @@ export async function submitContribution(formData: FormData): Promise<void> {
     textSo,
     textEn: prompt.mode === 'translate' ? prompt.sourceText : null,
     dialect: user.dialect,
+    sector: prompt.sector,
     charCount: textSo.length,
   });
 
@@ -302,6 +303,16 @@ export async function addPrompts(formData: FormData): Promise<void> {
     | 'instructional'
     | 'formal'
     | 'technical';
+  const sector = String(formData.get('sector') ?? 'general') as
+    | 'health'
+    | 'education'
+    | 'agriculture'
+    | 'law'
+    | 'media'
+    | 'religion'
+    | 'culture'
+    | 'technology'
+    | 'general';
   const topic = String(formData.get('topic') ?? 'general').trim();
   const sourceId = String(formData.get('sourceId') ?? '').trim();
   // One prompt per line: "somali text || english text || optional source sentence"
@@ -317,6 +328,7 @@ export async function addPrompts(formData: FormData): Promise<void> {
       return {
         mode,
         register,
+        sector,
         topic,
         textSo: textSo || textEn,
         textEn: textEn || textSo,
@@ -331,10 +343,67 @@ export async function addPrompts(formData: FormData): Promise<void> {
       count: rows.length,
       mode,
       register,
+      sector,
       topic,
     });
   }
   redirect('/admin?added=' + rows.length);
+}
+
+// ---- Linguist verification (second tier) -----------------------------------
+
+// Batch sign-off: reviewers verify peer-accepted items in bulk.
+export async function verifyBatch(formData: FormData): Promise<void> {
+  const reviewer = await requireRole('reviewer');
+
+  const ids = formData
+    .getAll('ids')
+    .map(String)
+    .filter((id) => /^[0-9a-f-]{36}$/i.test(id));
+  if (ids.length === 0) redirect('/review');
+
+  const now = new Date();
+  let verified = 0;
+  for (const id of ids) {
+    const result = await db
+      .update(submissions)
+      .set({ verifiedAt: now, verifiedBy: reviewer.id, updatedAt: now })
+      .where(
+        and(
+          eq(submissions.id, id),
+          eq(submissions.status, 'accepted'),
+          sql`${submissions.verifiedAt} is null`
+        )
+      )
+      .returning({ id: submissions.id });
+    verified += result.length;
+  }
+
+  await audit(reviewer.id, 'review.batch_verified', 'submission', undefined, {
+    count: verified,
+  });
+  redirect(`/review?verified=${verified}`);
+}
+
+// A linguist can overturn a peer-accepted item that is actually wrong.
+// The submission id is bound at render time (overturnSubmission.bind).
+export async function overturnSubmission(id: string, _formData: FormData): Promise<void> {
+  const reviewer = await requireRole('reviewer');
+
+  if (!/^[0-9a-f-]{36}$/i.test(id)) redirect('/review');
+
+  const [submission] = await db.select().from(submissions).where(eq(submissions.id, id));
+  if (!submission || submission.status !== 'accepted' || submission.verifiedAt) {
+    redirect('/review');
+  }
+
+  await db
+    .update(submissions)
+    .set({ status: 'rejected', updatedAt: new Date() })
+    .where(eq(submissions.id, id));
+
+  await audit(reviewer.id, 'review.overturned', 'submission', id);
+  redirect('/review');
 }
 
 export async function addSource(formData: FormData): Promise<void> {

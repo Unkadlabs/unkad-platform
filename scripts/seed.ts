@@ -132,10 +132,23 @@ async function main() {
     return;
   }
 
+  const topicToSector: Record<string, 'health' | 'education' | 'agriculture' | 'law' | 'media' | 'culture' | 'general'> = {
+    health: 'health',
+    education: 'education',
+    agriculture: 'agriculture',
+    law: 'law',
+    media: 'media',
+    family: 'culture',
+    travel: 'culture',
+    'daily-life': 'culture',
+    food: 'culture',
+  };
+
   await db.insert(prompts).values(
     WRITE_PROMPTS.map((p) => ({
       mode: 'write' as const,
       register: p.register,
+      sector: topicToSector[p.topic] ?? ('general' as const),
       topic: p.topic,
       textSo: p.so,
       textEn: p.en,
@@ -146,6 +159,7 @@ async function main() {
     TRANSLATE_SOURCES.map((p) => ({
       mode: 'translate' as const,
       register: p.register,
+      sector: topicToSector[p.topic] ?? ('general' as const),
       topic: p.topic,
       textSo: 'U turjun jumladan af-Soomaali.',
       textEn: 'Translate this sentence into Somali.',

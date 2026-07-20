@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { requireOnboarded, isReviewer } from '@/lib/auth';
 import { getLang } from '@/lib/lang';
-import { makeT, dialectLabel } from '@/lib/i18n';
+import { makeT, dialectLabel, sectorLabel } from '@/lib/i18n';
 import { nextSubmissionToValidate, castValidation } from '@/lib/actions';
 
 export default async function ValidatePage() {
@@ -28,8 +28,10 @@ export default async function ValidatePage() {
 
           <div className="card rise">
             <div className="chip-row">
-              <span className="chip">{item.prompt.register}</span>
-              <span className="chip chip-plain">{item.prompt.topic}</span>
+              <span className="chip" lang="so">
+                {sectorLabel(lang, item.prompt.sector)}
+              </span>
+              <span className="chip chip-plain">{item.prompt.register}</span>
               {item.submission.dialect && (
                 <span className="chip chip-plain" lang="so">
                   {dialectLabel(lang, item.submission.dialect)}

@@ -181,6 +181,50 @@ const dict = {
     en: 'Everything you contribute is released under an open license (CC BY-SA). The corpus is a public asset.',
   },
 
+  // Review (linguist verification)
+  navReview: { so: 'Xaqiijin', en: 'Review' },
+  reviewTitle: { so: 'Xaqiijinta af-yaqaannada', en: 'Linguist review' },
+  reviewSub: {
+    so: 'Qoraallada bulshadu aqbashay — xaqiiji si ay kaydka rasmiga ah ugu darsamaan.',
+    en: 'Items the community accepted — verify them so they enter the official corpus.',
+  },
+  verifySelected: { so: 'Xaqiiji kuwa la doortay', en: 'Verify selected' },
+  selectAll: { so: 'Dooro dhammaan', en: 'Select all' },
+  overturn: { so: 'Diid', en: 'Overturn' },
+  verifiedCount: { so: 'waa la xaqiijiyay', en: 'verified' },
+  nothingToReview: {
+    so: 'Wax sugaya xaqiijin ma jiraan.',
+    en: 'Nothing waiting for review.',
+  },
+  verifiedLabel: { so: 'La xaqiijiyay', en: 'Verified' },
+
+  // Editor
+  editorBold: { so: 'Dhumuc weyn', en: 'Bold' },
+  editorItalic: { so: 'Jiiran', en: 'Italic' },
+  editorHeading: { so: 'Cinwaan', en: 'Heading' },
+  editorQuote: { so: 'Xigasho', en: 'Quote' },
+  editorList: { so: 'Liis', en: 'List' },
+  editorPreview: { so: 'Fiiri', en: 'Preview' },
+  editorWrite: { so: 'Qor', en: 'Write' },
+  editorFocus: { so: 'Diirad', en: 'Focus' },
+  editorWords: { so: 'erey', en: 'words' },
+  draftRestored: { so: 'Qabyo-qoraal hore ayaa la soo celiyay.', en: 'A saved draft was restored.' },
+
+  // Theme
+  themeDark: { so: 'Madow', en: 'Dark' },
+  themeLight: { so: 'Iftiin', en: 'Light' },
+
+  // Sectors
+  sector_health: { so: 'Caafimaad', en: 'Health' },
+  sector_education: { so: 'Waxbarasho', en: 'Education' },
+  sector_agriculture: { so: 'Beeraha', en: 'Agriculture' },
+  sector_law: { so: 'Sharci', en: 'Law' },
+  sector_media: { so: 'Warbaahin', en: 'Media' },
+  sector_religion: { so: 'Diin', en: 'Religion' },
+  sector_culture: { so: 'Dhaqan', en: 'Culture' },
+  sector_technology: { so: 'Tignoolajiyad', en: 'Technology' },
+  sector_general: { so: 'Guud', en: 'General' },
+
   // Errors
   errEmailTaken: { so: 'Iimaylkan hore ayaa loo isticmaalay.', en: 'That email is already registered.' },
   errBadLogin: { so: 'Iimayl ama furaha sirta ayaa khaldan.', en: 'Wrong email or password.' },
@@ -203,6 +247,11 @@ export function t(lang: Lang, key: TKey): string {
 
 export function makeT(lang: Lang) {
   return (key: TKey) => t(lang, key);
+}
+
+export function sectorLabel(lang: Lang, sector: string | null): string {
+  const key = `sector_${sector}` as TKey;
+  return sector && key in dict ? t(lang, key) : (sector ?? '—');
 }
 
 export function dialectLabel(lang: Lang, dialect: string | null): string {

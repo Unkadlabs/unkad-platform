@@ -24,6 +24,14 @@ export const viewport: Viewport = {
   ],
 };
 
+// Applies a saved theme before first paint to avoid a flash of the wrong theme.
+const themeInit = `
+try {
+  var t = localStorage.getItem('theme');
+  if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t);
+} catch (e) {}
+`;
+
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const [lang, user] = await Promise.all([getLang(), getCurrentUser()]);
   const t = makeT(lang);
@@ -31,6 +39,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang={lang} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInit }} />
+      </head>
       <body>
         <a className="skip-link" href="#main">
           Skip to content
@@ -50,8 +61,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               validate: t('navValidate'),
               dashboard: t('navDashboard'),
               leaderboard: t('navLeaderboard'),
+              review: t('navReview'),
               admin: t('navAdmin'),
               logout: t('logout'),
+              themeDark: t('themeDark'),
+              themeLight: t('themeLight'),
             }}
           >
             {children}
