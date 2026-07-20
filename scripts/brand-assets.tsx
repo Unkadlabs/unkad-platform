@@ -71,19 +71,22 @@ function Avatar({ size, theme }: { size: number; theme: typeof LIGHT }) {
   );
 }
 
-// Wide banner: mark + wordmark + gloss left, urls right. Always dark.
+// Wide banner: centered lockup — platform UI (company logo on LinkedIn,
+// avatar on X) overlaps the bottom-left corner of covers, and mobile
+// crops the sides, so the safe zone is the horizontal center, biased
+// slightly upward via liftPx.
 function Banner({
   markSize,
   nameSize,
   glossSize,
   urlSize,
-  pad,
+  liftPx,
 }: {
   markSize: number;
   nameSize: number;
   glossSize: number;
   urlSize: number;
-  pad: number;
+  liftPx: number;
 }) {
   return (
     <div
@@ -92,9 +95,10 @@ function Banner({
         height: '100%',
         display: 'flex',
         alignItems: 'center',
+        justifyContent: 'center',
         backgroundColor: DARK.bg,
-        padding: `0 ${pad}px`,
-        gap: Math.round(markSize * 0.34),
+        paddingBottom: liftPx,
+        gap: Math.round(markSize * 0.38),
         fontFamily: 'Source Serif 4',
       }}
     >
@@ -110,21 +114,13 @@ function Banner({
         >
           Unkad Labs
         </div>
-        <div style={{ fontSize: glossSize, color: DARK.muted, marginTop: 6 }}>
+        <div style={{ fontSize: glossSize, color: DARK.muted, marginTop: 4, display: 'flex' }}>
           Unkad — Somali for creation from nothing.
         </div>
-      </div>
-      <div
-        style={{
-          marginLeft: 'auto',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'flex-end',
-          fontSize: urlSize,
-        }}
-      >
-        <div style={{ display: 'flex', color: DARK.accent }}>unkad.com</div>
-        <div style={{ display: 'flex', color: DARK.muted }}>qor.unkad.com</div>
+        <div style={{ fontSize: urlSize, marginTop: 8, display: 'flex', gap: 14 }}>
+          <div style={{ display: 'flex', color: DARK.accent }}>unkad.com</div>
+          <div style={{ display: 'flex', color: DARK.muted }}>qor.unkad.com</div>
+        </div>
       </div>
     </div>
   );
@@ -140,15 +136,15 @@ async function main() {
   await render(<Avatar size={1024} theme={LIGHT} />, 1024, 1024, 'logo-master-1024.png');
   await render(<Avatar size={1024} theme={DARK} />, 1024, 1024, 'logo-master-1024-dark.png');
 
-  // ---- Banners ----
+  // ---- Banners (centered safe-zone layout) ----
   await render(
-    <Banner markSize={84} nameSize={52} glossSize={22} urlSize={20} pad={64} />,
+    <Banner markSize={80} nameSize={48} glossSize={20} urlSize={17} liftPx={10} />,
     1128,
     191,
     'linkedin-banner-1128x191.png'
   );
   await render(
-    <Banner markSize={170} nameSize={104} glossSize={42} urlSize={34} pad={120} />,
+    <Banner markSize={160} nameSize={96} glossSize={38} urlSize={30} liftPx={70} />,
     1500,
     500,
     'x-banner-1500x500.png'
