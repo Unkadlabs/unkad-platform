@@ -14,6 +14,7 @@ import bcrypt from 'bcryptjs';
 import { and, eq, ne, notInArray, sql } from 'drizzle-orm';
 import { db } from './db';
 import { users, prompts, submissions, validations, auditLog, sources } from './schema';
+import { allow, clientIp } from './ratelimit';
 import {
   createSession,
   destroySession,
@@ -44,6 +45,12 @@ async function audit(
 // ---- Auth ------------------------------------------------------------------
 
 export async function signup(_prev: string | null, formData: FormData): Promise<string | null> {
+  // Honeypot: real users never fill this hidden field.
+  if (String(formData.get('website') ?? '') !== '') return 'errRequired';
+
+  const ip = await clientIp();
+  if (!(await allow(`signup:${ip}`, 5, 3600))) return 'errRateLimited';
+
   const email = String(formData.get('email') ?? '').trim().toLowerCase();
   const handle = String(formData.get('handle') ?? '').trim();
   const password = String(formData.get('password') ?? '');
@@ -60,6 +67,9 @@ export async function signup(_prev: string | null, formData: FormData): Promise<
 }
 
 export async function login(_prev: string | null, formData: FormData): Promise<string | null> {
+  const ip = await clientIp();
+  if (!(await allow(`login:${ip}`, 20, 3600))) return 'errRateLimited';
+
   const email = String(formData.get('email') ?? '').trim().toLowerCase();
   const password = String(formData.get('password') ?? '');
   if (!email || !password) return 'errRequired';
@@ -154,6 +164,8 @@ export async function giveConsent(_prev: string | null, formData: FormData): Pro
 export async function submitContribution(formData: FormData): Promise<void> {
   const user = await requireOnboarded();
 
+  if (!(await allow(`submit:${user.id}`, 200, 86400))) redirect('/contribute');
+
   const promptId = String(formData.get('promptId') ?? '');
   const textSo = String(formData.get('textSo') ?? '').trim();
   if (!promptId || textSo.length < 10) redirect('/contribute');
@@ -225,6 +237,8 @@ export async function nextSubmissionToValidate(userId: string, reviewer: boolean
 
 export async function castValidation(formData: FormData): Promise<void> {
   const user = await requireOnboarded();
+
+  if (!(await allow(`validate:${user.id}`, 500, 86400))) redirect('/validate');
 
   const submissionId = String(formData.get('submissionId') ?? '');
   const verdict = String(formData.get('verdict') ?? '');

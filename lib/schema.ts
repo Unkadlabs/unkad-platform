@@ -218,6 +218,15 @@ export const releases = pgTable('releases', {
   createdAt: timestamp('created_at').notNull().defaultNow(),
 });
 
+// ---- Rate limiting ---------------------------------------------------------
+
+// Fixed-window counters keyed by action+principal (ip or user id).
+export const rateLimits = pgTable('rate_limits', {
+  key: text('key').primaryKey(),
+  windowStart: timestamp('window_start').notNull(),
+  count: integer('count').notNull().default(1),
+});
+
 // ---- Audit log -------------------------------------------------------------
 
 // Append-only record of privileged actions (prompt uploads, role changes,

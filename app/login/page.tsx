@@ -27,6 +27,8 @@ export default async function LoginPage() {
           errors: {
             errBadLogin: t('errBadLogin'),
             errRequired: t('errRequired'),
+            errLocked: t('errLocked'),
+            errRateLimited: t('errRateLimited'),
           },
         }}
       />

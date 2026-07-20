@@ -21,6 +21,16 @@ export default function AuthForm({ kind, labels }: { kind: 'signup' | 'login'; l
     <form className="form" action={formAction}>
       {error && <p className="notice notice-error">{labels.errors[error] ?? error}</p>}
 
+      {/* Honeypot — hidden from real users, filled by naive bots. */}
+      <input
+        type="text"
+        name="website"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        style={{ position: 'absolute', left: '-9999px', height: 0, width: 0, opacity: 0 }}
+      />
+
       {kind === 'signup' && (
         <div>
           <label htmlFor="handle">{labels.handle}</label>

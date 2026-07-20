@@ -233,6 +233,10 @@ const dict = {
     so: 'Akoonkan waa la xannibay 15 daqiiqo — isku day badan oo khaldan. Sug kadibna mar kale isku day.',
     en: 'Account locked for 15 minutes after too many failed attempts. Please wait and try again.',
   },
+  errRateLimited: {
+    so: 'Isku dayo aad u badan. Fadlan sug waxoogaa, kadibna mar kale isku day.',
+    en: 'Too many attempts. Please wait a while and try again.',
+  },
   errConsentRequired: {
     so: 'Si aad wax ugu darto, waa inaad ogolaato shatiga furan.',
     en: 'You must accept the open license to contribute.',

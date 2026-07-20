@@ -27,6 +27,7 @@ export default async function JoinPage() {
           errors: {
             errEmailTaken: t('errEmailTaken'),
             errRequired: t('errRequired'),
+            errRateLimited: t('errRateLimited'),
           },
         }}
       />
