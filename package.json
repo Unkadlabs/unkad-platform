@@ -11,7 +11,9 @@
     "db:seed": "tsx scripts/seed.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "export": "tsx scripts/export.ts"
+    "export": "tsx scripts/export.ts",
+    "maahmaahyo:build": "tsx scripts/maahmaahyo-build.ts",
+    "maahmaahyo:cards": "tsx scripts/maahmaahyo-cards.tsx"
   },
   "dependencies": {
     "@huggingface/hub": "^2.13.3",
