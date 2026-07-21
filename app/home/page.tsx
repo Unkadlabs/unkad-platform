@@ -28,6 +28,7 @@ export default async function HomePage() {
     { href: '/contribute/write', so: t('modeWrite'), en: 'Write', n: available.write },
     { href: '/contribute/translate', so: t('modeTranslate'), en: 'Translate', n: available.translate },
     { href: '/contribute/transcribe', so: t('modeTranscribe'), en: 'Transcribe', n: available.transcribe },
+    { href: '/contribute/proverb', so: t('modeProverb'), en: 'Proverb', n: null },
     { href: '/validate', so: t('modeValidate'), en: 'Validate', n: available.validate },
   ];
 
@@ -86,7 +87,7 @@ export default async function HomePage() {
               {lang === 'so' ? '' : ` · ${mode.en}`}
             </span>
             <p className="tnum">
-              {mode.n.toLocaleString()} {t('tasksAvailable')}
+              {mode.n === null ? t('alwaysOpen') : `${mode.n.toLocaleString()} ${t('tasksAvailable')}`}
             </p>
           </Link>
         ))}

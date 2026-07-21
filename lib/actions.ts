@@ -188,6 +188,36 @@ export async function submitContribution(formData: FormData): Promise<void> {
   redirect(`/contribute/${prompt.mode}?done=1`);
 }
 
+// Proverb mode: free contribution, no prompt needed.
+export async function submitProverb(formData: FormData): Promise<void> {
+  const user = await requireOnboarded();
+
+  if (!(await allow(`submit:${user.id}`, 200, 86400))) redirect('/contribute');
+
+  const proverb = String(formData.get('proverb') ?? '').trim();
+  const translation = String(formData.get('translation') ?? '').trim();
+  const meaning = String(formData.get('meaning') ?? '').trim();
+
+  if (proverb.length < 5 || translation.length < 5 || meaning.length < 10) {
+    redirect('/contribute/proverb');
+  }
+
+  await db.insert(submissions).values({
+    promptId: null,
+    userId: user.id,
+    mode: 'proverb',
+    textSo: proverb,
+    textEn: translation,
+    meaningEn: meaning,
+    dialect: user.dialect,
+    sector: 'culture',
+    charCount: proverb.length,
+  });
+
+  revalidatePath('/dashboard');
+  redirect('/contribute/proverb?done=1');
+}
+
 export async function nextPromptFor(userId: string, mode: 'write' | 'translate' | 'transcribe') {
   const answered = db
     .select({ id: submissions.promptId })
@@ -216,7 +246,7 @@ export async function nextSubmissionToValidate(userId: string, reviewer: boolean
     db
       .select({ submission: submissions, prompt: prompts })
       .from(submissions)
-      .innerJoin(prompts, eq(submissions.promptId, prompts.id))
+      .leftJoin(prompts, eq(submissions.promptId, prompts.id))
       .where(
         and(
           eq(submissions.status, status),

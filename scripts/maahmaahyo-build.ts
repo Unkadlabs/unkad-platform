@@ -85,9 +85,53 @@ research@unkad.com
 `;
 }
 
+async function fetchCommunityRows(): Promise<Row[]> {
+  // Linguist-verified proverb submissions from the platform, credited
+  // per each contributor's consent choice.
+  const { db } = await import('../lib/db');
+  const { submissions, users } = await import('../lib/schema');
+  const { and, eq, isNotNull } = await import('drizzle-orm');
+
+  const rows = await db
+    .select({ s: submissions, u: users })
+    .from(submissions)
+    .innerJoin(users, eq(submissions.userId, users.id))
+    .where(
+      and(
+        eq(submissions.mode, 'proverb'),
+        eq(submissions.status, 'accepted'),
+        isNotNull(submissions.verifiedAt)
+      )
+    );
+
+  return rows.map(({ s, u }, i) => {
+    const credit =
+      u.creditChoice === 'anonymous'
+        ? 'Anonymous contributor'
+        : u.creditChoice === 'real_name'
+          ? (u.creditName ?? u.handle)
+          : u.handle;
+    return {
+      id: `qor-${String(i + 1).padStart(3, '0')}`,
+      proverb_so: s.textSo,
+      translation_en: s.textEn ?? '',
+      meaning_en: s.meaningEn ?? '',
+      dialect: s.dialect ?? '',
+      notes: `Contributed on qor.unkad.com by ${credit}; peer-validated and linguist-verified.`,
+      verified_by: 'qor.unkad.com pipeline',
+    };
+  });
+}
+
 async function main() {
-  const rows = readRows();
+  const curated = readRows();
+  const community = await fetchCommunityRows().catch((e) => {
+    console.log('community fetch skipped:', String(e).slice(0, 60));
+    return [] as Row[];
+  });
+  const rows = [...curated, ...community];
   const verified = rows.filter((r) => r.verified_by);
+  console.log(`curated: ${curated.length} · community (verified): ${community.length}`);
   const push = process.env.PUSH === '1';
 
   // A push ships only verified rows; a dry run includes everything so the

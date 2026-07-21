@@ -27,7 +27,7 @@ import {
 // ---- Enums -----------------------------------------------------------------
 
 export const roleEnum = pgEnum('role', ['contributor', 'reviewer', 'admin']);
-export const modeEnum = pgEnum('mode', ['write', 'translate', 'transcribe']);
+export const modeEnum = pgEnum('mode', ['write', 'translate', 'transcribe', 'proverb']);
 export const registerEnum = pgEnum('register', [
   'conversational',
   'narrative',
@@ -152,15 +152,15 @@ export const submissions = pgTable(
   'submissions',
   {
     id: uuid('id').primaryKey().defaultRandom(),
-    promptId: uuid('prompt_id')
-      .notNull()
-      .references(() => prompts.id),
+    promptId: uuid('prompt_id').references(() => prompts.id),
     userId: uuid('user_id')
       .notNull()
       .references(() => users.id),
     mode: modeEnum('mode').notNull(),
     textSo: text('text_so').notNull(),
     textEn: text('text_en'),
+    // Proverb mode: the meaning/usage explanation in English.
+    meaningEn: text('meaning_en'),
     // Provenance snapshots taken at submission time.
     dialect: dialectEnum('dialect'),
     sector: sectorEnum('sector'),

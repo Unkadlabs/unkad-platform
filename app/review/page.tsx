@@ -77,6 +77,11 @@ export default async function ReviewPage({ searchParams }: Props) {
                       {submission.textEn}
                     </p>
                   )}
+                  {submission.meaningEn && (
+                    <p className="muted" style={{ margin: '0.4rem 0 0', fontSize: '0.92rem' }}>
+                      {submission.meaningEn}
+                    </p>
+                  )}
                   <p className="row-user mono muted" style={{ margin: '0.6rem 0 0', fontSize: '0.72rem' }}>
                     <UnugAvatar seed={author.id} size={18} />
                     {author.handle}

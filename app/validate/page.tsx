@@ -11,6 +11,8 @@ export default async function ValidatePage() {
   const reviewer = isReviewer(user);
   const item = await nextSubmissionToValidate(user.id, reviewer);
 
+  const isProverb = item?.submission.mode === 'proverb';
+
   return (
     <div className="container">
       <p className="mono muted">
@@ -29,29 +31,53 @@ export default async function ValidatePage() {
           <div className="card rise">
             <div className="chip-row">
               <span className="chip" lang="so">
-                {sectorLabel(lang, item.prompt.sector)}
+                {isProverb
+                  ? t('modeProverb')
+                  : sectorLabel(lang, item.submission.sector ?? item.prompt?.sector ?? null)}
               </span>
-              <span className="chip chip-plain">{item.prompt.register}</span>
+              {item.prompt && <span className="chip chip-plain">{item.prompt.register}</span>}
               {item.submission.dialect && (
                 <span className="chip chip-plain" lang="so">
                   {dialectLabel(lang, item.submission.dialect)}
                 </span>
               )}
             </div>
-            <p className="mono muted" style={{ margin: 0 }}>
-              {item.submission.mode === 'translate' ? t('sourceWas') : t('promptWas')}
-            </p>
-            <p className="muted" style={{ marginTop: '0.3rem' }}>
-              {item.submission.mode === 'translate'
-                ? item.submission.textEn
-                : lang === 'so'
-                  ? item.prompt.textSo
-                  : item.prompt.textEn}
-            </p>
-            <hr style={{ margin: '1rem 0' }} />
-            <p className="task-text" lang="so">
-              {item.submission.textSo}
-            </p>
+
+            {isProverb ? (
+              <>
+                <p className="task-text" lang="so">
+                  {item.submission.textSo}
+                </p>
+                <hr style={{ margin: '1rem 0' }} />
+                <p className="mono muted" style={{ margin: 0 }}>
+                  {t('translationField')}
+                </p>
+                <p style={{ marginTop: '0.3rem' }}>{item.submission.textEn}</p>
+                <p className="mono muted" style={{ margin: 0 }}>
+                  {t('meaningField')}
+                </p>
+                <p style={{ marginTop: '0.3rem', marginBottom: 0 }}>
+                  {item.submission.meaningEn}
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="mono muted" style={{ margin: 0 }}>
+                  {item.submission.mode === 'translate' ? t('sourceWas') : t('promptWas')}
+                </p>
+                <p className="muted" style={{ marginTop: '0.3rem' }}>
+                  {item.submission.mode === 'translate'
+                    ? item.submission.textEn
+                    : lang === 'so'
+                      ? item.prompt?.textSo
+                      : item.prompt?.textEn}
+                </p>
+                <hr style={{ margin: '1rem 0' }} />
+                <p className="task-text" lang="so">
+                  {item.submission.textSo}
+                </p>
+              </>
+            )}
           </div>
 
           <p>

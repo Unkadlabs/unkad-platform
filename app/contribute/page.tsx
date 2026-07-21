@@ -23,6 +23,7 @@ export default async function ContributeHubPage() {
       en: 'Transcribe',
       desc: t('modeTranscribeDesc'),
     },
+    { href: '/contribute/proverb', name: t('modeProverb'), en: 'Proverb', desc: t('modeProverbDesc') },
     { href: '/validate', name: t('modeValidate'), en: 'Validate', desc: t('modeValidateDesc') },
   ];
 

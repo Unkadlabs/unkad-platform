@@ -54,6 +54,22 @@ const dict = {
     so: 'Qoraal ahaan u guuri buugaag iyo qoraallo daabacan oo xor ah.',
     en: 'Type up openly licensed printed Somali material.',
   },
+  modeProverb: { so: 'Maahmaah', en: 'Proverb' },
+  modeProverbDesc: {
+    so: 'La wadaag maahmaah Soomaaliyeed — qor maahmaahda, turjumaadeeda iyo macnaheeda.',
+    en: 'Share a Somali proverb — the proverb, its translation, and its meaning.',
+  },
+  proverbField: { so: 'Maahmaahda (af-Soomaali)', en: 'The proverb (in Somali)' },
+  translationField: { so: 'Turjumaad toos ah (Ingiriisi)', en: 'Literal translation (English)' },
+  meaningField: {
+    so: 'Macnaha iyo goorta la isticmaalo (Ingiriisi)',
+    en: 'Meaning, and when it is used (English)',
+  },
+  proverbIntro: {
+    so: 'Maahmaah kasta oo aad taqaanno waa hanti. Ku qor sida aad ka maqashay.',
+    en: 'Every proverb you know is wealth. Write it as you heard it.',
+  },
+  alwaysOpen: { so: 'mar walba furan', en: 'always open' },
   modeValidate: { so: 'Hubi', en: 'Validate' },
   modeValidateDesc: {
     so: 'Eeg qoraallada dadka kale: ma sax baa? Ku dar codkaaga.',
