@@ -27,7 +27,7 @@ jobs:
           DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
         run: |
           STAMP=$(date -u +%Y-%m-%d_%H%M)
-          pg_dump "$DATABASE_URL" --no-owner --format=custom \
+          /usr/lib/postgresql/17/bin/pg_dump "$DATABASE_URL" --no-owner --format=custom \
             --file="unkad-${STAMP}.dump"
           ls -la unkad-*.dump
 
