@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- macOS launchd job: nightly Unkad database backup at 02:00 local time.
+
+     Install:
+       cp scripts/com.unkad.backup.plist ~/Library/LaunchAgents/
+       launchctl load ~/Library/LaunchAgents/com.unkad.backup.plist
+
+     Check:   launchctl list | grep unkad
+     Logs:    ~/UnkadBackups/backup.log
+     Remove:  launchctl unload ~/Library/LaunchAgents/com.unkad.backup.plist
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.unkad.backup</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>/Users/khalidyusufdahir/research/unkad-platform/scripts/backup.sh</string>
+  </array>
+
+  <key>StartCalendarInterval</key>
+  <dict>
+    <key>Hour</key><integer>2</integer>
+    <key>Minute</key><integer>0</integer>
+  </dict>
+
+  <!-- If the Mac was asleep at 02:00, run once it wakes. -->
+  <key>RunAtLoad</key>
+  <false/>
+
+  <key>StandardOutPath</key>
+  <string>/Users/khalidyusufdahir/UnkadBackups/backup.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/khalidyusufdahir/UnkadBackups/backup.log</string>
+</dict>
+</plist>
