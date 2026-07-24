@@ -918,52 +918,250 @@ main {
 .sparkline .spark-bar { fill: var(--accent); }
 .sparkline .spark-empty { fill: var(--rule); }
 
-/* ---- Leaderboard podium --------------------------------------------------------------------------- */
+/* ---- Leaderboard ------------------------------------------------------------------------------------
+   A ledger, not a podium. Each contributor's accepted work is drawn in unug
+   cells — same vocabulary as the brand mark, with the first cell as the seed.
+   --------------------------------------------------------------------------------------------------- */
 
-.podium {
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 1rem;
-  margin: 2rem 0 2.25rem;
+/* The corpus these contributors are building. */
+.lb-corpus {
+  margin: 1.75rem 0 2rem;
 }
 
-.podium-spot {
+.lb-corpus-figures {
   display: flex;
-  flex-direction: column;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.lb-corpus-n {
+  font-family: var(--mono);
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.lb-corpus-label {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-right: 0.35rem;
+}
+
+.lb-corpus-sep {
+  width: 1px;
+  align-self: stretch;
+  background: var(--rule);
+  margin: 0.15rem 0.5rem;
+}
+
+.lb-corpus-track {
+  height: 3px;
+  border-radius: 2px;
+  background: var(--rule);
+  overflow: hidden;
+  margin-top: 0.7rem;
+}
+
+.lb-corpus-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+}
+
+.lb-corpus-goal {
+  font-size: 0.72rem;
+  margin: 0.4rem 0 0;
+}
+
+/* The cell bar — the one loud element on the page. */
+.lb-cells {
+  display: flex;
+  gap: 2px;
+  height: 0.55rem;
+  width: 100%;
+}
+
+.lb-cell {
+  flex: 1 1 0;
+  min-width: 0;
+  border-radius: 2px;
+  background: var(--rule);
+}
+
+.lb-cell-on {
+  background: currentColor;
+  opacity: 0.82;
+}
+
+.lb-cell-seed {
+  background: var(--accent);
+}
+
+/* Submitted, still waiting on validation — present but not yet counted. */
+.lb-cell-ghost {
+  background: currentColor;
+  opacity: 0.2;
+}
+
+.lb-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin: 0.9rem 0 1.5rem;
+}
+
+.lb-legend span {
+  display: inline-flex;
   align-items: center;
   gap: 0.35rem;
+}
+
+.lb-legend i {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 2px;
+  background: currentColor;
+  opacity: 0.82;
+}
+
+.lb-legend .lb-legend-pending i {
+  opacity: 0.2;
+}
+
+.lb-cells--animate .lb-cell {
+  animation: cell-in 0.5s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+
+/* Lead contributor. */
+.lb-lead {
   background: var(--card);
   border: 1px solid var(--rule);
+  border-left: 2px solid var(--accent);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow);
-  padding: 1.1rem 1.2rem 0.9rem;
-  min-width: 7.5rem;
+  padding: 1.25rem 1.35rem;
+  margin-bottom: 1.5rem;
 }
 
-.podium-spot.rank-1 {
-  border-color: var(--accent);
-  padding-block: 1.5rem 1.1rem;
+.lb-lead .lb-cells {
+  height: 0.85rem;
+  margin: 1.1rem 0 0.9rem;
 }
 
-.podium-rank { font-size: 0.7rem; color: var(--muted); }
-.rank-1 .podium-rank { color: var(--accent); }
+.lb-lead-head {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
 
-.podium-name {
+.lb-lead-id {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.lb-lead-name {
+  font-size: 1.3rem;
+  font-weight: 600;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.lb-lead-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  font-size: 0.78rem;
+}
+
+.lb-lead-stats strong {
+  font-size: 0.95rem;
+}
+
+/* The ledger. */
+.lb-ledger {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.lb-row {
+  display: grid;
+  grid-template-columns: 1.6rem minmax(6rem, auto) minmax(3rem, 1fr) auto;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.72rem 0.15rem;
+  border-top: 1px solid var(--rule);
+}
+
+.lb-row:last-child {
+  border-bottom: 1px solid var(--rule);
+}
+
+.lb-rank {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.lb-who {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.lb-name {
   font-weight: 600;
   font-size: 0.95rem;
-  text-align: center;
-  max-width: 9rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.podium-rep { font-size: 0.75rem; color: var(--muted); }
+.lb-bar {
+  display: block;
+  min-width: 0;
+}
+
+.lb-figures {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 1.25;
+}
+
+.lb-figure {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.lb-figure-sub {
+  font-size: 0.68rem;
+}
+
+.lb-empty {
+  text-align: center;
+}
 
 @media (max-width: 34rem) {
-  .podium { gap: 0.5rem; }
-  .podium-spot { min-width: 0; flex: 1; padding: 0.9rem 0.5rem 0.75rem; }
+  /* The bar drops to its own line rather than being squeezed to nothing. */
+  .lb-row {
+    grid-template-columns: 1.4rem 1fr auto;
+    row-gap: 0.55rem;
+  }
+
+  .lb-bar {
+    grid-column: 2 / -1;
+  }
+
+  .lb-lead-name {
+    font-size: 1.15rem;
+  }
 }
 
 /* ---- Editor (the Unkad writer) -------------------------------------------------------------------- */

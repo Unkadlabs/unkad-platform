@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { count, desc, eq } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import { submissions, validations } from '@/lib/schema';
@@ -56,6 +57,9 @@ export default async function DashboardPage() {
             {user.region && <span className="chip chip-plain">{user.region}</span>}
             <span className="chip chip-plain tnum">{user.reputation} rep</span>
           </div>
+          <p className="mono" style={{ margin: '0.5rem 0 0', fontSize: '0.78rem' }}>
+            <Link href="/account">{t('accountTitle')} →</Link>
+          </p>
         </div>
       </div>
 

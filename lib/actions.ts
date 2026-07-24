@@ -19,6 +19,7 @@ import {
   createSession,
   destroySession,
   getCurrentUser,
+  revokeAllSessions,
   requireUser,
   requireOnboarded,
   requireRole,
@@ -107,6 +108,40 @@ export async function login(_prev: string | null, formData: FormData): Promise<s
 export async function logout() {
   await destroySession();
   redirect('/');
+}
+
+// Rotating a password revokes every existing session — including any an
+// attacker holds — then issues a fresh one so the person doing it stays
+// logged in on this device.
+export async function changePassword(
+  _prev: string | null,
+  formData: FormData
+): Promise<string | null> {
+  const current = await requireUser();
+
+  if (!(await allow(`password:${current.id}`, 10, 3600))) return 'errRateLimited';
+
+  const currentPassword = String(formData.get('currentPassword') ?? '');
+  const newPassword = String(formData.get('newPassword') ?? '');
+
+  if (!currentPassword || !newPassword) return 'errRequired';
+  if (newPassword.length < 8) return 'errPasswordShort';
+
+  const [user] = await db.select().from(users).where(eq(users.id, current.id));
+  if (!user || !(await bcrypt.compare(currentPassword, user.passwordHash))) {
+    return 'errWrongPassword';
+  }
+
+  await db
+    .update(users)
+    .set({ passwordHash: await bcrypt.hash(newPassword, 12), updatedAt: new Date() })
+    .where(eq(users.id, user.id));
+
+  await revokeAllSessions(user.id);
+  await createSession(user.id);
+  await audit(user.id, 'auth.password_changed', 'user', user.id);
+
+  redirect('/account?changed=1');
 }
 
 // ---- Onboarding ------------------------------------------------------------

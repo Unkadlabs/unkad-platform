@@ -1,6 +1,7 @@
 // Admin console (English-only internal tool): corpus stats, batch prompt
 // upload, source registry, role management, and the audit trail.
 
+import Link from 'next/link';
 import { count, desc } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import { prompts, submissions, users, sources, auditLog } from '@/lib/schema';
@@ -47,6 +48,9 @@ export default async function AdminPage({ searchParams }: Props) {
   return (
     <div className="container">
       <h1>Admin</h1>
+      <p className="mono">
+        <Link href="/admin/activity">Activity monitor →</Link>
+      </p>
 
       {added && <p className="notice">Added {added} prompts.</p>}
       {rolechanged && <p className="notice">Role updated.</p>}

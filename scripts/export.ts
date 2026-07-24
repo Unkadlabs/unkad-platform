@@ -36,10 +36,13 @@ async function main() {
       ? and(eq(submissions.status, 'accepted'), sql`${submissions.verifiedAt} is not null`)
       : eq(submissions.status, 'accepted');
 
+  // LEFT join on prompts: proverb-mode items are contributed freely and carry
+  // no prompt, so an inner join would silently drop every proverb from the
+  // release. Their register/topic are simply unset.
   const rows = await db
     .select({ s: submissions, p: prompts, u: users })
     .from(submissions)
-    .innerJoin(prompts, eq(submissions.promptId, prompts.id))
+    .leftJoin(prompts, eq(submissions.promptId, prompts.id))
     .innerJoin(users, eq(submissions.userId, users.id))
     .where(and(where, isNull(submissions.releaseId)));
 
@@ -52,10 +55,12 @@ async function main() {
     id: s.id,
     text_so: s.textSo,
     text_en: s.textEn ?? null,
+    // Proverbs carry an explanation of meaning and usage; other modes don't.
+    meaning_en: s.meaningEn ?? null,
     mode: s.mode,
-    register: p.register,
-    sector: s.sector ?? p.sector,
-    topic: p.topic,
+    register: p?.register ?? null,
+    sector: s.sector ?? p?.sector ?? 'general',
+    topic: p?.topic ?? null,
     dialect: s.dialect ?? null,
     verified: s.verifiedAt !== null,
     license: s.license,

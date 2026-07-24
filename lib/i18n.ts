@@ -192,6 +192,12 @@ const dict = {
     so: 'Dadka ugu badan ee wax ku biiriyay kaydka.',
     en: 'Top contributors to the corpus.',
   },
+  charsLabel: { so: 'xaraf', en: 'characters' },
+  lbPendingLegend: { so: 'sugaya hubin', en: 'awaiting validation' },
+  lbEmpty: {
+    so: 'Weli qofna wax kuma darin. Noqo kii ugu horreeyay.',
+    en: 'Nobody has contributed yet. Be the first.',
+  },
 
   // Auth
   email: { so: 'Iimayl', en: 'Email' },
@@ -254,6 +260,17 @@ const dict = {
   sector_technology: { so: 'Tignoolajiyad', en: 'Technology' },
   sector_general: { so: 'Guud', en: 'General' },
 
+  // Account / password  !! VERIFY SOMALI !!
+  accountTitle: { so: 'Akoonkayga', en: 'My account' },
+  changePassword: { so: 'Beddel furaha sirta', en: 'Change password' },
+  currentPassword: { so: 'Furaha sirta ee hadda', en: 'Current password' },
+  newPassword: { so: 'Furaha sirta ee cusub', en: 'New password' },
+  passwordChanged: { so: 'Furaha sirta waa la beddelay.', en: 'Password changed.' },
+  passwordHint: {
+    so: 'Ugu yaraan 8 xaraf. Marka aad beddesho, aaladaha kale waa laga saarayaa.',
+    en: 'At least 8 characters. Changing it signs you out on every other device.',
+  },
+
   // Errors
   errEmailTaken: { so: 'Iimaylkan hore ayaa loo isticmaalay.', en: 'That email is already registered.' },
   errBadLogin: { so: 'Iimayl ama furaha sirta ayaa khaldan.', en: 'Wrong email or password.' },
@@ -269,6 +286,14 @@ const dict = {
   errConsentRequired: {
     so: 'Si aad wax ugu darto, waa inaad ogolaato shatiga furan.',
     en: 'You must accept the open license to contribute.',
+  },
+  errPasswordShort: {
+    so: 'Furaha cusub waa inuu ka koobnaadaa ugu yaraan 8 xaraf.',
+    en: 'The new password must be at least 8 characters.',
+  },
+  errWrongPassword: {
+    so: 'Furaha sirta ee hadda waa khaldan yahay.',
+    en: 'That is not your current password.',
   },
 } as const;
 
