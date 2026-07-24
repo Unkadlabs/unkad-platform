@@ -6,18 +6,26 @@ import { makeT, sectorLabel } from '@/lib/i18n';
 import { nextPromptFor, submitContribution } from '@/lib/actions';
 import SomaliTextarea from '@/components/SomaliTextarea';
 import Editor from '@/components/Editor';
+import ClearDraft from '@/components/ClearDraft';
 
 const MODES = ['write', 'translate', 'transcribe'] as const;
 type Mode = (typeof MODES)[number];
 
+const ERROR_KEY = {
+  short: 'errShort',
+  cap: 'errCap',
+  unavailable: 'errUnavailable',
+} as const;
+
 type Props = {
   params: Promise<{ mode: string }>;
-  searchParams: Promise<{ done?: string }>;
+  searchParams: Promise<{ done?: string; error?: string }>;
 };
 
 export default async function ContributeModePage({ params, searchParams }: Props) {
   const { mode } = await params;
-  const { done } = await searchParams;
+  const { done, error } = await searchParams;
+  const errorKey = error && error in ERROR_KEY ? ERROR_KEY[error as keyof typeof ERROR_KEY] : null;
 
   if (!MODES.includes(mode as Mode)) notFound();
 
@@ -36,7 +44,17 @@ export default async function ContributeModePage({ params, searchParams }: Props
       </p>
       <h1 lang="so">{modeTitle}</h1>
 
-      {done && <p className="notice rise">{t('submitted')}</p>}
+      {done && (
+        <>
+          <ClearDraft promptId={done} />
+          <p className="notice rise">{t('submitted')}</p>
+        </>
+      )}
+      {errorKey && (
+        <p className="notice notice-error rise" role="alert">
+          {t(errorKey)}
+        </p>
+      )}
 
       {!prompt ? (
         <p className="muted">{t('noTasks')}</p>
@@ -79,6 +97,7 @@ export default async function ContributeModePage({ params, searchParams }: Props
 
           <form className="form form-wide" action={submitContribution}>
             <input type="hidden" name="promptId" value={prompt.id} />
+            <input type="hidden" name="mode" value={mode} />
             {mode === 'write' ? (
               <Editor
                 name="textSo"

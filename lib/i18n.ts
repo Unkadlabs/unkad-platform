@@ -81,6 +81,19 @@ const dict = {
   submit: { so: 'Gudbi', en: 'Submit' },
   skip: { so: 'Ka bood', en: 'Skip' },
   submitted: { so: 'Waa la gudbiyay. Mahadsanid!', en: 'Submitted. Thank you!' },
+  // Submit failures. Shown in place of the old silent bounce that lost text.
+  errShort: {
+    so: 'Qoraalku aad buu u gaaban yahay. Fadlan wax yar oo dheeraad ah ku qor.',
+    en: 'That is too short. Please write a little more.',
+  },
+  errCap: {
+    so: 'Waxaad gaadhay xadka maalinlaha ah. Mahadsanid! Fadlan soo laabo berri.',
+    en: 'You have reached today’s limit. Thank you! Please come back tomorrow.',
+  },
+  errUnavailable: {
+    so: 'Hawshan hadda lama heli karo. Waxaa laguu soo bandhigay mid cusub.',
+    en: 'That task is no longer available. Here is a new one.',
+  },
   nextTask: { so: 'Hawl kale', en: 'Next task' },
   noTasks: {
     so: 'Hawlo cusub ma jiraan hadda. Soo noqo mar dambe.',

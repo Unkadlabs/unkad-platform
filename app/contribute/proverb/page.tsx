@@ -5,11 +5,14 @@ import { makeT } from '@/lib/i18n';
 import { submitProverb } from '@/lib/actions';
 import SomaliTextarea from '@/components/SomaliTextarea';
 
-type Props = { searchParams: Promise<{ done?: string }> };
+const ERROR_KEY = { short: 'errShort', cap: 'errCap' } as const;
+
+type Props = { searchParams: Promise<{ done?: string; error?: string }> };
 
 export default async function ProverbPage({ searchParams }: Props) {
   await requireOnboarded();
-  const { done } = await searchParams;
+  const { done, error } = await searchParams;
+  const errorKey = error && error in ERROR_KEY ? ERROR_KEY[error as keyof typeof ERROR_KEY] : null;
 
   const lang = await getLang();
   const t = makeT(lang);
@@ -25,6 +28,11 @@ export default async function ProverbPage({ searchParams }: Props) {
       </p>
 
       {done && <p className="notice rise">{t('submitted')}</p>}
+      {errorKey && (
+        <p className="notice notice-error rise" role="alert">
+          {t(errorKey)}
+        </p>
+      )}
 
       <form className="form form-wide" action={submitProverb}>
         <SomaliTextarea

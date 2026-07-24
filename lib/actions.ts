@@ -164,14 +164,20 @@ export async function giveConsent(_prev: string | null, formData: FormData): Pro
 export async function submitContribution(formData: FormData): Promise<void> {
   const user = await requireOnboarded();
 
-  if (!(await allow(`submit:${user.id}`, 200, 86400))) redirect('/contribute');
+  // `mode` is carried in a hidden field so any failure can return the
+  // contributor to the page they were on, with a reason, instead of a silent
+  // bounce to /contribute that discarded their text.
+  const mode = String(formData.get('mode') ?? 'write');
+
+  if (!(await allow(`submit:${user.id}`, 200, 86400))) redirect(`/contribute/${mode}?error=cap`);
 
   const promptId = String(formData.get('promptId') ?? '');
   const textSo = String(formData.get('textSo') ?? '').trim();
-  if (!promptId || textSo.length < 10) redirect('/contribute');
+  if (!promptId) redirect(`/contribute/${mode}?error=unavailable`);
+  if (textSo.length < 10) redirect(`/contribute/${mode}?error=short`);
 
   const [prompt] = await db.select().from(prompts).where(eq(prompts.id, promptId));
-  if (!prompt || !prompt.active) redirect('/contribute');
+  if (!prompt || !prompt.active) redirect(`/contribute/${mode}?error=unavailable`);
 
   await db.insert(submissions).values({
     promptId: prompt.id,
@@ -185,21 +191,23 @@ export async function submitContribution(formData: FormData): Promise<void> {
   });
 
   revalidatePath('/dashboard');
-  redirect(`/contribute/${prompt.mode}?done=1`);
+  // Carry the submitted prompt id so its saved draft is cleared now, on
+  // success, rather than on the submit attempt where a failure would lose it.
+  redirect(`/contribute/${prompt.mode}?done=${prompt.id}`);
 }
 
 // Proverb mode: free contribution, no prompt needed.
 export async function submitProverb(formData: FormData): Promise<void> {
   const user = await requireOnboarded();
 
-  if (!(await allow(`submit:${user.id}`, 200, 86400))) redirect('/contribute');
+  if (!(await allow(`submit:${user.id}`, 200, 86400))) redirect('/contribute/proverb?error=cap');
 
   const proverb = String(formData.get('proverb') ?? '').trim();
   const translation = String(formData.get('translation') ?? '').trim();
   const meaning = String(formData.get('meaning') ?? '').trim();
 
   if (proverb.length < 5 || translation.length < 5 || meaning.length < 10) {
-    redirect('/contribute/proverb');
+    redirect('/contribute/proverb?error=short');
   }
 
   await db.insert(submissions).values({

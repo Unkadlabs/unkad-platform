@@ -100,21 +100,12 @@ export default function Editor({
     return () => clearTimeout(id);
   }, [value, draftKey]);
 
-  // Clear the draft when the form actually submits.
-  useEffect(() => {
-    const area = areaRef.current;
-    const form = area?.form;
-    if (!form) return;
-    const clear = () => {
-      try {
-        localStorage.removeItem(draftKey);
-      } catch {
-        /* ignore */
-      }
-    };
-    form.addEventListener('submit', clear);
-    return () => form.removeEventListener('submit', clear);
-  }, [draftKey]);
+  // The draft is deliberately NOT cleared here, on the submit event. It used to
+  // be, and that lost work: a submit can still fail server-side (daily cap, a
+  // prompt that just went inactive) or be a preview-mode submit that skips
+  // validation, and clearing on the attempt wiped the text before the failure.
+  // The draft is now cleared only on a confirmed success, by ClearDraft on the
+  // page the success redirect lands on.
 
   function wrapSelection(before: string, after: string, blockPrefix?: string) {
     const area = areaRef.current;
