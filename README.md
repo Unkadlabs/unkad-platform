@@ -68,7 +68,7 @@ npm run db:seed                   # dev admin + starter prompts
 npm run dev                       # http://localhost:3000
 ```
 
-Seeded dev admin: `admin@unkad.com` / `unkad-admin-dev` — **dev only; rotate
+Seeded dev admin: the seeded dev admin — **dev only; rotate
 immediately in any shared environment.**
 
 ## Deploy this for your language

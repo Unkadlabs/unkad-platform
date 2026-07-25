@@ -5,14 +5,35 @@
 //
 // Run: npm run db:seed
 
+import { randomBytes } from 'node:crypto';
 import bcrypt from 'bcryptjs';
 import { eq } from 'drizzle-orm';
 import { db } from '../lib/db';
 import { users, prompts } from '../lib/schema';
 
-const ADMIN_EMAIL = 'admin@unkad.com';
-// Dev-only password. Change immediately in any shared environment.
-const ADMIN_PASSWORD = 'unkad-admin-dev';
+const ADMIN_EMAIL = process.env.SEED_ADMIN_EMAIL ?? 'admin@unkad.com';
+
+// Never hardcode this. A literal here ends up in the repo, and this repo is
+// public, which put a working production admin password on the internet once
+// already. Taken from the environment, or generated per run and printed once.
+const ADMIN_PASSWORD = process.env.SEED_ADMIN_PASSWORD ?? randomBytes(18).toString('base64url');
+
+// This seed creates an admin. Running it against a shared database would plant
+// an account whose provenance nobody remembers. Local only, and it refuses
+// rather than warns.
+function assertLocalDatabase(): void {
+  const cs = process.env.DATABASE_URL ?? '';
+  const host = cs.match(/@([^/:]+)/)?.[1] ?? 'localhost';
+  const isLocal = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(host);
+  if (!isLocal && process.env.SEED_ALLOW_REMOTE !== 'yes') {
+    console.error(
+      `\nRefusing to seed a non-local database (${host}).\n` +
+        'This creates an admin account. If you genuinely mean to, re-run with ' +
+        'SEED_ALLOW_REMOTE=yes and set SEED_ADMIN_PASSWORD yourself.\n'
+    );
+    process.exit(1);
+  }
+}
 
 const WRITE_PROMPTS: Array<{
   register: 'conversational' | 'narrative' | 'instructional' | 'formal' | 'technical';
@@ -108,6 +129,8 @@ const TRANSLATE_SOURCES: Array<{
 ];
 
 async function main() {
+  assertLocalDatabase();
+
   const existing = await db.select().from(users).where(eq(users.email, ADMIN_EMAIL));
   if (existing.length === 0) {
     const passwordHash = await bcrypt.hash(ADMIN_PASSWORD, 12);
@@ -121,7 +144,10 @@ async function main() {
       creditChoice: 'handle',
       onboardingCompletedAt: new Date(),
     });
-    console.log(`Created admin: ${ADMIN_EMAIL} / ${ADMIN_PASSWORD} (dev only — change this)`);
+    console.log(`Created admin: ${ADMIN_EMAIL}`);
+    if (!process.env.SEED_ADMIN_PASSWORD) {
+      console.log(`Generated password (shown once, not stored anywhere): ${ADMIN_PASSWORD}`);
+    }
   } else {
     console.log('Admin already exists, skipping.');
   }

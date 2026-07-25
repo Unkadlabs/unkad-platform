@@ -19,7 +19,7 @@ npm run dev            # http://localhost:3000
 npm run build          # production build (also the only real typecheck — see below)
 npm run db:generate    # generate a migration after editing lib/schema.ts
 npm run db:migrate     # apply committed migrations
-npm run db:seed        # dev admin (admin@unkad.com / unkad-admin-dev) + starter prompts
+npm run db:seed        # local-only; admin password from SEED_ADMIN_PASSWORD or generated
 npm run db:studio      # Drizzle Studio
 npm run export         # dataset release → Hugging Face (see below)
 ./scripts/backup.sh    # manual pg_dump of production
