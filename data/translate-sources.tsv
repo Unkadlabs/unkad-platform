@@ -1,0 +1,119 @@
+sector	register	topic	source_text
+health	instructional	health	Wash your hands with soap before preparing food.
+health	instructional	health	Boil drinking water if you are not sure it is clean.
+health	conversational	health	The clinic opens at eight in the morning.
+health	instructional	health	Keep taking the medicine until the course is finished.
+health	formal	health	Children under five should be vaccinated according to the schedule.
+health	conversational	health	She has had a fever since yesterday evening.
+health	instructional	health	Cover your mouth when you cough.
+health	formal	health	Pregnant women should attend at least four antenatal visits.
+health	technical	health	Dehydration can be treated with oral rehydration salts and clean water.
+health	conversational	health	Where is the nearest health centre?
+health	instructional	health	Store medicines away from heat and out of reach of children.
+health	narrative	health	The nurse explained the treatment slowly so the family understood.
+education	instructional	education	Read for twenty minutes every day to improve your vocabulary.
+education	conversational	education	The school term begins next week.
+education	formal	education	Students must submit their assignments before the deadline.
+education	instructional	education	Write a short summary of what you read today.
+education	narrative	education	He walked six kilometres to school every morning.
+education	conversational	education	My daughter is learning to write her name.
+education	instructional	education	Break a large task into smaller steps.
+education	formal	education	The examination will cover everything taught this term.
+education	technical	education	A good essay has an introduction, a body, and a conclusion.
+education	conversational	education	Do you have a library near your school?
+education	instructional	education	Ask a question when something is not clear.
+education	narrative	education	The teacher stayed late to help the students who were behind.
+agriculture	instructional	farming	Plant the seeds after the first heavy rain.
+agriculture	conversational	farming	The harvest was better than last year.
+agriculture	instructional	farming	Water the young plants early in the morning.
+agriculture	technical	farming	Rotating crops helps keep the soil fertile.
+agriculture	narrative	farming	The farmer checked the sky before deciding to plant.
+agriculture	formal	farming	Farmers are advised to store grain in dry, sealed containers.
+agriculture	instructional	farming	Remove weeds before they compete with the crop.
+agriculture	conversational	farming	The goats need water twice a day in this heat.
+agriculture	technical	farming	Drought-resistant seeds can survive a shorter rainy season.
+agriculture	narrative	farming	He inherited the land from his father and farmed it for thirty years.
+law	formal	civic	Every person has the right to a fair hearing.
+law	formal	civic	The contract must be signed by both parties.
+law	instructional	civic	Keep a copy of any document you sign.
+law	conversational	civic	I need to register the business officially.
+law	formal	civic	The court will hear the case next month.
+law	technical	civic	A witness statement should describe only what the witness saw.
+law	instructional	civic	Report the loss of your identity card immediately.
+law	formal	civic	Disputes should be resolved peacefully wherever possible.
+media	conversational	news	The radio station broadcasts news every hour.
+media	formal	news	The report was published this morning.
+media	narrative	news	The journalist travelled to the village to hear the story firsthand.
+media	instructional	news	Check the source before sharing information.
+media	technical	news	A headline should tell the reader what the story is about.
+media	conversational	news	Did you watch the interview last night?
+media	formal	news	The newspaper corrected the error in the following edition.
+media	instructional	news	Do not share a photograph without permission.
+religion	formal	faith	The mosque is open for prayer five times a day.
+religion	narrative	faith	The family gathered to break their fast together.
+religion	conversational	faith	Friday prayers begin just after midday.
+religion	formal	faith	Charity is one of the pillars of the faith.
+religion	narrative	faith	He read the verse aloud and the room fell silent.
+religion	conversational	faith	The children learn to recite at the local school.
+culture	narrative	daily-life	The elders sat under the tree and settled the dispute.
+culture	conversational	daily-life	Where is the nearest market?
+culture	conversational	daily-life	How much does this cost?
+culture	narrative	daily-life	Guests are offered tea before anything else is discussed.
+culture	conversational	daily-life	We are travelling to see family this weekend.
+culture	narrative	daily-life	The poet recited from memory for over an hour.
+culture	conversational	daily-life	The wedding will be held after the rains.
+culture	formal	daily-life	Hospitality is deeply valued in Somali culture.
+culture	narrative	daily-life	She learned the song from her grandmother.
+culture	conversational	daily-life	Please close the window before you leave.
+culture	conversational	daily-life	The children are playing in the garden.
+culture	narrative	daily-life	The camels were watered before the journey continued.
+technology	instructional	tech	Choose a password that is long and hard to guess.
+technology	conversational	tech	My phone battery does not last the whole day.
+technology	technical	tech	Back up your files so you do not lose them.
+technology	instructional	tech	Turn off mobile data when you are not using it.
+technology	formal	tech	The system will be unavailable during maintenance.
+technology	technical	tech	A weak internet connection can interrupt a video call.
+technology	conversational	tech	Can you send me the file by email?
+technology	instructional	tech	Do not open a link from someone you do not know.
+technology	technical	tech	Software updates often fix security problems.
+technology	conversational	tech	The application does not work on my old phone.
+general	conversational	daily-life	I visited the city library today.
+general	conversational	daily-life	The bus leaves at seven in the morning.
+general	narrative	daily-life	It rained heavily all night and the road was flooded.
+general	conversational	daily-life	I would like to learn a new language.
+general	instructional	daily-life	Make a list before you go shopping.
+general	conversational	daily-life	The shop is closed on Fridays.
+general	narrative	daily-life	They waited an hour for the ferry to arrive.
+general	conversational	daily-life	My mother made sweet tea.
+general	instructional	daily-life	Keep your receipt in case you need to return the item.
+general	conversational	daily-life	The weather is cooler near the coast.
+general	narrative	daily-life	He saved for two years to buy the shop.
+general	formal	daily-life	Please arrive fifteen minutes before the meeting starts.
+general	conversational	daily-life	We are meeting friends for dinner tonight.
+general	instructional	daily-life	Lock the door when you leave the house.
+general	narrative	daily-life	The old man told stories that everyone had heard before.
+general	conversational	daily-life	The road to the airport is under repair.
+general	formal	daily-life	The office will be closed for the public holiday.
+general	conversational	daily-life	I forgot to bring my umbrella.
+general	narrative	daily-life	The market was busiest just after sunrise.
+general	instructional	daily-life	Write down the address so you do not forget it.
+general	conversational	business	The shop opens early and closes late.
+general	formal	business	Payment is due within thirty days.
+general	instructional	business	Keep a record of everything you sell.
+general	conversational	business	Business has been slow this month.
+general	technical	business	A budget lists expected income and expenses.
+general	formal	business	The agreement was signed by both companies.
+general	instructional	business	Compare prices before you buy in bulk.
+general	narrative	business	She started with one stall and now has three.
+general	conversational	business	Do you accept mobile money?
+general	formal	business	Invoices should include the date and a description of the goods.
+health	conversational	health	He has been coughing for three days.
+education	conversational	education	The lesson starts in ten minutes.
+agriculture	conversational	farming	The well is almost dry.
+technology	conversational	tech	The screen cracked when it fell.
+media	narrative	news	The story was picked up by every station by evening.
+culture	conversational	daily-life	The tea is too hot to drink.
+law	conversational	civic	I lost the receipt for the payment.
+religion	conversational	faith	The call to prayer woke the whole street.
+general	narrative	daily-life	The power went out just as dinner was ready.
+general	conversational	daily-life	She reads a book every week.
