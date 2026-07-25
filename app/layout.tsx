@@ -17,6 +17,23 @@ export const metadata: Metadata = {
   description:
     'The Unkad Platform: contribute, translate, and validate Somali text to build an open, quality-controlled Somali corpus.',
   robots: { index: true, follow: true },
+  // Somali on the share card, because the people being invited are Somali
+  // speakers. The description is lib/i18n heroSub verbatim, not a paraphrase,
+  // so no unverified Somali ships. The image comes from app/opengraph-image.tsx.
+  openGraph: {
+    type: 'website',
+    siteName: 'Qor Af-Soomaali',
+    url: 'https://qor.unkad.com',
+    title: 'Qor Af-Soomaali',
+    description:
+      'Ka qayb qaado dhisidda kaydka ugu weyn ee qoraalka af-Soomaaliga ah — furan, tayo leh, hanti u ah dadka ku hadla af-Soomaaliga.',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Qor Af-Soomaali',
+    description:
+      'Ka qayb qaado dhisidda kaydka ugu weyn ee qoraalka af-Soomaaliga ah — furan, tayo leh, hanti u ah dadka ku hadla af-Soomaaliga.',
+  },
 };
 
 export const viewport: Viewport = {
