@@ -75,65 +75,29 @@ export default async function Image() {
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'space-between',
-          padding: 76,
+          alignItems: 'center',
+          justifyContent: 'center',
           backgroundColor: BG,
           backgroundImage:
-            'radial-gradient(900px 620px at 8% 112%, rgba(77,182,165,0.18), rgba(20,19,18,0) 62%)',
+            'radial-gradient(760px 560px at 50% 50%, rgba(77,182,165,0.16), rgba(20,19,18,0) 66%)',
           fontFamily: 'Source Serif 4',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
-          <Mark size={46} />
-          <div style={{ display: 'flex', fontSize: 28, color: MUTED }}>Unkad Labs</div>
+        <Mark size={168} />
+        <div
+          style={{
+            display: 'flex',
+            fontSize: 76,
+            fontWeight: 700,
+            color: TEXT,
+            letterSpacing: '-0.02em',
+            marginTop: 52,
+          }}
+        >
+          Qor Af-Soomaali
         </div>
-
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <div
-            style={{
-              display: 'flex',
-              fontSize: 92,
-              fontWeight: 700,
-              color: TEXT,
-              letterSpacing: '-0.02em',
-              lineHeight: 1,
-            }}
-          >
-            Qor Af-Soomaali
-          </div>
-          <div
-            style={{
-              display: 'flex',
-              fontSize: 38,
-              color: ACCENT,
-              marginTop: 26,
-            }}
-          >
-            Aynu af-Soomaaliga u qorno da&rsquo;da AI-ga.
-          </div>
-        </div>
-
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <div
-            style={{
-              display: 'flex',
-              height: 3,
-              width: 88,
-              backgroundColor: ACCENT,
-              marginBottom: 20,
-            }}
-          />
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              fontSize: 26,
-            }}
-          >
-            <div style={{ display: 'flex', color: MUTED }}>Ereyada waa hanti.</div>
-            <div style={{ display: 'flex', color: TEXT }}>qor.unkad.com</div>
-          </div>
+        <div style={{ display: 'flex', fontSize: 32, color: ACCENT, marginTop: 24 }}>
+          qor.unkad.com
         </div>
       </div>
     ),
