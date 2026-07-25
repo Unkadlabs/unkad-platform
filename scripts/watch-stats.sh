@@ -13,7 +13,14 @@ URL="https://qor.unkad.com/api/stats"
 INTERVAL="${1:-60}"
 
 read_stats() {
-  curl -s --max-time 20 "$URL" 2>/dev/null
+  # Cache-buster plus no-cache headers. The endpoint sets
+  # s-maxage=60/stale-while-revalidate=300, so different Vercel edge nodes serve
+  # copies cached at different moments. Polling through that made the count
+  # appear to bounce (8 to 7 to 8) and looked exactly like an account being
+  # deleted. One uncached request every interval is cheap; a false churn signal
+  # during a launch is not.
+  curl -s --max-time 20 -H 'Cache-Control: no-cache' -H 'Pragma: no-cache' \
+    "${URL}?_=$(date +%s)" 2>/dev/null
 }
 
 field() { echo "$1" | sed -E "s/.*\"$2\":([0-9]+).*/\1/"; }
