@@ -918,6 +918,30 @@ main {
 .sparkline .spark-bar { fill: var(--accent); }
 .sparkline .spark-empty { fill: var(--rule); }
 
+/* ---- Sector picker (contribute) --------------------------------------------------------------------
+   Chips as links: the accent-tinted chip is the live choice, plain chips are
+   the alternatives. Counts show how many prompts each sector still holds.
+   --------------------------------------------------------------------------------------------------- */
+
+.sector-picker {
+  margin: 0.25rem 0 1.1rem;
+}
+
+.sector-picker-label {
+  display: block;
+  font-size: 0.72rem;
+  margin-bottom: 0.45rem;
+}
+
+.sector-picker .chip-row {
+  margin-bottom: 0;
+}
+
+a.chip:hover {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
 /* ---- Leaderboard ------------------------------------------------------------------------------------
    A ledger, not a podium. Each contributor's accepted work is drawn in unug
    cells — same vocabulary as the brand mark, with the first cell as the seed.

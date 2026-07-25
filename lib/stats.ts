@@ -91,7 +91,8 @@ export async function availableTaskCounts(userId: string) {
     .where(
       and(
         eq(prompts.active, true),
-        sql`${prompts.id} not in (select prompt_id from submissions where user_id = ${userId})`
+        // prompt_id is null (proverbs) must stay out of the NOT IN set.
+        sql`${prompts.id} not in (select prompt_id from submissions where user_id = ${userId} and prompt_id is not null)`
       )
     )
     .groupBy(prompts.mode);
@@ -108,6 +109,29 @@ export async function availableTaskCounts(userId: string) {
     transcribe: byMode.transcribe ?? 0,
     validate: pendingToValidate.n,
   };
+}
+
+// Open prompts per sector for one user in one mode — feeds the sector picker
+// on the contribute page, so contributors can steer their work into an
+// industry and empty sectors never render as dead-end choices.
+export async function openSectorCounts(
+  userId: string,
+  mode: 'write' | 'translate' | 'transcribe'
+) {
+  const rows = await db
+    .select({ sector: prompts.sector, n: count() })
+    .from(prompts)
+    .where(
+      and(
+        eq(prompts.mode, mode),
+        eq(prompts.active, true),
+        sql`${prompts.id} not in (select prompt_id from submissions where user_id = ${userId} and prompt_id is not null)`
+      )
+    )
+    .groupBy(prompts.sector)
+    .orderBy(desc(count()));
+
+  return rows.map((r) => ({ sector: r.sector, n: Number(r.n) }));
 }
 
 // Accepted submissions by register (for the personal dashboard).

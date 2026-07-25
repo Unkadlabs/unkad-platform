@@ -4,12 +4,15 @@ import { requireOnboarded } from '@/lib/auth';
 import { getLang } from '@/lib/lang';
 import { makeT, sectorLabel } from '@/lib/i18n';
 import { nextPromptFor, submitContribution } from '@/lib/actions';
+import { openSectorCounts } from '@/lib/stats';
+import { prompts } from '@/lib/schema';
 import SomaliTextarea from '@/components/SomaliTextarea';
 import Editor from '@/components/Editor';
 import ClearDraft from '@/components/ClearDraft';
 
 const MODES = ['write', 'translate', 'transcribe'] as const;
 type Mode = (typeof MODES)[number];
+type Sector = (typeof prompts.sector.enumValues)[number];
 
 const ERROR_KEY = {
   short: 'errShort',
@@ -19,12 +22,12 @@ const ERROR_KEY = {
 
 type Props = {
   params: Promise<{ mode: string }>;
-  searchParams: Promise<{ done?: string; error?: string }>;
+  searchParams: Promise<{ done?: string; error?: string; sector?: string }>;
 };
 
 export default async function ContributeModePage({ params, searchParams }: Props) {
   const { mode } = await params;
-  const { done, error } = await searchParams;
+  const { done, error, sector: rawSector } = await searchParams;
   const errorKey = error && error in ERROR_KEY ? ERROR_KEY[error as keyof typeof ERROR_KEY] : null;
 
   if (!MODES.includes(mode as Mode)) notFound();
@@ -32,7 +35,18 @@ export default async function ContributeModePage({ params, searchParams }: Props
   const user = await requireOnboarded();
   const lang = await getLang();
   const t = makeT(lang);
-  const prompt = await nextPromptFor(user.id, mode as Mode);
+
+  // The contributor's chosen sector, validated against the enum. A sector
+  // they have exhausted falls back to "all" rather than a dead "no tasks".
+  const sectors = await openSectorCounts(user.id, mode as Mode);
+  const open = new Set(sectors.map((s) => s.sector));
+  const sector =
+    rawSector && (prompts.sector.enumValues as readonly string[]).includes(rawSector) && open.has(rawSector as Sector)
+      ? (rawSector as Sector)
+      : undefined;
+
+  const prompt = await nextPromptFor(user.id, mode as Mode, sector);
+  const sectorHref = (s?: Sector) => `/contribute/${mode}${s ? `?sector=${s}` : ''}`;
 
   const modeTitle =
     mode === 'write' ? t('modeWrite') : mode === 'translate' ? t('modeTranslate') : t('modeTranscribe');
@@ -54,6 +68,34 @@ export default async function ContributeModePage({ params, searchParams }: Props
         <p className="notice notice-error rise" role="alert">
           {t(errorKey)}
         </p>
+      )}
+
+      {/* Sector picker — steer contributions into an industry. Only shown
+          when there is a real choice left to make. */}
+      {sectors.length > 1 && (
+        <nav className="sector-picker" aria-label={t('chooseSector')}>
+          <span className="mono muted sector-picker-label">{t('chooseSector')}</span>
+          <div className="chip-row">
+            <Link
+              className={`chip${sector ? ' chip-plain' : ''}`}
+              href={sectorHref()}
+              aria-current={sector ? undefined : 'true'}
+            >
+              {t('sectorAll')}
+            </Link>
+            {sectors.map((s) => (
+              <Link
+                key={s.sector}
+                className={`chip${sector === s.sector ? '' : ' chip-plain'}`}
+                href={sectorHref(s.sector)}
+                aria-current={sector === s.sector ? 'true' : undefined}
+                lang="so"
+              >
+                {sectorLabel(lang, s.sector)} <span className="tnum">{s.n}</span>
+              </Link>
+            ))}
+          </div>
+        </nav>
       )}
 
       {!prompt ? (
@@ -98,6 +140,7 @@ export default async function ContributeModePage({ params, searchParams }: Props
           <form className="form form-wide" action={submitContribution}>
             <input type="hidden" name="promptId" value={prompt.id} />
             <input type="hidden" name="mode" value={mode} />
+            {sector && <input type="hidden" name="sector" value={sector} />}
             {mode === 'write' ? (
               <Editor
                 name="textSo"
@@ -134,7 +177,7 @@ export default async function ContributeModePage({ params, searchParams }: Props
               <button className="btn" type="submit">
                 {t('submit')}
               </button>
-              <Link className="btn btn-quiet" href={`/contribute/${mode}`}>
+              <Link className="btn btn-quiet" href={sectorHref(sector)}>
                 {t('skip')}
               </Link>
             </div>

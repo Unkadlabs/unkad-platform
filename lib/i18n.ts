@@ -250,6 +250,10 @@ const dict = {
   themeLight: { so: 'Iftiin', en: 'Light' },
 
   // Sectors
+  // Sector picker  !! VERIFY SOMALI !!
+  chooseSector: { so: 'Dooro qaybta', en: 'Choose a sector' },
+  sectorAll: { so: 'Dhammaan', en: 'All' },
+
   sector_health: { so: 'Caafimaad', en: 'Health' },
   sector_education: { so: 'Waxbarasho', en: 'Education' },
   sector_agriculture: { so: 'Beeraha', en: 'Agriculture' },

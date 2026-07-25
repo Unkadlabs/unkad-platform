@@ -199,20 +199,27 @@ export async function giveConsent(_prev: string | null, formData: FormData): Pro
 export async function submitContribution(formData: FormData): Promise<void> {
   const user = await requireOnboarded();
 
-  // `mode` is carried in a hidden field so any failure can return the
-  // contributor to the page they were on, with a reason, instead of a silent
-  // bounce to /contribute that discarded their text.
+  // `mode` (and the chosen sector, if any) are carried in hidden fields so
+  // any failure can return the contributor to the page they were on, with a
+  // reason, instead of a silent bounce to /contribute that discarded their
+  // text — and so success keeps them working in their chosen sector.
   const mode = String(formData.get('mode') ?? 'write');
+  const rawSector = String(formData.get('sector') ?? '');
+  const sectorQs = (prompts.sector.enumValues as readonly string[]).includes(rawSector)
+    ? `&sector=${rawSector}`
+    : '';
 
-  if (!(await allow(`submit:${user.id}`, 200, 86400))) redirect(`/contribute/${mode}?error=cap`);
+  if (!(await allow(`submit:${user.id}`, 200, 86400))) {
+    redirect(`/contribute/${mode}?error=cap${sectorQs}`);
+  }
 
   const promptId = String(formData.get('promptId') ?? '');
   const textSo = String(formData.get('textSo') ?? '').trim();
-  if (!promptId) redirect(`/contribute/${mode}?error=unavailable`);
-  if (textSo.length < 10) redirect(`/contribute/${mode}?error=short`);
+  if (!promptId) redirect(`/contribute/${mode}?error=unavailable${sectorQs}`);
+  if (textSo.length < 10) redirect(`/contribute/${mode}?error=short${sectorQs}`);
 
   const [prompt] = await db.select().from(prompts).where(eq(prompts.id, promptId));
-  if (!prompt || !prompt.active) redirect(`/contribute/${mode}?error=unavailable`);
+  if (!prompt || !prompt.active) redirect(`/contribute/${mode}?error=unavailable${sectorQs}`);
 
   await db.insert(submissions).values({
     promptId: prompt.id,
@@ -228,7 +235,7 @@ export async function submitContribution(formData: FormData): Promise<void> {
   revalidatePath('/dashboard');
   // Carry the submitted prompt id so its saved draft is cleared now, on
   // success, rather than on the submit attempt where a failure would lose it.
-  redirect(`/contribute/${prompt.mode}?done=${prompt.id}`);
+  redirect(`/contribute/${prompt.mode}?done=${prompt.id}${sectorQs}`);
 }
 
 // Proverb mode: free contribution, no prompt needed.
@@ -261,16 +268,31 @@ export async function submitProverb(formData: FormData): Promise<void> {
   redirect('/contribute/proverb?done=1');
 }
 
-export async function nextPromptFor(userId: string, mode: 'write' | 'translate' | 'transcribe') {
+export async function nextPromptFor(
+  userId: string,
+  mode: 'write' | 'translate' | 'transcribe',
+  // Contributors can steer their work into a sector; unset means any.
+  sector?: (typeof prompts.sector.enumValues)[number]
+) {
+  // Exclude proverb rows (promptId NULL): a single NULL in a NOT IN subquery
+  // makes the whole predicate unknown, which read as "no tasks" in every
+  // prompted mode for anyone who had contributed a proverb.
   const answered = db
     .select({ id: submissions.promptId })
     .from(submissions)
-    .where(eq(submissions.userId, userId));
+    .where(and(eq(submissions.userId, userId), sql`${submissions.promptId} is not null`));
 
   const rows = await db
     .select()
     .from(prompts)
-    .where(and(eq(prompts.mode, mode), eq(prompts.active, true), notInArray(prompts.id, answered)))
+    .where(
+      and(
+        eq(prompts.mode, mode),
+        eq(prompts.active, true),
+        notInArray(prompts.id, answered),
+        sector ? eq(prompts.sector, sector) : undefined
+      )
+    )
     .orderBy(sql`random()`)
     .limit(1);
 
