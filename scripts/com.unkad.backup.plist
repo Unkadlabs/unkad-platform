@@ -17,7 +17,7 @@
   <key>ProgramArguments</key>
   <array>
     <string>/bin/bash</string>
-    <string>/Users/khalidyusufdahir/research/unkad-platform/scripts/backup.sh</string>
+    <string>/Users/khalidyusufdahir/research/unkad/unkad-platform/scripts/backup.sh</string>
   </array>
 
   <key>StartCalendarInterval</key>
