@@ -60,7 +60,8 @@ async function main() {
     mode: s.mode,
     register: p?.register ?? null,
     sector: s.sector ?? p?.sector ?? 'general',
-    topic: p?.topic ?? null,
+    // Free writes carry the contributor's own topic; prompted items the prompt's.
+    topic: s.topic ?? p?.topic ?? null,
     dialect: s.dialect ?? null,
     verified: s.verifiedAt !== null,
     license: s.license,

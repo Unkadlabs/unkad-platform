@@ -29,6 +29,13 @@
       "when": 1784612609276,
       "tag": "0003_worried_dakota_north",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1784968580435,
+      "tag": "0004_sturdy_genesis",
+      "breakpoints": true
     }
   ]
 }

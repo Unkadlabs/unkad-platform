@@ -238,6 +238,39 @@ export async function submitContribution(formData: FormData): Promise<void> {
   redirect(`/contribute/${prompt.mode}?done=${prompt.id}${sectorQs}`);
 }
 
+// Free write: the contributor brings their own topic. No prompt, so no
+// per-person ceiling — sector is their choice (validated against the enum),
+// register is unknowable and stays null.
+export async function submitFreeWrite(formData: FormData): Promise<void> {
+  const user = await requireOnboarded();
+
+  if (!(await allow(`submit:${user.id}`, 200, 86400))) redirect('/contribute/free?error=cap');
+
+  const rawSector = String(formData.get('sector') ?? '');
+  const topic = String(formData.get('topic') ?? '').trim().slice(0, 120);
+  const textSo = String(formData.get('textSo') ?? '').trim();
+
+  const sector = (prompts.sector.enumValues as readonly string[]).includes(rawSector)
+    ? (rawSector as (typeof prompts.sector.enumValues)[number])
+    : null;
+  if (!sector) redirect('/contribute/free?error=sector');
+  if (textSo.length < 10) redirect('/contribute/free?error=short');
+
+  await db.insert(submissions).values({
+    promptId: null,
+    userId: user.id,
+    mode: 'write',
+    textSo,
+    topic: topic || null,
+    dialect: user.dialect,
+    sector,
+    charCount: textSo.length,
+  });
+
+  revalidatePath('/dashboard');
+  redirect('/contribute/free?done=1');
+}
+
 // Proverb mode: free contribution, no prompt needed.
 export async function submitProverb(formData: FormData): Promise<void> {
   const user = await requireOnboarded();

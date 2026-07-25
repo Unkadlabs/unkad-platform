@@ -60,7 +60,7 @@ export default async function ValidatePage() {
                   {item.submission.meaningEn}
                 </p>
               </>
-            ) : (
+            ) : item.prompt || item.submission.mode === 'translate' ? (
               <>
                 <p className="mono muted" style={{ margin: 0 }}>
                   {item.submission.mode === 'translate' ? t('sourceWas') : t('promptWas')}
@@ -71,6 +71,18 @@ export default async function ValidatePage() {
                     : lang === 'so'
                       ? item.prompt?.textSo
                       : item.prompt?.textEn}
+                </p>
+                <hr style={{ margin: '1rem 0' }} />
+                <p className="task-text" lang="so">
+                  {item.submission.textSo}
+                </p>
+              </>
+            ) : (
+              // Free write: no prompt — show the contributor's own topic.
+              <>
+                <p className="mono muted" style={{ margin: 0 }}>
+                  {t('freeWriteTag')}
+                  {item.submission.topic ? ` — ${item.submission.topic}` : ''}
                 </p>
                 <hr style={{ margin: '1rem 0' }} />
                 <p className="task-text" lang="so">

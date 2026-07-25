@@ -161,6 +161,9 @@ export const submissions = pgTable(
     textEn: text('text_en'),
     // Proverb mode: the meaning/usage explanation in English.
     meaningEn: text('meaning_en'),
+    // Free writes (no prompt): the topic the contributor stated themselves.
+    // Prompted submissions leave this null — their topic lives on the prompt.
+    topic: text('topic'),
     // Provenance snapshots taken at submission time.
     dialect: dialectEnum('dialect'),
     sector: sectorEnum('sector'),

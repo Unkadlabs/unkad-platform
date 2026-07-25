@@ -254,6 +254,24 @@ const dict = {
   chooseSector: { so: 'Dooro qaybta', en: 'Choose a sector' },
   sectorAll: { so: 'Dhammaan', en: 'All' },
 
+  // Free write  !! VERIFY SOMALI !!
+  modeFree: { so: 'Qoraal xor ah', en: 'Free write' },
+  modeFreeDesc: {
+    so: 'Qor mowduuc aad adigu dooratay — sheeko, waaya-aragnimo, aqoon aad leedahay.',
+    en: 'Write about a topic of your own — a story, an experience, knowledge you hold.',
+  },
+  freeWriteIntro: {
+    so: 'Dooro qaybta uu qoraalkaagu khuseeyo, oo qor af-Soomaali saafi ah. Mowduucu waa ikhtiyaari.',
+    en: 'Choose the sector your writing belongs to, and write in natural Somali. The topic line is optional.',
+  },
+  topicField: { so: 'Mowduuca (ikhtiyaari)', en: 'Topic (optional)' },
+  ownTopicNudge: {
+    so: 'Ma leedahay mowduuc kuu gaar ah?',
+    en: 'Have a topic of your own?',
+  },
+  errSector: { so: 'Fadlan dooro qaybta.', en: 'Please choose a sector.' },
+  freeWriteTag: { so: 'Mowduuc gaar ah', en: 'Own topic' },
+
   sector_health: { so: 'Caafimaad', en: 'Health' },
   sector_education: { so: 'Waxbarasho', en: 'Education' },
   sector_agriculture: { so: 'Beeraha', en: 'Agriculture' },

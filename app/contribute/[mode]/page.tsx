@@ -98,6 +98,14 @@ export default async function ContributeModePage({ params, searchParams }: Props
         </nav>
       )}
 
+      {/* The prompts are ours; the corpus is theirs. Always offer the exit
+          to writing on a topic of their own. */}
+      {mode === 'write' && (
+        <p className="mono muted" style={{ fontSize: '0.78rem' }}>
+          {t('ownTopicNudge')} <Link href="/contribute/free">{t('modeFree')} →</Link>
+        </p>
+      )}
+
       {!prompt ? (
         <p className="muted">{t('noTasks')}</p>
       ) : (

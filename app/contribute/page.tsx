@@ -23,6 +23,7 @@ export default async function ContributeHubPage() {
 
   const modes = [
     { href: '/contribute/write', name: t('modeWrite'), en: 'Write', desc: t('modeWriteDesc') },
+    { href: '/contribute/free', name: t('modeFree'), en: 'Free write', desc: t('modeFreeDesc') },
     {
       href: '/contribute/translate',
       name: t('modeTranslate'),
