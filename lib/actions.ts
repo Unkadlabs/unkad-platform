@@ -429,7 +429,14 @@ async function settle(submissionId: string, status: 'accepted' | 'rejected', aut
 async function bump(userId: string, points: number) {
   await db
     .update(users)
-    .set({ reputation: sql`${users.reputation} + ${points}`, updatedAt: new Date() })
+    .set({
+      // Floored at zero. Points can now be taken back when an admin overturns
+      // an accepted item, and an account that earned its reputation before that
+      // was possible would otherwise be driven negative by history it never had
+      // the chance to bank.
+      reputation: sql`greatest(0, ${users.reputation} + ${points})`,
+      updatedAt: new Date(),
+    })
     .where(eq(users.id, userId));
 }
 
@@ -589,4 +596,107 @@ export async function setUserRole(formData: FormData): Promise<void> {
 
   await audit(admin.id, 'user.role_change', 'user', target.id, { email, role });
   redirect('/admin?rolechanged=1');
+}
+
+// ---- Admin rulings from a contributor's page --------------------------------
+
+// The normal path to a verdict is peer validation, and it should stay that way:
+// two neighbours reading a sentence is better evidence than one founder
+// skimming. But peer validation assumes submissions arrive one at a time from
+// people acting independently. When one account holds most of the corpus and
+// its provenance is in question, waiting for two neighbours to work through
+// forty items individually is the wrong tool, and leaving them pending is a
+// decision too.
+//
+// So an admin reading a contributor's page can rule directly. This deliberately
+// bypasses APPROVALS_NEEDED — it is an override, not a shortcut, which is why
+// every ruling is audited with the count and the reason it applied to.
+export async function ruleOnSubmissions(decision: string, formData: FormData): Promise<void> {
+  const ids = formData
+    .getAll('ids')
+    .map(String)
+    .filter((id) => /^[0-9a-f-]{36}$/i.test(id));
+  await applyRuling(ids, decision, formData);
+}
+
+// Ruling on a single row. Two things have to be bound at render time rather
+// than read out of the form: the id, because the whole list shares one form and
+// a per-card button would otherwise sweep up every ticked checkbox; and the
+// decision, because React reserves a submit button's name/value to encode which
+// function a formAction refers to and silently drops whatever was there. Same
+// action underneath, same guards, same audit trail.
+export async function ruleOneSubmission(
+  id: string,
+  decision: string,
+  formData: FormData
+): Promise<void> {
+  await applyRuling(/^[0-9a-f-]{36}$/i.test(id) ? [id] : [], decision, formData);
+}
+
+async function applyRuling(
+  ids: string[],
+  decision: string,
+  formData: FormData
+): Promise<void> {
+  const admin = await requireRole('admin');
+
+  const authorId = String(formData.get('authorId') ?? '');
+  const back = /^[0-9a-f-]{36}$/i.test(authorId) ? `/admin/contributors/${authorId}` : '/admin';
+
+  if (ids.length === 0 || !['accept', 'reject', 'verify'].includes(decision)) {
+    redirect(`${back}?ruled=0`);
+  }
+
+  const now = new Date();
+  let changed = 0;
+
+  for (const id of ids) {
+    const [submission] = await db.select().from(submissions).where(eq(submissions.id, id));
+    if (!submission) continue;
+
+    if (decision === 'verify') {
+      // Verification is the second tier and stays honest: only peer-accepted
+      // work can be verified, and only once.
+      if (submission.status !== 'accepted' || submission.verifiedAt) continue;
+      await db
+        .update(submissions)
+        .set({ verifiedAt: now, verifiedBy: admin.id, updatedAt: now })
+        .where(eq(submissions.id, id));
+      changed++;
+      continue;
+    }
+
+    const status = decision === 'accept' ? 'accepted' : 'rejected';
+    if (submission.status === status) continue;
+
+    // Reputation follows the transition, not the verdict. An item pushed
+    // accepted → rejected → accepted must not pay the author twice, and one
+    // overturned out of accepted should give the points back.
+    const wasAccepted = submission.status === 'accepted';
+    const nowAccepted = status === 'accepted';
+
+    await db
+      .update(submissions)
+      .set({
+        status,
+        updatedAt: now,
+        // An overturned item cannot stay verified; a release would ship it.
+        ...(wasAccepted && !nowAccepted ? { verifiedAt: null, verifiedBy: null } : {}),
+      })
+      .where(eq(submissions.id, id));
+
+    if (nowAccepted && !wasAccepted) await bump(submission.userId, REP_ACCEPTED_SUBMISSION);
+    if (wasAccepted && !nowAccepted) await bump(submission.userId, -REP_ACCEPTED_SUBMISSION);
+
+    changed++;
+  }
+
+  await audit(admin.id, `admin.ruled_${decision}`, 'submission', undefined, {
+    count: changed,
+    requested: ids.length,
+    author: authorId,
+  });
+
+  revalidatePath(back);
+  redirect(`${back}?ruled=${changed}&decision=${decision}`);
 }

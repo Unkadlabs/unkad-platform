@@ -13,12 +13,17 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { requireRole } from '@/lib/auth';
 import { contributorProfile } from '@/lib/stats';
+import { ruleOnSubmissions, ruleOneSubmission } from '@/lib/actions';
 import Sparkline from '@/components/Sparkline';
 import UnugAvatar from '@/components/UnugAvatar';
+import SelectAll from '@/components/SelectAll';
 
 export const dynamic = 'force-dynamic';
 
-type Props = { params: Promise<{ id: string }> };
+type Props = {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ ruled?: string; decision?: string }>;
+};
 
 function when(date: Date | null) {
   if (!date) return '—';
@@ -40,9 +45,10 @@ function duration(sec: number | null) {
 
 const pct = (n: number) => `${(n * 100).toFixed(1)}%`;
 
-export default async function ContributorPage({ params }: Props) {
+export default async function ContributorPage({ params, searchParams }: Props) {
   await requireRole('admin');
   const { id } = await params;
+  const { ruled, decision } = await searchParams;
 
   const profile = await contributorProfile(id);
   if (!profile) notFound();
@@ -364,58 +370,129 @@ export default async function ContributorPage({ params }: Props) {
         </p>
       )}
 
-      {/* ---- Everything they wrote ------------------------------------------- */}
+      {/* ---- Everything they wrote, and the rulings --------------------------
+          One form wraps the whole list. The toolbar buttons submit every ticked
+          row; the per-card buttons use formAction to rule on that row alone, so
+          reading and deciding never means leaving the page. */}
       <span className="eyebrow">All {items.length} submission(s), newest first</span>
+
+      {ruled != null && (
+        <div className="notice">
+          {Number(ruled) === 0
+            ? 'Nothing changed — those items were already in that state.'
+            : `${ruled} submission(s) ${decision === 'verify' ? 'verified' : `${decision}ed`}.`}
+        </div>
+      )}
+
       {items.length === 0 ? (
         <p className="muted">Nothing submitted.</p>
       ) : (
-        items.map((item) => {
-          const rate = rateById.get(item.id);
-          const suspect = pace.implausibleIds.has(item.id);
-          return (
-            <div
-              key={item.id}
-              className="card"
-              style={suspect ? { borderColor: 'var(--danger)' } : undefined}
-            >
-              <div className="chip-row" style={{ marginBottom: '0.4rem' }}>
-                <span className="chip chip-plain">{item.mode}</span>
-                {item.sector && <span className="chip">{item.sector}</span>}
-                <span className="chip chip-plain">{item.status}</span>
-                {item.verifiedAt && <span className="chip">verified</span>}
-                <span className="chip chip-plain">{item.sentences} sent</span>
-                {suspect && <span className="chip">{rate?.charsPerSec?.toFixed(0)} chars/sec</span>}
+        <form action={ruleOnSubmissions.bind(null, 'accept')}>
+          <input type="hidden" name="authorId" value={user.id} />
+
+          <div className="review-toolbar">
+            <SelectAll label="select all" />
+            <button className="btn" formAction={ruleOnSubmissions.bind(null, 'accept')}>
+              Accept selected
+            </button>
+            <button className="btn btn-quiet" formAction={ruleOnSubmissions.bind(null, 'verify')}>
+              Verify selected
+            </button>
+            <button className="btn btn-danger" formAction={ruleOnSubmissions.bind(null, 'reject')}>
+              Reject selected
+            </button>
+          </div>
+          <p className="muted" style={{ fontSize: '0.85rem' }}>
+            An admin ruling overrides peer validation rather than joining it, and every ruling is
+            written to the audit log. Verify only applies to items already accepted, since
+            releases ship verified work. Rejecting an accepted item also clears its verification,
+            so nothing overturned can still reach a release.
+          </p>
+
+          {items.map((item) => {
+            const rate = rateById.get(item.id);
+            const suspect = pace.implausibleIds.has(item.id);
+            return (
+              <div
+                key={item.id}
+                className="card"
+                style={suspect ? { borderColor: 'var(--danger)' } : undefined}
+              >
+                <div className="chip-row" style={{ marginBottom: '0.4rem' }}>
+                  <label className="checkline mono" style={{ fontSize: '0.78rem', margin: 0 }}>
+                    <input type="checkbox" name="ids" value={item.id} />
+                    <span className="muted">pick</span>
+                  </label>
+                  <span className="chip chip-plain">{item.mode}</span>
+                  {item.sector && <span className="chip">{item.sector}</span>}
+                  <span className="chip chip-plain">{item.status}</span>
+                  {item.verifiedAt && <span className="chip">verified</span>}
+                  <span className="chip chip-plain">{item.sentences} sent</span>
+                  {suspect && (
+                    <span className="chip">{rate?.charsPerSec?.toFixed(0)} chars/sec</span>
+                  )}
+                </div>
+
+                {(item.promptTopic || item.promptSource || item.topic) && (
+                  <p className="mono muted" style={{ margin: '0 0 0.4rem', fontSize: '0.72rem' }}>
+                    {item.promptSource
+                      ? `source: ${item.promptSource}`
+                      : `topic: ${item.promptTopic ?? item.topic}`}
+                  </p>
+                )}
+
+                <p lang="so" style={{ margin: 0, whiteSpace: 'pre-wrap' }}>
+                  {item.textSo}
+                </p>
+                {item.textEn && (
+                  <p className="muted" style={{ margin: '0.4rem 0 0', fontSize: '0.92rem' }}>
+                    {item.textEn}
+                  </p>
+                )}
+                {item.meaningEn && (
+                  <p className="muted" style={{ margin: '0.4rem 0 0', fontSize: '0.92rem' }}>
+                    {item.meaningEn}
+                  </p>
+                )}
+
+                <p className="mono muted" style={{ margin: '0.6rem 0 0.5rem', fontSize: '0.72rem' }}>
+                  {item.charCount.toLocaleString()} chars · {when(item.createdAt)}
+                  {rate?.gapSec != null && ` · ${duration(rate.gapSec)} after the previous one`}
+                </p>
+
+                {/* Ruling on one row. The id is bound into the action rather
+                    than read from the form, so these never sweep up whatever
+                    else happens to be ticked further down the page. */}
+                <div className="btn-row">
+                  {item.status !== 'accepted' && (
+                    <button
+                      className="btn"
+                      formAction={ruleOneSubmission.bind(null, item.id, 'accept')}
+                    >
+                      Accept this
+                    </button>
+                  )}
+                  {item.status === 'accepted' && !item.verifiedAt && (
+                    <button
+                      className="btn btn-quiet"
+                      formAction={ruleOneSubmission.bind(null, item.id, 'verify')}
+                    >
+                      Verify this
+                    </button>
+                  )}
+                  {item.status !== 'rejected' && (
+                    <button
+                      className="btn btn-danger"
+                      formAction={ruleOneSubmission.bind(null, item.id, 'reject')}
+                    >
+                      Reject this
+                    </button>
+                  )}
+                </div>
               </div>
-
-              {(item.promptTopic || item.promptSource || item.topic) && (
-                <p className="mono muted" style={{ margin: '0 0 0.4rem', fontSize: '0.72rem' }}>
-                  {item.promptSource
-                    ? `source: ${item.promptSource}`
-                    : `topic: ${item.promptTopic ?? item.topic}`}
-                </p>
-              )}
-
-              <p lang="so" style={{ margin: 0, whiteSpace: 'pre-wrap' }}>
-                {item.textSo}
-              </p>
-              {item.textEn && (
-                <p className="muted" style={{ margin: '0.4rem 0 0', fontSize: '0.92rem' }}>
-                  {item.textEn}
-                </p>
-              )}
-              {item.meaningEn && (
-                <p className="muted" style={{ margin: '0.4rem 0 0', fontSize: '0.92rem' }}>
-                  {item.meaningEn}
-                </p>
-              )}
-
-              <p className="mono muted" style={{ margin: '0.6rem 0 0', fontSize: '0.72rem' }}>
-                {item.charCount.toLocaleString()} chars · {when(item.createdAt)}
-                {rate?.gapSec != null && ` · ${duration(rate.gapSec)} after the previous one`}
-              </p>
-            </div>
-          );
-        })
+            );
+          })}
+        </form>
       )}
     </div>
   );
