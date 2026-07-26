@@ -1,9 +1,10 @@
 // Read-model queries for the richer UI: corpus progress, personal
 // daily activity, streaks, and coverage breakdowns.
 
-import { and, count, desc, eq, gte, isNull, sql } from 'drizzle-orm';
+import { and, asc, count, desc, eq, gte, isNull, sql } from 'drizzle-orm';
 import { db } from './db';
 import { submissions, users, validations, prompts } from './schema';
+import { countSentences } from './sentences';
 
 // The public campaign goal: 100,000 validated sentences.
 export const CORPUS_GOAL = 100_000;
@@ -412,4 +413,220 @@ export async function promptSupply() {
     ).length;
     return { mode, total, exhausted, onboarded: onboarded.n };
   });
+}
+
+// ============================================================================
+// One contributor, in full (/admin/contributors/[id])
+//
+// The activity table answers "who is contributing". It cannot answer "should I
+// trust this". When a single account holds most of the corpus, the second
+// question is the one that decides whether a dataset ships, so this read-model
+// is built around it: everything that account wrote, how the corpus shifts if
+// they are removed, and the timing evidence for whether the text was composed
+// on the platform or arrived from somewhere else.
+// ============================================================================
+
+// Sustained human typing tops out around 10 characters per second, and that is
+// a competition typist on familiar text. Above that, the text was not composed
+// in the box during the gap. That is not automatically wrong — drafting
+// offline and pasting your own work is legitimate — but it does mean the
+// keystrokes are no evidence of authorship, and the licence question has to be
+// settled some other way.
+//
+// 25 rather than the human ceiling of 10, because a gap only bounds the time
+// between two submissions, not the time spent writing: anyone who drafted the
+// next piece while the previous one was in flight will clear 10 honestly. The
+// headroom costs sensitivity and buys the right to be believed when it does
+// fire. At 15 this flagged a contributor for one line out of twenty-six.
+const IMPLAUSIBLE_CHARS_PER_SEC = 25;
+
+// One fast submission is a person who prepared. A whole account arriving that
+// way is a different claim, so the warning banner waits for a pattern: enough
+// occurrences to rule out coincidence, and a large enough share of their work
+// that it characterises the account rather than one moment in it. Individual
+// rows are still marked either way, so nothing is hidden from review.
+const PATTERN_MIN_COUNT = 5;
+const PATTERN_MIN_SHARE = 0.2;
+
+export type ContributorProfile = NonNullable<Awaited<ReturnType<typeof contributorProfile>>>;
+
+export async function contributorProfile(userId: string) {
+  const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+  if (!user) return null;
+
+  const [rows, votesCast, votesReceived, corpusTotals] = await Promise.all([
+    // Their whole body of work, oldest first so the timing gaps below read
+    // forwards. Joined to prompts so prompted items can show what was asked.
+    db
+      .select({ submission: submissions, prompt: prompts })
+      .from(submissions)
+      .leftJoin(prompts, eq(submissions.promptId, prompts.id))
+      .where(eq(submissions.userId, userId))
+      .orderBy(asc(submissions.createdAt)),
+
+    // How they judge other people's work. A reviewer who approves everything
+    // is not reviewing.
+    db
+      .select({ verdict: validations.verdict, n: count() })
+      .from(validations)
+      .where(eq(validations.userId, userId))
+      .groupBy(validations.verdict),
+
+    // How their peers judged them.
+    db
+      .select({ verdict: validations.verdict, n: count() })
+      .from(validations)
+      .innerJoin(submissions, eq(validations.submissionId, submissions.id))
+      .where(eq(submissions.userId, userId))
+      .groupBy(validations.verdict),
+
+    // Corpus-wide figures, so this contributor's share can be stated rather
+    // than left for the reader to work out.
+    db
+      .select({
+        subs: count(),
+        chars: sql<number>`coalesce(sum(${submissions.charCount}), 0)`,
+      })
+      .from(submissions),
+  ]);
+
+  const items = rows.map(({ submission, prompt }) => ({
+    ...submission,
+    sentences: countSentences(submission.textSo),
+    promptTopic: prompt?.topic ?? null,
+    promptRegister: prompt?.register ?? null,
+    promptSource: prompt?.sourceText ?? null,
+  }));
+
+  const sum = (pick: (i: (typeof items)[number]) => number) =>
+    items.reduce((total, i) => total + pick(i), 0);
+
+  const byStatus = (status: string) => items.filter((i) => i.status === status);
+
+  // ---- Timing --------------------------------------------------------------
+  // Gap to the previous submission, and the implied composition rate. The very
+  // first submission has no predecessor and is left out rather than counted
+  // against the account's whole session length, which would flatter it.
+  const paced = items.map((item, i) => {
+    if (i === 0) return { id: item.id, gapSec: null as number | null, charsPerSec: null };
+    const gapSec = Math.round(
+      (item.createdAt.getTime() - items[i - 1].createdAt.getTime()) / 1000
+    );
+    return {
+      id: item.id,
+      gapSec,
+      charsPerSec: gapSec > 0 ? item.charCount / gapSec : null,
+    };
+  });
+  const rateById = new Map(paced.map((p) => [p.id, p]));
+  const rates = paced.map((p) => p.charsPerSec).filter((r): r is number => r != null);
+  const implausible = paced.filter(
+    (p) => p.charsPerSec != null && p.charsPerSec > IMPLAUSIBLE_CHARS_PER_SEC
+  );
+  const gaps = paced.map((p) => p.gapSec).filter((g): g is number => g != null).sort((a, b) => a - b);
+
+  // ---- Self-similarity -----------------------------------------------------
+  // Repeated openings are how bulk-pasted material usually shows itself: the
+  // same first line recurring across submissions that are meant to be
+  // independent pieces of writing.
+  const openings = new Map<string, number>();
+  for (const item of items) {
+    const head = item.textSo.trim().slice(0, 40).toLowerCase();
+    if (head.length >= 10) openings.set(head, (openings.get(head) ?? 0) + 1);
+  }
+  const repeatedOpenings = [...openings.entries()]
+    .filter(([, n]) => n > 1)
+    .sort((a, b) => b[1] - a[1])
+    .map(([head, n]) => ({ head, n }));
+
+  // ---- Coverage ------------------------------------------------------------
+  const group = <K extends string>(key: (i: (typeof items)[number]) => K | null) => {
+    const acc = new Map<string, { n: number; chars: number; sentences: number }>();
+    for (const item of items) {
+      const k = key(item) ?? 'unset';
+      const cur = acc.get(k) ?? { n: 0, chars: 0, sentences: 0 };
+      cur.n += 1;
+      cur.chars += item.charCount;
+      cur.sentences += item.sentences;
+      acc.set(k, cur);
+    }
+    return [...acc.entries()]
+      .map(([k, v]) => ({ key: k, ...v }))
+      .sort((a, b) => b.sentences - a.sentences || b.n - a.n);
+  };
+
+  // ---- Daily shape ---------------------------------------------------------
+  const perDay = new Map<string, number>();
+  for (const item of items) {
+    const day = item.createdAt.toISOString().slice(0, 10);
+    perDay.set(day, (perDay.get(day) ?? 0) + 1);
+  }
+  const days = [...perDay.entries()].map(([day, n]) => ({ day, n })).sort((a, b) => a.day.localeCompare(b.day));
+
+  // Hour of day, in UTC. A burst confined to one or two hours is a session;
+  // work spread across the clock is a habit.
+  const perHour = Array.from({ length: 24 }, (_, h) => ({
+    hour: h,
+    n: items.filter((i) => i.createdAt.getUTCHours() === h).length,
+  }));
+
+  const votes = (rows: { verdict: string; n: number }[]) => {
+    const approve = Number(rows.find((r) => r.verdict === 'approve')?.n ?? 0);
+    const reject = Number(rows.find((r) => r.verdict === 'reject')?.n ?? 0);
+    return { approve, reject, total: approve + reject };
+  };
+
+  const chars = sum((i) => i.charCount);
+  const sentences = sum((i) => i.sentences);
+  const corpusChars = Number(corpusTotals[0]?.chars ?? 0);
+  const corpusSubs = Number(corpusTotals[0]?.subs ?? 0);
+
+  return {
+    user,
+    items: [...items].reverse(), // newest first for reading
+    rateById,
+
+    totals: {
+      submitted: items.length,
+      accepted: byStatus('accepted').length,
+      rejected: byStatus('rejected').length,
+      pending: byStatus('pending').length,
+      escalated: byStatus('escalated').length,
+      chars,
+      sentences,
+      verified: items.filter((i) => i.verifiedAt).length,
+      // What the corpus loses if this account is removed.
+      shareOfSubs: corpusSubs ? items.length / corpusSubs : 0,
+      shareOfChars: corpusChars ? chars / corpusChars : 0,
+    },
+
+    pace: {
+      avgChars: items.length ? Math.round(chars / items.length) : 0,
+      maxChars: items.reduce((m, i) => Math.max(m, i.charCount), 0),
+      avgSentences: items.length ? sentences / items.length : 0,
+      medianGapSec: gaps.length ? gaps[Math.floor(gaps.length / 2)] : null,
+      fastestGapSec: gaps.length ? gaps[0] : null,
+      peakCharsPerSec: rates.length ? Math.max(...rates) : null,
+      implausibleCount: implausible.length,
+      implausibleIds: new Set(implausible.map((p) => p.id)),
+      threshold: IMPLAUSIBLE_CHARS_PER_SEC,
+      // Whether this rises to a claim about the account, not just about a
+      // few submissions. Only this drives the warning banner.
+      isPattern:
+        implausible.length >= PATTERN_MIN_COUNT &&
+        paced.length > 0 &&
+        implausible.length / paced.length >= PATTERN_MIN_SHARE,
+      implausibleShare: paced.length ? implausible.length / paced.length : 0,
+    },
+
+    repeatedOpenings,
+    bySector: group((i) => i.sector),
+    byMode: group((i) => i.mode),
+    byDialect: group((i) => i.dialect),
+    byRegister: group((i) => i.promptRegister),
+    days,
+    perHour,
+    votesCast: votes(votesCast as { verdict: string; n: number }[]),
+    votesReceived: votes(votesReceived as { verdict: string; n: number }[]),
+  };
 }

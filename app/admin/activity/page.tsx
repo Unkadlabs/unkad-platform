@@ -251,7 +251,11 @@ export default async function AdminActivityPage() {
             {contributors.map((contributor) => (
               <tr key={contributor.id}>
                 <td>
-                  <span className="row-user">
+                  <Link
+                    href={`/admin/contributors/${contributor.id}`}
+                    className="row-user"
+                    style={{ color: 'inherit' }}
+                  >
                     <UnugAvatar seed={contributor.id} size={18} />
                     {contributor.handle}
                     {contributor.role !== 'contributor' && (
@@ -259,7 +263,7 @@ export default async function AdminActivityPage() {
                         {contributor.role}
                       </span>
                     )}
-                  </span>
+                  </Link>
                   <span className="mono muted" style={{ display: 'block', fontSize: '0.7rem' }}>
                     {contributor.dialect ?? 'no dialect'}
                     {contributor.region ? ` · ${contributor.region}` : ''}
@@ -304,9 +308,16 @@ export default async function AdminActivityPage() {
                 {submission.meaningEn}
               </p>
             )}
-            <p className="row-user mono muted" style={{ margin: '0.6rem 0 0', fontSize: '0.72rem' }}>
-              <UnugAvatar seed={author.id} size={18} />
-              {author.handle} · {submission.charCount} chars · {when(submission.createdAt)}
+            <p className="mono muted" style={{ margin: '0.6rem 0 0', fontSize: '0.72rem' }}>
+              <Link
+                href={`/admin/contributors/${author.id}`}
+                className="row-user"
+                style={{ color: 'inherit' }}
+              >
+                <UnugAvatar seed={author.id} size={18} />
+                {author.handle}
+              </Link>{' '}
+              · {submission.charCount} chars · {when(submission.createdAt)}
             </p>
           </div>
         ))
