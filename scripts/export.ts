@@ -70,6 +70,51 @@ async function main() {
 
   const jsonl = records.map((r) => JSON.stringify(r)).join('\n') + '\n';
 
+  // ---- 1b. Multi-reference view ---------------------------------------------
+  // Several contributors translate the same English source, so the corpus
+  // already holds many valid Somali renderings per sentence. The flat file
+  // above loses that: each variant looks like an unrelated row.
+  //
+  // Grouping them is what makes the data usable for translation evaluation.
+  // Scoring a model against a single reference punishes any correct wording the
+  // one annotator did not happen to choose, which is why single-reference sets
+  // understate low-resource systems. It also yields paraphrase pairs, and a
+  // human-to-human variance baseline: without knowing how much two Somali
+  // speakers differ, a model's score cannot be interpreted at all.
+  //
+  // promptId is already the grouping key. Nothing new needed in the schema.
+  const groups = new Map<
+    string,
+    { source_en: string; sector: string; register: string | null; refs: Array<{ text_so: string; dialect: string | null; verified: boolean }> }
+  >();
+  for (const { s: sub, p } of rows) {
+    if (sub.mode !== 'translate' || !sub.promptId || !p?.sourceText) continue;
+    const g = groups.get(sub.promptId) ?? {
+      source_en: p.sourceText,
+      sector: sub.sector ?? p.sector ?? 'general',
+      register: p.register ?? null,
+      refs: [],
+    };
+    g.refs.push({ text_so: sub.textSo, dialect: sub.dialect ?? null, verified: sub.verifiedAt !== null });
+    groups.set(sub.promptId, g);
+  }
+
+  const multiRef = [...groups.values()]
+    .filter((g) => g.refs.length > 1)
+    .map((g) => ({
+      source_en: g.source_en,
+      references_so: g.refs.map((r) => r.text_so),
+      n_references: g.refs.length,
+      // Distinct renderings, so a reader can tell genuine variation from
+      // several people arriving at the same sentence.
+      n_distinct: new Set(g.refs.map((r) => r.text_so.trim())).size,
+      dialects: [...new Set(g.refs.map((r) => r.dialect).filter(Boolean))],
+      sector: g.sector,
+      register: g.register,
+    }));
+
+  const multiRefJsonl = multiRef.map((r) => JSON.stringify(r)).join('\n') + '\n';
+
   // ---- 2. Contributor credits (respecting consent choices) ------------------
   const byUser = new Map<string, { name: string | null; count: number }>();
   for (const { s, u } of rows) {
@@ -162,9 +207,16 @@ Contact: research@unkad.com · Platform: https://qor.unkad.com
   const outDir = path.join(process.cwd(), 'export', VERSION);
   fs.mkdirSync(path.join(outDir, 'data'), { recursive: true });
   fs.writeFileSync(path.join(outDir, 'data', 'train.jsonl'), jsonl);
+  if (multiRef.length) {
+    fs.writeFileSync(path.join(outDir, 'data', 'multi_reference.jsonl'), multiRefJsonl);
+  }
   fs.writeFileSync(path.join(outDir, 'README.md'), card);
   fs.writeFileSync(path.join(outDir, 'CREDITS.md'), credits);
   console.log(`Wrote ${records.length} records to ${outDir}`);
+  if (multiRef.length) {
+    const refs = multiRef.reduce((n, g) => n + g.n_references, 0);
+    console.log(`Wrote ${multiRef.length} multi-reference groups (${refs} renderings) to multi_reference.jsonl`);
+  }
 
   if (!HF_TOKEN) {
     console.log('No HF_TOKEN set — dry run only (nothing pushed, no release recorded).');
@@ -188,6 +240,9 @@ Contact: research@unkad.com · Platform: https://qor.unkad.com
     commitTitle: `Release ${VERSION} (${records.length} items, ${SCOPE})`,
     files: [
       { path: 'data/train.jsonl', content: new Blob([jsonl]) },
+      ...(multiRef.length
+        ? [{ path: 'data/multi_reference.jsonl', content: new Blob([multiRefJsonl]) }]
+        : []),
       { path: 'README.md', content: new Blob([card]) },
       { path: 'CREDITS.md', content: new Blob([credits]) },
     ],
