@@ -13,7 +13,13 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { requireRole } from '@/lib/auth';
 import { contributorProfile, revisionsForUser } from '@/lib/stats';
-import { ruleOnSubmissions, ruleOneSubmission, reviseSubmission } from '@/lib/actions';
+import {
+  ruleOnSubmissions,
+  ruleOneSubmission,
+  reviseSubmission,
+  clearProvenance,
+  reopenProvenance,
+} from '@/lib/actions';
 import Sparkline from '@/components/Sparkline';
 import UnugAvatar from '@/components/UnugAvatar';
 import SelectAll from '@/components/SelectAll';
@@ -22,7 +28,14 @@ export const dynamic = 'force-dynamic';
 
 type Props = {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ ruled?: string; decision?: string; revised?: string }>;
+  searchParams: Promise<{
+    ruled?: string;
+    decision?: string;
+    revised?: string;
+    cleared?: string;
+    reopened?: string;
+    noteerr?: string;
+  }>;
 };
 
 function when(date: Date | null) {
@@ -48,13 +61,16 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`;
 export default async function ContributorPage({ params, searchParams }: Props) {
   await requireRole('admin');
   const { id } = await params;
-  const { ruled, decision, revised } = await searchParams;
+  // No `cleared` / `reopened` banner: the resolved card either appears or it
+  // does not, which says it better than a toast would.
+  const { ruled, decision, revised, noteerr } = await searchParams;
 
   const [profile, revisions] = await Promise.all([contributorProfile(id), revisionsForUser(id)]);
   if (!profile) notFound();
 
   const {
     user,
+    clearedByHandle,
     items,
     rateById,
     totals,
@@ -74,6 +90,7 @@ export default async function ContributorPage({ params, searchParams }: Props) {
   // fast rows are still marked in the list below regardless.
   const flagged = pace.isPattern;
   const dominant = totals.shareOfChars >= 0.25;
+  const resolved = Boolean(user.provenanceClearedAt);
 
   const peakHour = perHour.reduce((a, b) => (b.n > a.n ? b : a), perHour[0]);
   const activeHours = perHour.filter((h) => h.n > 0).length;
@@ -115,7 +132,28 @@ export default async function ContributorPage({ params, searchParams }: Props) {
           Placed above the totals deliberately. If this account cannot be
           trusted the totals below are not an achievement, they are a liability,
           and the reader should learn that before reading the numbers. */}
-      {(flagged || dominant) && (
+      {/* Answered. The evidence stays on the page below, because a clearance
+          that hides what it cleared is worth nothing to whoever reads this
+          next. What changes is that the account is no longer an open question,
+          and the licence is written down. */}
+      {resolved && (
+        <div className="card" style={{ borderColor: 'var(--accent)' }}>
+          <span className="eyebrow">Provenance settled</span>
+          <p style={{ margin: '0.4rem 0 0' }}>{user.provenanceNote}</p>
+          <p className="muted" style={{ margin: '0.5rem 0 0', fontSize: '0.85em' }}>
+            Recorded by {clearedByHandle ?? 'an admin'} on{' '}
+            {user.provenanceClearedAt?.toISOString().slice(0, 10)}
+            {flagged && ' · the pace flag below still shows the evidence it was based on'}
+          </p>
+          <form action={reopenProvenance.bind(null, id)} style={{ marginTop: '0.6rem' }}>
+            <button className="btn btn-quiet" type="submit">
+              Reopen this question
+            </button>
+          </form>
+        </div>
+      )}
+
+      {(flagged || dominant) && !resolved && (
         <div className="card" style={{ borderColor: 'var(--danger)' }}>
           <span className="eyebrow">Needs a judgement call</span>
           <ul style={{ margin: '0.4rem 0 0', paddingLeft: '1.1rem' }}>
@@ -142,6 +180,34 @@ export default async function ContributorPage({ params, searchParams }: Props) {
               </li>
             )}
           </ul>
+
+          {/* Closing it. The note is the point of the control, not paperwork
+              attached to it: the flag can only tell you the text was not typed
+              here, so the thing that resolves it is someone writing down where
+              it did come from and on what terms it can be published. */}
+          <form action={clearProvenance.bind(null, id)} style={{ marginTop: '0.9rem' }}>
+            <label className="label" htmlFor="prov-note">
+              Where did this text come from, and on what terms can it be published?
+            </label>
+            <textarea
+              id="prov-note"
+              name="note"
+              rows={3}
+              required
+              minLength={20}
+              placeholder="e.g. Known personally. Working tech writer pasting his own published articles, which explains the pace. Granted permission on 27 Jul to publish freely under the corpus licence."
+              style={{ width: '100%', marginTop: '0.3rem' }}
+            />
+            {noteerr && (
+              <p className="muted" style={{ margin: '0.3rem 0 0', color: 'var(--danger)' }}>
+                Write the actual reason. A clearance with nothing behind it is what this record
+                exists to prevent.
+              </p>
+            )}
+            <button className="btn" type="submit" style={{ marginTop: '0.5rem' }}>
+              Record this and clear the flag
+            </button>
+          </form>
         </div>
       )}
 

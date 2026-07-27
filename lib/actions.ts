@@ -648,6 +648,69 @@ export async function setUserRole(formData: FormData): Promise<void> {
   redirect('/admin?rolechanged=1');
 }
 
+// ---- Provenance resolution --------------------------------------------------
+
+// Answering the pace flag, in writing.
+//
+// The flag fires on text that arrived faster than anyone types. That is worth
+// knowing and it is not an accusation: someone pasting work they wrote offline
+// produces the same trace as a script, and the detector cannot tell them apart.
+// Nothing in the timing can. So the question it raises has to be closed by a
+// person, and the answer has to be recorded, because a release that ships this
+// text needs a reason it was allowed to and "an admin dismissed a warning" is
+// not one.
+//
+// The note is mandatory and deliberately un-templated. A dropdown of tidy
+// reasons would collect clicks; a sentence collects what someone actually knows,
+// which is the only thing worth having in a dataset card later.
+export async function clearProvenance(userId: string, formData: FormData): Promise<void> {
+  const admin = await requireRole('admin');
+
+  const note = String(formData.get('note') ?? '').trim();
+  // Long enough to be a statement of provenance rather than "ok" or "fine". A
+  // one-word clearance is the failure this whole record exists to prevent.
+  if (note.length < 20) redirect(`/admin/contributors/${userId}?noteerr=1`);
+
+  const [target] = await db.select({ id: users.id }).from(users).where(eq(users.id, userId));
+  if (!target) redirect('/admin');
+
+  await db
+    .update(users)
+    .set({
+      provenanceClearedAt: new Date(),
+      provenanceClearedBy: admin.id,
+      provenanceNote: note,
+      updatedAt: new Date(),
+    })
+    .where(eq(users.id, target.id));
+
+  // The audit row is the permanent copy. The columns on `users` hold only the
+  // current answer and can be overwritten by a later one; this keeps every
+  // answer, including a clearance that is withdrawn.
+  await audit(admin.id, 'user.provenance_cleared', 'user', target.id, { note });
+  redirect(`/admin/contributors/${userId}?cleared=1`);
+}
+
+// Withdrawing a clearance. Whoever cleared it may have been wrong, or new
+// information may have arrived, and a record that can only ever be added to in
+// one direction is not a record of a judgement, it is a ratchet.
+export async function reopenProvenance(userId: string): Promise<void> {
+  const admin = await requireRole('admin');
+
+  await db
+    .update(users)
+    .set({
+      provenanceClearedAt: null,
+      provenanceClearedBy: null,
+      provenanceNote: null,
+      updatedAt: new Date(),
+    })
+    .where(eq(users.id, userId));
+
+  await audit(admin.id, 'user.provenance_reopened', 'user', userId);
+  redirect(`/admin/contributors/${userId}?reopened=1`);
+}
+
 // ---- Admin rulings from a contributor's page --------------------------------
 
 // The normal path to a verdict is peer validation, and it should stay that way:

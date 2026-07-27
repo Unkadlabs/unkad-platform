@@ -617,8 +617,19 @@ export async function contributorProfile(userId: string) {
   const corpusChars = Number(corpusTotals[0]?.chars ?? 0);
   const corpusSubs = Number(corpusTotals[0]?.subs ?? 0);
 
+  // Who signed off on the provenance question, by name. A clearance attributed
+  // to a uuid is not an attribution.
+  const [clearedBy] = user.provenanceClearedBy
+    ? await db
+        .select({ handle: users.handle })
+        .from(users)
+        .where(eq(users.id, user.provenanceClearedBy))
+        .limit(1)
+    : [];
+
   return {
     user,
+    clearedByHandle: clearedBy?.handle ?? null,
     items: [...items].reverse(), // newest first for reading
     rateById,
 

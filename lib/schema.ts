@@ -76,6 +76,23 @@ export const users = pgTable(
     creditName: text('credit_name'),
     onboardingCompletedAt: timestamp('onboarding_completed_at'),
 
+    // Provenance resolution. The admin profile flags accounts whose text
+    // arrived faster than anyone types, which is a real signal and a poor
+    // accusation: a writer pasting their own drafts looks identical to a
+    // script. Recording the judgement here does two things the flag alone
+    // cannot. It stops reviewers working under a warning nobody ever answered,
+    // and it puts the licence on record before the text ships in a release,
+    // which is the question the timing was never able to settle.
+    //
+    // Nulls mean undecided, not innocent. The flag keeps showing until someone
+    // with a name writes down what they concluded and how they know.
+    provenanceClearedAt: timestamp('provenance_cleared_at'),
+    provenanceClearedBy: uuid('provenance_cleared_by'),
+    // Free text, required when clearing: where the work came from and on what
+    // terms it may be published. A release is not defensible because a flag was
+    // dismissed; it is defensible because of what is written here.
+    provenanceNote: text('provenance_note'),
+
     // Security.
     failedLogins: integer('failed_logins').notNull().default(0),
     lockedUntil: timestamp('locked_until'),
