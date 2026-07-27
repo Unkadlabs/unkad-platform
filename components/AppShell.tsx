@@ -10,6 +10,7 @@ import UnkadMark from './UnkadMark';
 import UnugAvatar from './UnugAvatar';
 import LangToggle from './LangToggle';
 import ThemeToggle from './ThemeToggle';
+import ViewportFit from './ViewportFit';
 import { logout } from '@/lib/actions';
 import type { Lang } from '@/lib/i18n';
 import { IconHome, IconPen, IconCheck, IconChart, IconTrophy, IconSeal, IconGear } from './icons';
@@ -53,6 +54,9 @@ export default function AppShell({
 
   return (
     <div className="shell">
+      {/* Publishes the real visible height so the keyboard cannot bury the
+          editor. Renders nothing. */}
+      <ViewportFit />
       <aside className="sidebar">
         <Link className="wordmark sidebar-brand" href="/home">
           <UnkadMark size={16} />

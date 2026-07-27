@@ -11,6 +11,7 @@
 // either one.
 
 import { useEffect, useRef, useState } from 'react';
+import { keepFieldVisible } from './ViewportFit';
 
 export default function SomaliTextarea({
   name,
@@ -82,6 +83,7 @@ export default function SomaliTextarea({
           setValue(e.target.value);
           setRestored(false);
         }}
+        onFocus={(e) => keepFieldVisible(e.currentTarget)}
       />
       <span className="counter" aria-live="polite">
         {value.length} {charsLabel}

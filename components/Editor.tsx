@@ -10,6 +10,7 @@
 // so data stays clean while writers get a real editor.
 
 import { useEffect, useRef, useState } from 'react';
+import { keepFieldVisible } from './ViewportFit';
 
 type Labels = {
   label: string;
@@ -193,6 +194,7 @@ export default function Editor({
           dir="ltr"
           aria-label={labels.label}
           className="editor-area"
+          onFocus={(e) => keepFieldVisible(e.currentTarget)}
         />
       ) : (
         <>

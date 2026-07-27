@@ -486,6 +486,11 @@ main {
   min-height: 9.5rem;
   line-height: 1.55;
   resize: vertical;
+  /* Same reason as .editor-area: leave the keyboard room when this is scrolled
+     into view. Translate, transcribe, free write and proverb modes all use
+     this textarea, so the fix has to live here too and not only on the rich
+     editor. */
+  scroll-margin-block: 1rem 7rem;
 }
 
 .form input:focus,
@@ -670,6 +675,10 @@ main {
 .shell {
   display: flex;
   min-height: 100vh;
+  /* `dvh` shrinks when the phone keyboard opens; `vh` does not, which is what
+     left the textarea sitting underneath it. The `vh` line above stays as the
+     fallback for browsers without `dvh`. */
+  min-height: 100dvh;
 }
 
 .sidebar {
@@ -1252,9 +1261,53 @@ a.chip:hover {
   border-color: var(--accent);
 }
 
+/* ---- Writing with the keyboard up ---------------------------------------------------------------
+   A phone keyboard covers roughly half the screen. Everything below reclaims
+   that half for the one element that matters while typing: the box you are
+   typing into. See components/ViewportFit.tsx for where `data-keyboard` and
+   `--vvh` come from. */
+
+/* The tab bar is `position: fixed; bottom: 0`, so with the keyboard up it sits
+   directly over the editor. Nobody is navigating mid-sentence; give the space
+   back and let it return when the keyboard closes. */
+:root[data-keyboard='open'] .tabbar {
+  display: none;
+}
+
+/* 14rem is a good writing box on a full screen and taller than the entire
+   space left when a keyboard is up. Shrink it so the box, the caret and the
+   counter all fit above the keyboard rather than starting below it. */
+:root[data-keyboard='open'] .editor-area,
+:root[data-keyboard='open'] .form textarea {
+  min-height: 7rem;
+}
+
+/* The part that actually fixes it.
+   Scrolling a field into view does nothing when the page has already hit its
+   bottom, which is exactly the case here: the editor is the last thing on the
+   page, so there is nothing below it to scroll up into and the box stays put
+   under the keyboard however politely we ask. This adds a runway the height of
+   the keyboard itself, so the scroll has somewhere to go. 100vh is the layout
+   viewport, which a keyboard does not change, and --vvh is what is actually
+   visible; the difference between them is the keyboard. */
+:root[data-keyboard='open'] .shell-content {
+  padding-bottom: calc(100vh - var(--vvh, 100vh) + 1.5rem);
+}
+
+/* The full-screen focus editor is `position: fixed; inset: 0`, which means the
+   layout viewport — the one that ignores the keyboard. Pin it to the height
+   that is actually visible instead. */
+:root[data-keyboard='open'] .editor-full {
+  bottom: auto;
+  height: var(--vvh, 100dvh);
+}
+
 .editor-area {
   width: 100%;
   min-height: 14rem;
+  /* Room left below the caret when the browser scrolls this into view, so it
+     lands clear of the keyboard rather than flush against its top edge. */
+  scroll-margin-block: 1rem 7rem;
   font-family: var(--serif);
   font-size: 1.12rem;
   line-height: 1.65;
