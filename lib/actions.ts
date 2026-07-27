@@ -334,7 +334,20 @@ export async function nextPromptFor(
         sector ? eq(prompts.sector, sector) : undefined
       )
     )
-    .orderBy(sql`random()`)
+    // Stable per contributor, spread across contributors.
+    //
+    // This was `random()`, which handed a different prompt out on every page
+    // load. Drafts autosave per prompt (`unkad-draft-<promptId>`), so anyone
+    // who started writing, left, and came back got a new prompt and no way to
+    // reach the one they had been working on. Their text was still in the
+    // browser and permanently out of sight. A contributor put it exactly that
+    // way: leaving the site makes it hard to get back to where you were.
+    //
+    // Hashing the prompt id together with the user id keeps the answer stable
+    // for one person — come back tomorrow and you get the same prompt, and the
+    // editor restores your draft — while still giving different people
+    // different starting points, which is what random() was there for.
+    .orderBy(sql`md5(${prompts.id}::text || ${userId})`)
     .limit(1);
 
   return rows[0] ?? null;
