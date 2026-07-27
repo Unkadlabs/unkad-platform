@@ -92,61 +92,67 @@ export default async function ValidatePage() {
             )}
           </div>
 
-          {/* What the crowd has said so far, and whether anyone has already
-              corrected this text. A validator judging a sentence should be able
-              to see that someone read it before them, and that a word was
-              changed. At most one prior vote exists on a pending item — the
-              second settles it — so this reveals very little that could sway a
-              judgement, and an escalated item is a 1-1 split the page already
-              announces. */}
-          <p className="mono muted" style={{ fontSize: '0.78rem', marginTop: '0.6rem' }}>
-            {item.votes.total === 0
-              ? 'Nobody has reviewed this yet.'
-              : `${item.votes.total} reviewed · ${item.votes.approve} said correct · ${item.votes.reject} said it has problems`}
-            {item.revisions.length > 0
-              ? ` · edited ${item.revisions.length} time${item.revisions.length > 1 ? 's' : ''}`
-              : ''}
-          </p>
-
-          {/* The author's own words, kept whenever a reviewer changes something,
-              so an edit is always visible next to what it replaced rather than
-              silently standing in for it. */}
-          {item.revisions.map((rev, i) => (
-            <details key={i} style={{ marginTop: '0.5rem' }}>
-              <summary className="mono muted" style={{ fontSize: '0.72rem', cursor: 'pointer' }}>
-                original, before {rev.editor} edited it
-                {rev.note ? ` — ${rev.note}` : ''}
-              </summary>
-              <p lang="so" className="muted" style={{ marginTop: '0.4rem', whiteSpace: 'pre-wrap' }}>
-                {rev.text}
-              </p>
-            </details>
-          ))}
-
-          {/* Reviewers and admins can correct the text here rather than
-              rejecting it. Contributors validating see none of this: editing
-              someone else's words is a trusted action, and the guard on
-              reviseSubmission enforces it server-side regardless of what the
-              page renders. */}
+          {/* Review apparatus, for reviewers and admins only.
+              
+              An ordinary validator sees exactly what they saw before: the text,
+              the question, two buttons. Showing them the running tally meant
+              showing the decisive voter what the first voter had already said,
+              at precisely the moment their own vote would settle the item. The
+              accept rule assumes two independent judgements; anchoring the
+              second one turns two votes into one, and quietly suppresses the
+              disagreements that escalation exists to catch.
+              
+              Reviewers get the tally and the edit history because their job is
+              to adjudicate rather than to add an independent voice, and knowing
+              how a split arose is the whole point of settling it. */}
           {reviewer && (
-            <details style={{ marginTop: '0.8rem' }}>
-              <summary className="mono muted" style={{ fontSize: '0.75rem', cursor: 'pointer' }}>
-                fix this text instead of rejecting it
-              </summary>
-              <form className="form form-wide" action={reviseSubmission.bind(null, item.submission.id)}>
-                <input type="hidden" name="back" value="validate" />
-                <textarea
-                  name="textSo"
-                  defaultValue={item.submission.textSo}
-                  rows={Math.min(12, Math.max(3, Math.ceil(item.submission.textSo.length / 70)))}
-                  lang="so"
-                />
-                <input name="note" placeholder="what you changed, in a few words" />
-                <button className="btn" type="submit">
-                  Save fix
-                </button>
-              </form>
-            </details>
+            <>
+              <p className="mono muted" style={{ fontSize: '0.78rem', marginTop: '0.6rem' }}>
+                {item.votes.total === 0
+                  ? 'Nobody has reviewed this yet.'
+                  : `${item.votes.total} reviewed · ${item.votes.approve} said correct · ${item.votes.reject} said it has problems`}
+                {item.revisions.length > 0
+                  ? ` · edited ${item.revisions.length} time${item.revisions.length > 1 ? 's' : ''}`
+                  : ''}
+              </p>
+
+              {/* The author's own words, kept whenever a reviewer changes
+                  something, so an edit is always visible next to what it
+                  replaced rather than silently standing in for it. */}
+              {item.revisions.map((rev, i) => (
+                <details key={i} style={{ marginTop: '0.5rem' }}>
+                  <summary className="mono muted" style={{ fontSize: '0.72rem', cursor: 'pointer' }}>
+                    original, before {rev.editor} edited it
+                    {rev.note ? ` — ${rev.note}` : ''}
+                  </summary>
+                  <p lang="so" className="muted" style={{ marginTop: '0.4rem', whiteSpace: 'pre-wrap' }}>
+                    {rev.text}
+                  </p>
+                </details>
+              ))}
+
+              <details style={{ marginTop: '0.8rem' }}>
+                <summary className="mono muted" style={{ fontSize: '0.75rem', cursor: 'pointer' }}>
+                  fix this text instead of rejecting it
+                </summary>
+                <form
+                  className="form form-wide"
+                  action={reviseSubmission.bind(null, item.submission.id)}
+                >
+                  <input type="hidden" name="back" value="validate" />
+                  <textarea
+                    name="textSo"
+                    defaultValue={item.submission.textSo}
+                    rows={Math.min(12, Math.max(3, Math.ceil(item.submission.textSo.length / 70)))}
+                    lang="so"
+                  />
+                  <input name="note" placeholder="what you changed, in a few words" />
+                  <button className="btn" type="submit">
+                    Save fix
+                  </button>
+                </form>
+              </details>
+            </>
           )}
 
           <p style={{ marginTop: '1rem' }}>
