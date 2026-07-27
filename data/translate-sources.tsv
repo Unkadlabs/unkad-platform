@@ -117,3 +117,143 @@ law	conversational	civic	I lost the receipt for the payment.
 religion	conversational	faith	The call to prayer woke the whole street.
 general	narrative	daily-life	The power went out just as dinner was ready.
 general	conversational	daily-life	She reads a book every week.
+law	formal	rights	Every person has the right to be heard by a court before being punished.
+law	instructional	contracts	Read the whole agreement carefully before you sign it, and keep a copy for yourself.
+law	conversational	family	My sister wants to know whether she needs a lawyer to register her marriage.
+law	formal	land	A land dispute should be brought before the district court in the area where the land is located.
+law	instructional	business	To register a small business, you must provide your name, the business name, and the type of trade.
+law	formal	evidence	A confession obtained through force cannot be used as evidence in court.
+law	conversational	police	If the police stop you, you have the right to ask why you are being detained.
+law	narrative	courts	The judge listened to both sides for two hours before announcing her decision.
+law	formal	appeals	If you disagree with a court's decision, you may appeal to a higher court within thirty days.
+law	instructional	documents	Bring your identity card and two witnesses when you come to sign the property transfer.
+law	formal	inheritance	When a person dies without a will, the law decides how the property is divided among the heirs.
+law	conversational	debt	He borrowed money from his neighbour and now refuses to pay it back, so what can she do?
+law	formal	employment	An employer must pay workers the wage that was agreed before the work began.
+law	instructional	complaints	Write down the date, the time, and the names of any witnesses before filing your complaint.
+law	formal	children	The law requires that decisions about a child must put the child's interests first.
+law	narrative	justice	After three years of waiting, the family finally received the court's written judgment.
+law	conversational	rental	The landlord cannot raise the rent in the middle of the agreed rental period.
+law	formal	theft	Taking another person's property without permission is a crime, even if you intend to return it.
+law	technical	procedure	The court clerk records every hearing and assigns each case a unique file number.
+law	instructional	witness	Speak only about what you saw yourself, not about what other people told you.
+law	formal	constitution	The constitution is the highest law, and any law that contradicts it has no force.
+law	conversational	divorce	She asked the elder whether a divorce must be registered with the court to be official.
+law	formal	compensation	A person whose property is damaged by another's negligence may claim compensation.
+law	narrative	elders	The two families asked the elders to settle the dispute before taking it to court.
+law	instructional	fraud	Never send money to someone who refuses to meet in person or show identification.
+law	formal	traffic	Driving without a licence is an offence, and the penalty increases for repeat violations.
+law	conversational	custody	After the separation, the mother and father agreed to share the care of their children.
+law	formal	detention	No one may be held in detention for more than forty-eight hours without seeing a judge.
+law	technical	notary	The notary confirms the identity of the signers and stamps the document with the official seal.
+law	instructional	reporting	If you witness a crime, report it to the nearest police station as soon as it is safe to do so.
+health	instructional	medication	Finish the full course of antibiotics even if you start feeling better after two days.
+health	conversational	fever	The child has had a high fever since last night, so we are taking her to the clinic this morning.
+health	instructional	hygiene	Wash your hands with soap for at least twenty seconds before preparing any food.
+health	formal	vaccination	Vaccines protect children from diseases such as measles, polio, and whooping cough.
+health	instructional	firstaid	Press firmly on the wound with a clean cloth until the bleeding stops.
+health	conversational	pregnancy	A pregnant woman should visit the health centre at least four times before the birth.
+health	formal	nutrition	A balanced diet includes grains, vegetables, fruit, milk, and sources of protein such as beans or meat.
+health	instructional	water	Boil drinking water for at least one minute if you are not sure it is safe.
+health	technical	diabetes	Diabetes is a condition in which the body cannot properly control the level of sugar in the blood.
+health	conversational	toothache	He has been complaining of a toothache for a week but refuses to see the dentist.
+health	instructional	malaria	Sleep under a treated mosquito net every night, even during the dry season.
+health	formal	mental	Depression is an illness, not a weakness, and it can be treated with support and care.
+health	narrative	recovery	After the operation, it took him six weeks to walk without pain again.
+health	instructional	burns	Cool a burn under running water for twenty minutes and do not put butter or oil on it.
+health	formal	breastfeeding	Doctors recommend feeding a baby only breast milk for the first six months of life.
+health	conversational	pharmacy	The pharmacist told me this medicine should be taken with food, not on an empty stomach.
+health	technical	bloodpressure	High blood pressure often has no symptoms, which is why regular checks are important.
+health	instructional	dehydration	Give a child with diarrhoea small sips of oral rehydration solution every few minutes.
+health	formal	smoking	Smoking damages the lungs, the heart, and the blood vessels, and it also harms people nearby.
+health	narrative	clinic	The nurse weighed the baby, checked his temperature, and recorded everything in the small blue book.
+health	conversational	eyes	My grandmother says her eyes become blurry when she reads in the evening.
+health	instructional	exercise	Thirty minutes of brisk walking five days a week is enough to improve your heart health.
+health	formal	epidemic	During an outbreak, health workers trace everyone who had contact with an infected person.
+health	technical	anaemia	Anaemia means the blood has too few red cells to carry enough oxygen around the body.
+health	instructional	snakebite	Keep the bitten limb still and below the level of the heart while you get the person to a hospital.
+technology	instructional	passwords	Use a different password for every account, and never share it with anyone who asks by phone.
+technology	conversational	phone	My phone battery drains quickly, so I close the apps I am not using.
+technology	formal	internet	The internet allows people to send information around the world in less than a second.
+technology	instructional	scams	Do not click a link in a message that claims you have won money you never played for.
+technology	technical	solar	A solar panel converts sunlight into electricity, which can be stored in a battery for the evening.
+technology	conversational	apps	She uses a mobile app to send money to her mother in the countryside every month.
+technology	formal	ai	Artificial intelligence is software that learns patterns from large amounts of data.
+technology	instructional	backup	Copy your important photos and documents to a second place, so one broken phone cannot erase them.
+technology	technical	network	When many people use the same network at once, the connection becomes slower for everyone.
+technology	conversational	repair	The technician said the screen can be replaced, but it will cost half the price of a new phone.
+technology	formal	privacy	Before installing an app, check what information it asks permission to collect.
+technology	instructional	email	Write a clear subject line so the receiver knows what your message is about before opening it.
+technology	technical	storage	A file stored in the cloud is kept on distant computers and reached through the internet.
+technology	narrative	electricity	When electricity finally reached the village, the small shops began staying open after dark.
+technology	conversational	socialmedia	He deleted the video after realising it shared more about his family than he intended.
+technology	formal	misinformation	False information spreads faster online because surprising claims are shared more than careful ones.
+technology	instructional	updates	Install software updates promptly, because many of them fix security weaknesses.
+technology	technical	gps	The map application finds your position using signals from satellites orbiting the earth.
+technology	conversational	typing	My uncle types Somali messages using voice input because it is faster than the keyboard.
+technology	formal	coding	Learning to program teaches you to break a large problem into small, exact steps.
+technology	instructional	wifi	Avoid entering bank details while connected to public wireless networks in cafes or airports.
+technology	technical	battery	Charging a battery to about eighty percent instead of full can extend its overall lifetime.
+technology	narrative	radio	Long before smartphones, the whole neighbourhood gathered around one radio to hear the evening news.
+technology	formal	digital	A country that trains its young people in digital skills opens doors to jobs that did not exist before.
+technology	conversational	camera	The camera on this phone takes better pictures in daylight than in the evening.
+media	formal	journalism	A journalist must verify a story with at least two independent sources before publishing it.
+media	conversational	news	Did you hear the morning bulletin, or should I tell you what happened at the port?
+media	instructional	interview	Ask open questions and let the guest finish speaking before you ask the next one.
+media	formal	pressfreedom	A free press allows citizens to know what their government is doing in their name.
+media	narrative	radio	The presenter opened the microphone, greeted the listeners, and read the headlines slowly.
+media	technical	broadcast	The signal travels from the studio to a transmitter, and from there to every radio in the region.
+media	instructional	factcheck	Before sharing a photo, check when and where it was first published.
+media	conversational	drama	The whole family waits for the evening drama, and nobody is allowed to talk during it.
+media	formal	ethics	A reporter should correct a published mistake quickly, clearly, and without excuses.
+media	narrative	reporter	She carried her recorder through the market, collecting the voices of traders for the afternoon programme.
+media	instructional	headline	A good headline tells the truth about the story in as few words as possible.
+media	formal	advertising	A station must make clear which content is news and which content is paid advertising.
+media	technical	editing	The editor cuts the long interview down to the three minutes that carry the heart of the story.
+media	conversational	podcast	My brother listens to a football podcast every Friday while he washes his car.
+media	formal	sources	Protecting the identity of a source is one of the oldest duties in journalism.
+media	instructional	photography	Hold the camera steady and place the subject slightly to one side of the frame.
+media	narrative	printing	The old printing press still works, and the weekly paper comes out every Thursday.
+media	formal	regulation	Broadcasters are licensed, and the licence can be withdrawn if they spread incitement.
+media	conversational	callin	Listeners call the studio to give their opinion, and the lines are always busy.
+media	technical	streaming	Live streaming sends the event over the internet while it is still happening.
+agriculture	instructional	drought	Store hay and dried fodder during the good season so the animals can survive the dry months.
+agriculture	conversational	livestock	The goats are healthy this year, but the price at the market has fallen.
+agriculture	formal	irrigation	Drip irrigation delivers water directly to the roots and wastes far less than flooding the field.
+agriculture	instructional	seeds	Choose seeds from the strongest plants of the last harvest and dry them well before storing.
+agriculture	technical	soil	Rotating crops between seasons keeps the soil from losing the same nutrients year after year.
+agriculture	conversational	market	If we take the tomatoes to town before sunrise, we get a better price than at midday.
+agriculture	formal	fisheries	The coastal waters hold rich stocks of tuna, sardine, and lobster.
+agriculture	instructional	storage	Keep the grain in sealed containers raised off the ground to protect it from moisture and rats.
+agriculture	narrative	harvest	The whole family worked in the field for a week, and the sesame harvest filled eleven sacks.
+agriculture	technical	veterinary	A sick animal should be separated from the herd until the veterinarian has examined it.
+agriculture	conversational	camels	My grandfather says a family's wealth was once counted in camels, not in money.
+agriculture	instructional	trees	Plant the seedlings at the start of the rainy season and water them until the roots take hold.
+agriculture	formal	frankincense	Frankincense is harvested by making small cuts in the bark and collecting the dried resin weeks later.
+agriculture	technical	pests	Check the underside of the leaves, because that is where the insects lay their eggs.
+agriculture	narrative	rain	After two failed rainy seasons, the first heavy rain brought people out of their houses in joy.
+education	instructional	study	Review your notes on the same day as the lesson, because memory fades fastest in the first hours.
+education	conversational	exams	The national examinations begin next month, and the library is full every evening.
+education	formal	literacy	Teaching adults to read gives them independence in the market, the clinic, and the courtroom.
+education	instructional	teaching	Ask your students to explain the idea back to you in their own words.
+education	narrative	school	The new school opened with three classrooms, two teachers, and one hundred and forty children.
+education	formal	university	The university offers degrees in medicine, engineering, law, and education.
+education	conversational	homework	She helps her younger brother with mathematics every evening after dinner.
+education	instructional	reading	Let the child follow the words with a finger while you read the story aloud together.
+education	technical	curriculum	The curriculum sets out what students must learn in each subject at every grade.
+education	formal	girls	When a girl completes secondary school, her children are healthier and more likely to attend school themselves.
+education	narrative	teacher	The teacher who taught under the tree for ten years finally received a classroom with a roof.
+education	conversational	languages	My daughter is learning three languages at school and corrects my English at home.
+education	instructional	memory	Break a long list into small groups of three or four items, and it becomes far easier to remember.
+education	formal	scholarship	The scholarship covers tuition, books, and a small monthly allowance for living costs.
+education	technical	assessment	A good test measures what the student understands, not how fast they can guess.
+culture	narrative	poetry	The poet stood before the gathering and recited verses his grandfather had composed a century ago.
+culture	conversational	hospitality	When a guest arrives, tea is served first and questions are asked later.
+culture	formal	proverbs	Somali proverbs compress the experience of generations into a single memorable line.
+culture	narrative	wedding	The wedding lasted three days, and the songs could be heard from the far side of the village.
+culture	instructional	weaving	The mat is woven from dried grass, one careful row at a time, over many evenings.
+religion	formal	charity	Giving to the poor is regarded as a duty, not merely an act of kindness.
+religion	conversational	ramadan	During the fasting month, the family wakes before dawn to share the early meal.
+religion	formal	pilgrimage	Every year, pilgrims from all over the world travel to the holy city.
+religion	narrative	teaching	The children memorise verses in the morning and learn their meanings in the afternoon.
+religion	formal	tolerance	Respect for a neighbour's faith is a mark of good character.
