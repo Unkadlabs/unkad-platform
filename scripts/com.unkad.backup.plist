@@ -20,13 +20,28 @@
     <string>/Users/khalidyusufdahir/research/unkad/unkad-platform/scripts/backup.sh</string>
   </array>
 
-  <key>StartCalendarInterval</key>
-  <dict>
-    <key>Hour</key><integer>2</integer>
-    <key>Minute</key><integer>0</integer>
-  </dict>
+  <!-- Was 02:00, which failed every night from 26 July. The DNS retry loop
+       could not save it: a sleeping Mac has no network, and each `sleep 30`
+       spanned an hour of wall clock because the machine was suspended through
+       it. Five retries covered five hours of sleep and resolved nothing, so
+       the dump aborted and the log filled with what looked like a DNS fault.
 
-  <!-- If the Mac was asleep at 02:00, run once it wakes. -->
+       So run when the machine is actually awake and online. Twice, because one
+       missed window should not cost a day: if the morning run succeeds the
+       evening one simply writes a second dump, and pruning handles the rest. -->
+  <key>StartCalendarInterval</key>
+  <array>
+    <dict>
+      <key>Hour</key><integer>13</integer>
+      <key>Minute</key><integer>37</integer>
+    </dict>
+    <dict>
+      <key>Hour</key><integer>21</integer>
+      <key>Minute</key><integer>37</integer>
+    </dict>
+  </array>
+
+  <!-- If the Mac was asleep at the scheduled time, run once it wakes. -->
   <key>RunAtLoad</key>
   <false/>
 

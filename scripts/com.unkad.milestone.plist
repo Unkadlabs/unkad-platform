@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- macOS launchd job: check the peer-accepted milestone twice a day.
+
+     Twice rather than hourly. The number moves in review sessions, not
+     continuously, and the only event worth waking for is crossing the line.
+     09:12 and 20:12 rather than on the hour, so it does not queue behind
+     everything else the machine does at the top of the hour.
+
+     Install:
+       cp scripts/com.unkad.milestone.plist ~/Library/LaunchAgents/
+       launchctl load ~/Library/LaunchAgents/com.unkad.milestone.plist
+
+     Check:   launchctl list | grep milestone
+     Logs:    ~/UnkadBackups/milestone.log
+     Now:     ./scripts/milestone-watch.sh
+     Re-arm:  rm ~/UnkadBackups/milestone-2000.reached
+     Remove:  launchctl unload ~/Library/LaunchAgents/com.unkad.milestone.plist
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.unkad.milestone</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>/Users/khalidyusufdahir/research/unkad/unkad-platform/scripts/milestone-watch.sh</string>
+  </array>
+
+  <key>StartCalendarInterval</key>
+  <array>
+    <dict>
+      <key>Hour</key><integer>9</integer>
+      <key>Minute</key><integer>12</integer>
+    </dict>
+    <dict>
+      <key>Hour</key><integer>20</integer>
+      <key>Minute</key><integer>12</integer>
+    </dict>
+  </array>
+
+  <!-- node lives in a Homebrew or nvm path that launchd does not inherit. -->
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+  </dict>
+
+  <key>RunAtLoad</key>
+  <false/>
+
+  <key>StandardOutPath</key>
+  <string>/Users/khalidyusufdahir/UnkadBackups/milestone.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/khalidyusufdahir/UnkadBackups/milestone.log</string>
+</dict>
+</plist>
