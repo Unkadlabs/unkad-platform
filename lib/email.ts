@@ -22,8 +22,16 @@ const API = 'https://api.resend.com/emails';
 // rejected. Overridable so the sending identity can change without a deploy.
 const FROM = process.env.EMAIL_FROM ?? 'Unkad <no-reply@unkad.com>';
 
+// UNKAD_SEND_TOKEN is the name in use. It does not name the vendor, which
+// means swapping providers later is a code change and not an infrastructure
+// one. RESEND_API_KEY is accepted as a fallback because it is the name the
+// provider's own documentation tells you to use.
+function sendToken(): string | undefined {
+  return process.env.UNKAD_SEND_TOKEN ?? process.env.RESEND_API_KEY;
+}
+
 export function emailConfigured(): boolean {
-  return Boolean(process.env.RESEND_API_KEY);
+  return Boolean(sendToken());
 }
 
 export type SendResult =
@@ -35,7 +43,7 @@ export async function sendEmail(opts: {
   subject: string;
   text: string;
 }): Promise<SendResult> {
-  const key = process.env.RESEND_API_KEY;
+  const key = sendToken();
   if (!key) return { sent: false, reason: 'not-configured' };
 
   try {
