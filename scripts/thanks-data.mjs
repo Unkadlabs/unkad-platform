@@ -53,10 +53,19 @@ const active = rows.filter((r) => r.subs > 0 || r.vals > 0);
 
 // Only these two choices are permission to print a name. 'anonymous' is an
 // explicit no; an unset choice is not a yes. Both are counted, never named.
-const named = active
-  .filter((r) => r.cc === 'handle' || r.cc === 'real_name')
-  .map((r) => (r.cc === 'real_name' ? r.credit_name || r.handle : r.handle).trim())
-  .filter(Boolean);
+const canName = (r) => r.cc === 'handle' || r.cc === 'real_name';
+const nameOf = (r) => (r.cc === 'real_name' ? r.credit_name || r.handle : r.handle).trim();
+
+const named = active.filter(canName).map(nameOf).filter(Boolean);
+
+// Per-person counts, for layouts that size a shape by contribution. Withheld
+// contributors keep their weight and lose their name: they are still on the
+// picture, just not identified.
+const people = active.map((r) => ({
+  name: canName(r) && nameOf(r) ? nameOf(r) : null,
+  subs: r.subs,
+  vals: r.vals,
+}));
 
 process.stdout.write(
   JSON.stringify(
@@ -65,6 +74,7 @@ process.stdout.write(
       active: active.length,
       named,
       withheld: active.length - named.length,
+      people,
     },
     null,
     2

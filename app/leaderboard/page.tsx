@@ -3,6 +3,7 @@
 // how much of the corpus each person has actually built. Bar length is the
 // rank, which is why there is no podium.
 
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getLang } from '@/lib/lang';
 import { makeT, dialectLabel } from '@/lib/i18n';
@@ -11,6 +12,31 @@ import UnugAvatar from '@/components/UnugAvatar';
 import CellBar from '@/components/CellBar';
 
 export const dynamic = 'force-dynamic';
+
+// Without this the page inherited the site-wide card, whose og:url is hardcoded
+// to the homepage — so sharing the leaderboard link previewed as, and on some
+// platforms resolved to, the front page instead. The image comes from
+// ./opengraph-image.tsx and is drawn from live data.
+//
+// Somali is verbatim from lib/i18n.ts (leaderboardTitle, leaderboardSub), so
+// nothing unverified ships on a share card.
+const TITLE = 'Hormoodka';
+const DESCRIPTION = 'Dadka ugu badan ee wax ku biiriyay kaydka.';
+const URL = 'https://qor.unkad.com/leaderboard';
+
+export const metadata: Metadata = {
+  title: TITLE,
+  description: DESCRIPTION,
+  alternates: { canonical: URL },
+  openGraph: {
+    type: 'website',
+    siteName: 'Qor Af-Soomaali',
+    url: URL,
+    title: TITLE,
+    description: DESCRIPTION,
+  },
+  twitter: { card: 'summary_large_image', title: TITLE, description: DESCRIPTION },
+};
 
 export default async function LeaderboardPage() {
   const lang = await getLang();
