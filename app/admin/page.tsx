@@ -6,8 +6,10 @@ import { count, desc } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import { prompts, submissions, users, sources, auditLog } from '@/lib/schema';
 import { requireRole } from '@/lib/auth';
-import { addPrompts, addSource, setUserRole } from '@/lib/actions';
+import { addPrompts, addSource, setUserRole, pendingResetRequests } from '@/lib/actions';
 import IssueResetLink from '@/components/IssueResetLink';
+import ResetQueueRow from '@/components/ResetQueue';
+import { emailConfigured } from '@/lib/email';
 
 type Props = {
   searchParams: Promise<{ added?: string; rolechanged?: string; roleerr?: string }>;
@@ -16,6 +18,8 @@ type Props = {
 export default async function AdminPage({ searchParams }: Props) {
   await requireRole('admin');
   const { added, rolechanged, roleerr } = await searchParams;
+
+  const resetQueue = await pendingResetRequests();
 
   const [
     [promptCount],
@@ -213,6 +217,26 @@ export default async function AdminPage({ searchParams }: Props) {
             </tbody>
           </table>
         </div>
+      )}
+
+      <span className="eyebrow">Reset requests ({resetQueue.length} waiting)</span>
+      {resetQueue.length === 0 ? (
+        <p className="muted" style={{ marginTop: 0, fontSize: '0.9rem' }}>
+          Nobody is locked out.{' '}
+          {emailConfigured()
+            ? 'Links are emailed automatically; anything here failed to send and needs a hand.'
+            : 'No email provider is configured, so every request lands here to be sent by hand.'}
+        </p>
+      ) : (
+        resetQueue.map((r) => (
+          <ResetQueueRow
+            key={r.id}
+            id={r.id}
+            handle={r.handle}
+            email={r.email}
+            asked={r.createdAt.toISOString().slice(0, 16).replace('T', ' ')}
+          />
+        ))
       )}
 
       <span className="eyebrow">Password reset</span>

@@ -149,6 +149,42 @@ export const passwordResets = pgTable(
   ]
 );
 
+// ---- Password reset requests -----------------------------------------------
+
+// Someone asking for help getting back into their account.
+//
+// Without this, a locked-out contributor has to find a founder on Facebook and
+// hope the message is seen. That is not a recoverable state for most people and
+// it is how a reviewer gets lost permanently. A request lands here instead, and
+// an admin fulfils it from the queue on /admin.
+//
+// A row is only written when the email matches a real account, and the public
+// form says the same thing either way, so the form cannot be used to test which
+// addresses are registered here.
+//
+// This survives the arrival of an email provider. When one exists the request
+// is fulfilled automatically instead of by hand, and the queue becomes the
+// record of what happened rather than the work.
+export const passwordResetRequests = pgTable(
+  'password_reset_requests',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+
+    // Set once an admin has issued a link, or once one was emailed
+    // automatically. Unfulfilled rows are the queue.
+    fulfilledAt: timestamp('fulfilled_at'),
+    fulfilledBy: uuid('fulfilled_by').references(() => users.id),
+    // True when the link went out by email without anyone touching it.
+    autoSent: boolean('auto_sent').notNull().default(false),
+
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  },
+  (t) => [index('password_reset_requests_pending_idx').on(t.fulfilledAt, t.createdAt)]
+);
+
 // ---- Source registry (transcribe mode) -------------------------------------
 
 // Only verified public-domain / openly licensed sources may be transcribed.

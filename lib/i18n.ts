@@ -295,7 +295,17 @@ const dict = {
 
   // Errors
   errEmailTaken: { so: 'Iimaylkan hore ayaa loo isticmaalay.', en: 'That email is already registered.' },
-  // !! VERIFY SOMALI !! — new string, founder to review.
+  // !! VERIFY SOMALI !! — new strings, founder to review.
+  forgotPassword: { so: 'Furaha sirta ma illowday?', en: 'Forgotten your password?' },
+  forgotTitle: { so: 'Soo celi furaha sirta', en: 'Recover your password' },
+  forgotIntro: {
+    so: 'Geli iimaylkaaga. Haddii akoon laga helo, waxaan kuu diri doonaa xiriir aad ku beddesho furaha sirta.',
+    en: 'Enter your email. If an account exists, we will send you a link to set a new password.',
+  },
+  resetRequested: {
+    so: 'Waa la helay codsigaaga. Haddii iimaylkaas akoon laga helo, xiriir baa laguu soo dirayaa.',
+    en: 'Request received. If that email has an account, a link will be sent to it.',
+  },
   errResetInvalid: {
     so: 'Xiriirkan waa dhacay ama horey ayaa loo isticmaalay. Weydiiso mid cusub.',
     en: 'This link has expired or was already used. Ask for a new one.',

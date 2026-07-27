@@ -35,6 +35,11 @@ export default async function LoginPage() {
       <p style={{ marginTop: '1.5rem' }}>
         {t('noAccount')} <Link href="/join">{t('join')}</Link>
       </p>
+      <p className="muted">
+        <Link href="/forgot" lang="so">
+          {t('forgotPassword')}
+        </Link>
+      </p>
     </div>
   );
 }

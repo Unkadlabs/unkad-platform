@@ -12,7 +12,7 @@ import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import bcrypt from 'bcryptjs';
 import { createHash, randomBytes } from 'crypto';
-import { and, count, desc, eq, ne, notInArray, sql } from 'drizzle-orm';
+import { and, asc, count, desc, eq, ne, notInArray, sql } from 'drizzle-orm';
 import { db } from './db';
 import {
   users,
@@ -23,8 +23,10 @@ import {
   auditLog,
   sources,
   passwordResets,
+  passwordResetRequests,
 } from './schema';
 import { allow, clientIp } from './ratelimit';
+import { sendEmail, emailConfigured } from './email';
 import {
   createSession,
   destroySession,
@@ -857,32 +859,9 @@ export async function createPasswordReset(
   const [target] = await db.select().from(users).where(eq(users.email, email));
   if (!target || target.deletedAt) return 'ERR:no account with that email';
 
-  // Any earlier link for this person stops working the moment a new one is
-  // issued, so a forwarded old message cannot be used later.
-  await db
-    .update(passwordResets)
-    .set({ usedAt: new Date() })
-    .where(and(eq(passwordResets.userId, target.id), sql`${passwordResets.usedAt} is null`));
-
-  const token = randomBytes(32).toString('hex');
-  await db.insert(passwordResets).values({
-    userId: target.id,
-    tokenHash: hashResetToken(token),
-    issuedBy: admin.id,
-    // Computed by the database, not by JavaScript. `created_at` defaults to
-    // Postgres now(), so a JS Date here puts two different clocks in one row:
-    // the column is `timestamp` without a zone, and whether the driver writes
-    // UTC or local wall-clock depends on the process TZ. Locally that produced
-    // a window of minus one hour — links born already expired — while
-    // surviving in production only because Vercel and Neon both run UTC.
-    // Deriving it in SQL makes the two columns comparable by construction.
-    expiresAt: sql`now() + (${RESET_HOURS} * interval '1 hour')`,
-  });
-
-  await audit(admin.id, 'user.reset_issued', 'user', target.id, { email });
-
-  const base = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://qor.unkad.com';
-  return `OK:${target.handle}:${base}/reset/${token}`;
+  const link = await mintResetLink(target.id, admin.id);
+  await audit(admin.id, 'user.reset_issued', 'user', target.id, { email, via: 'direct' });
+  return `OK:${target.handle}:${link}`;
 }
 
 // Look up a reset link without consuming it, so the page can tell a good link
@@ -944,4 +923,157 @@ export async function resetPassword(
   await audit(found.userId, 'auth.password_reset', 'user', found.userId);
 
   redirect('/login?reset=1');
+}
+
+// Mint a reset token for a user. Shared by the admin queue and the self-serve
+// request, so both paths get identical expiry, single-use and supersede rules.
+async function mintResetLink(userId: string, issuedBy: string): Promise<string> {
+  await db
+    .update(passwordResets)
+    .set({ usedAt: new Date() })
+    .where(and(eq(passwordResets.userId, userId), sql`${passwordResets.usedAt} is null`));
+
+  const token = randomBytes(32).toString('hex');
+  await db.insert(passwordResets).values({
+    userId,
+    tokenHash: hashResetToken(token),
+    issuedBy,
+    expiresAt: sql`now() + (${RESET_HOURS} * interval '1 hour')`,
+  });
+
+  const base = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://qor.unkad.com';
+  return `${base}/reset/${token}`;
+}
+
+// "I forgot my password." Public, unauthenticated.
+//
+// Two things this deliberately does not do. It never says whether an address is
+// registered, because a form that answers that is a way to enumerate the
+// people on this platform; the reply is the same either way. And it never fails
+// visibly when mail is unavailable — the request lands in the admin queue
+// instead, so a locked-out contributor is never left with nothing but a founder
+// to hunt down on Facebook.
+export async function requestPasswordReset(
+  _prev: string | null,
+  formData: FormData
+): Promise<string | null> {
+  const email = String(formData.get('email') ?? '').trim().toLowerCase();
+  if (!email) return 'errRequired';
+
+  const ip = await clientIp();
+  // Generous enough for a genuine person retrying, tight enough that the form
+  // is not a free mail cannon pointed at someone else's inbox.
+  if (!(await allow(`resetreq:${ip}`, 10, 3600))) return 'errRateLimited';
+
+  const [target] = await db.select().from(users).where(eq(users.email, email));
+
+  // Unknown address: stop here, having said nothing different.
+  if (!target || target.deletedAt) return 'resetRequested';
+
+  // One open request per person. Asking five times should not create five rows
+  // for an admin to work through.
+  const [open] = await db
+    .select({ id: passwordResetRequests.id })
+    .from(passwordResetRequests)
+    .where(
+      and(eq(passwordResetRequests.userId, target.id), sql`${passwordResetRequests.fulfilledAt} is null`)
+    );
+
+  const requestId =
+    open?.id ??
+    (
+      await db
+        .insert(passwordResetRequests)
+        .values({ userId: target.id })
+        .returning({ id: passwordResetRequests.id })
+    )[0].id;
+
+  // With a provider configured, fulfil it now and leave the row as a record.
+  if (emailConfigured()) {
+    const link = await mintResetLink(target.id, target.id);
+    const result = await sendEmail({
+      to: target.email,
+      subject: 'Unkad — beddel furaha sirta / reset your password',
+      text:
+        `${target.handle},\n\n` +
+        `Furaha sirta ee akoonkaaga Unkad waxaad ka beddeli kartaa xiriirkan.\n` +
+        `Use this link to set a new password for your Unkad account.\n\n` +
+        `${link}\n\n` +
+        `Xiriirku wuxuu shaqeeyaa hal mar oo wuxuu dhacayaa ${RESET_HOURS} saacadood.\n` +
+        `The link works once and expires in ${RESET_HOURS} hours.\n\n` +
+        `Haddii aadan adigu codsan, iska indhatir farriintan.\n` +
+        `If you did not ask for this, ignore this message.\n`,
+    });
+
+    if (result.sent) {
+      await db
+        .update(passwordResetRequests)
+        .set({ fulfilledAt: new Date(), autoSent: true })
+        .where(eq(passwordResetRequests.id, requestId));
+      await audit(target.id, 'auth.reset_emailed', 'user', target.id);
+      return 'resetRequested';
+    }
+
+    // Sending failed. The request stays open for an admin, and the reason is
+    // recorded so a misconfigured domain or an exhausted quota is visible
+    // rather than silently degrading forever.
+    await audit(null, 'auth.reset_email_failed', 'user', target.id, {
+      reason: result.reason,
+      detail: result.detail,
+    });
+  }
+
+  return 'resetRequested';
+}
+
+// The queue an admin works: who has asked and is still waiting.
+export async function pendingResetRequests() {
+  return db
+    .select({
+      id: passwordResetRequests.id,
+      createdAt: passwordResetRequests.createdAt,
+      handle: users.handle,
+      email: users.email,
+      role: users.role,
+    })
+    .from(passwordResetRequests)
+    .innerJoin(users, eq(passwordResetRequests.userId, users.id))
+    .where(sql`${passwordResetRequests.fulfilledAt} is null`)
+    .orderBy(asc(passwordResetRequests.createdAt));
+}
+
+// Fulfil one queued request: mint the link, mark it done, hand it back to be
+// copied into whatever channel reaches that person.
+export async function fulfilResetRequest(
+  requestId: string,
+  _prev: string | null,
+  _formData: FormData
+): Promise<string | null> {
+  const admin = await requireRole('admin');
+  if (!/^[0-9a-f-]{36}$/i.test(requestId)) return 'ERR:bad request id';
+
+  const [row] = await db
+    .select({ userId: passwordResetRequests.userId, handle: users.handle })
+    .from(passwordResetRequests)
+    .innerJoin(users, eq(passwordResetRequests.userId, users.id))
+    .where(
+      and(eq(passwordResetRequests.id, requestId), sql`${passwordResetRequests.fulfilledAt} is null`)
+    );
+  if (!row) return 'ERR:already handled';
+
+  const link = await mintResetLink(row.userId, admin.id);
+
+  await db
+    .update(passwordResetRequests)
+    .set({ fulfilledAt: new Date(), fulfilledBy: admin.id })
+    .where(eq(passwordResetRequests.id, requestId));
+
+  await audit(admin.id, 'user.reset_issued', 'user', row.userId, { via: 'queue' });
+
+  // Deliberately no revalidatePath here. Refreshing /admin drops the row out
+  // of the pending queue, which unmounts the component holding the link — so
+  // the token was minted, the request marked done, and the link never shown to
+  // anyone. The count going stale until the next page load is the cheaper
+  // problem by a wide margin.
+  return `OK:${row.handle}:${link}`;
 }
