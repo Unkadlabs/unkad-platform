@@ -12,8 +12,8 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { requireRole } from '@/lib/auth';
-import { contributorProfile } from '@/lib/stats';
-import { ruleOnSubmissions, ruleOneSubmission } from '@/lib/actions';
+import { contributorProfile, revisionsForUser } from '@/lib/stats';
+import { ruleOnSubmissions, ruleOneSubmission, reviseSubmission } from '@/lib/actions';
 import Sparkline from '@/components/Sparkline';
 import UnugAvatar from '@/components/UnugAvatar';
 import SelectAll from '@/components/SelectAll';
@@ -22,7 +22,7 @@ export const dynamic = 'force-dynamic';
 
 type Props = {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ ruled?: string; decision?: string }>;
+  searchParams: Promise<{ ruled?: string; decision?: string; revised?: string }>;
 };
 
 function when(date: Date | null) {
@@ -48,9 +48,9 @@ const pct = (n: number) => `${(n * 100).toFixed(1)}%`;
 export default async function ContributorPage({ params, searchParams }: Props) {
   await requireRole('admin');
   const { id } = await params;
-  const { ruled, decision } = await searchParams;
+  const { ruled, decision, revised } = await searchParams;
 
-  const profile = await contributorProfile(id);
+  const [profile, revisions] = await Promise.all([contributorProfile(id), revisionsForUser(id)]);
   if (!profile) notFound();
 
   const {
@@ -384,6 +384,16 @@ export default async function ContributorPage({ params, searchParams }: Props) {
         </div>
       )}
 
+      {revised != null && (
+        <div className="notice">
+          {revised === 'empty'
+            ? 'Not saved: the text was empty. Blanking a contribution is a deletion, not a fix.'
+            : revised === 'same'
+              ? 'Not saved: the text was unchanged.'
+              : 'Fixed. The previous wording is kept below, and the item is back in the queue.'}
+        </div>
+      )}
+
       {items.length === 0 ? (
         <p className="muted">Nothing submitted.</p>
       ) : (
@@ -460,6 +470,58 @@ export default async function ContributorPage({ params, searchParams }: Props) {
                   {rate?.gapSec != null && ` · ${duration(rate.gapSec)} after the previous one`}
                 </p>
 
+                {/* What this text used to say. Shown above the fix box so a
+                    reviewer about to edit can see whether someone already has,
+                    and so an edit can never be silent. */}
+                {(revisions.get(item.id) ?? []).map((rev, ri) => (
+                  <div
+                    key={`${item.id}-rev-${ri}`}
+                    style={{
+                      borderLeft: '2px solid var(--rule)',
+                      paddingLeft: '0.7rem',
+                      margin: '0.6rem 0',
+                    }}
+                  >
+                    <p className="mono muted" style={{ margin: 0, fontSize: '0.7rem' }}>
+                      was, until {rev.editor} edited it {when(rev.at)}
+                      {rev.note ? ` · ${rev.note}` : ''}
+                    </p>
+                    <p
+                      lang="so"
+                      className="muted"
+                      style={{ margin: '0.2rem 0 0', whiteSpace: 'pre-wrap', fontSize: '0.92rem' }}
+                    >
+                      {rev.text}
+                    </p>
+                  </div>
+                ))}
+
+                {/* Fix rather than reject. At a few hundred sentences, discarding
+                    a contribution over a fixable problem costs more than the
+                    problem does. */}
+                <details style={{ margin: '0.6rem 0' }}>
+                  <summary className="mono muted" style={{ fontSize: '0.72rem', cursor: 'pointer' }}>
+                    fix this text
+                  </summary>
+                  <div className="form form-wide" style={{ marginTop: '0.6rem' }}>
+                    <textarea
+                      name="textSo"
+                      form={`fix-${item.id}`}
+                      defaultValue={item.textSo}
+                      rows={Math.min(14, Math.max(3, Math.ceil(item.textSo.length / 70)))}
+                      lang="so"
+                    />
+                    <input
+                      name="note"
+                      form={`fix-${item.id}`}
+                      placeholder="what you changed, in a few words (shown to the contributor)"
+                    />
+                    <button className="btn" type="submit" form={`fix-${item.id}`}>
+                      Save fix
+                    </button>
+                  </div>
+                </details>
+
                 {/* Ruling on one row. The id is bound into the action rather
                     than read from the form, so these never sweep up whatever
                     else happens to be ticked further down the page. */}
@@ -494,6 +556,19 @@ export default async function ContributorPage({ params, searchParams }: Props) {
           })}
         </form>
       )}
+
+      {/* One empty form per submission, carrying only the action. They sit
+          outside the ruling form because HTML forbids nesting forms; the
+          `form` attribute on each textarea, note field and button above ties
+          them together. Without this the fix controls would either be illegal
+          markup or silently submit as part of a bulk ruling. */}
+      {items.map((item) => (
+        <form
+          key={`fixform-${item.id}`}
+          id={`fix-${item.id}`}
+          action={reviseSubmission.bind(null, item.id)}
+        />
+      ))}
     </div>
   );
 }

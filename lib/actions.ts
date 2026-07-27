@@ -13,7 +13,15 @@ import { revalidatePath } from 'next/cache';
 import bcrypt from 'bcryptjs';
 import { and, eq, ne, notInArray, sql } from 'drizzle-orm';
 import { db } from './db';
-import { users, prompts, submissions, validations, auditLog, sources } from './schema';
+import {
+  users,
+  prompts,
+  submissions,
+  submissionRevisions,
+  validations,
+  auditLog,
+  sources,
+} from './schema';
 import { allow, clientIp } from './ratelimit';
 import {
   createSession,
@@ -699,4 +707,81 @@ async function applyRuling(
 
   revalidatePath(back);
   redirect(`${back}?ruled=${changed}&decision=${decision}`);
+}
+
+// Correcting a submission instead of discarding it.
+//
+// Rejection is the wrong tool for a fixable problem. It throws away work
+// somebody chose to give, and it teaches them not to bother again — expensive
+// at any size, and unaffordable at a corpus of a few hundred sentences. A
+// reviewer can now fix the text and keep the contribution.
+//
+// Three rules this enforces so "fixing" never becomes "quietly rewriting":
+//
+//   1. The previous text is preserved in submission_revisions before the new
+//      text is written. Nothing an author wrote is ever destroyed.
+//   2. Authorship does not move. submissions.userId still points at the
+//      contributor; the editor is recorded on the revision, not on the work.
+//   3. Editing resets an accepted item to pending. Peers approved specific
+//      words, and their approval does not automatically transfer to different
+//      ones. A reviewer who is sure can accept it again in the same visit.
+export async function reviseSubmission(id: string, formData: FormData): Promise<void> {
+  const reviewer = await requireRole('reviewer');
+
+  if (!/^[0-9a-f-]{36}$/i.test(id)) redirect('/admin');
+
+  const [submission] = await db.select().from(submissions).where(eq(submissions.id, id));
+  if (!submission) redirect('/admin');
+
+  const back = `/admin/contributors/${submission.userId}`;
+
+  const textSo = String(formData.get('textSo') ?? '').trim();
+  const note = String(formData.get('note') ?? '').trim() || null;
+
+  // An empty box would blank a contribution, which is a destructive edit
+  // wearing a fix's clothing.
+  if (!textSo) redirect(`${back}?revised=empty`);
+  if (textSo === submission.textSo) redirect(`${back}?revised=same`);
+
+  await db.insert(submissionRevisions).values({
+    submissionId: submission.id,
+    textSo: submission.textSo,
+    textEn: submission.textEn,
+    meaningEn: submission.meaningEn,
+    editedBy: reviewer.id,
+    note,
+  });
+
+  await db
+    .update(submissions)
+    .set({
+      textSo,
+      charCount: textSo.length,
+      // Back to pending: the votes on record were cast on different words.
+      // Verification cannot survive an edit either, or a release ships text no
+      // linguist has actually read.
+      status: 'pending',
+      verifiedAt: null,
+      verifiedBy: null,
+      updatedAt: new Date(),
+    })
+    .where(eq(submissions.id, id));
+
+  // If the item had been accepted, the author's points were for the accepted
+  // version. Take them back with the acceptance; they return when it is
+  // accepted again.
+  if (submission.status === 'accepted') {
+    await bump(submission.userId, -REP_ACCEPTED_SUBMISSION);
+  }
+
+  await audit(reviewer.id, 'submission.revised', 'submission', id, {
+    author: submission.userId,
+    was_status: submission.status,
+    before_chars: submission.charCount,
+    after_chars: textSo.length,
+    note,
+  });
+
+  revalidatePath(back);
+  redirect(`${back}?revised=1`);
 }

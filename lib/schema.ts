@@ -185,6 +185,48 @@ export const submissions = pgTable(
   ]
 );
 
+// ---- Submission revisions --------------------------------------------------
+
+// Every superseded version of a submission's text.
+//
+// Rejecting a contribution over a fixable problem throws away someone's work
+// and teaches them not to come back. A reviewer can instead correct it, and
+// this table keeps what was there before, so nothing is lost and the change is
+// answerable: who edited it, when, and why.
+//
+// The current text always lives on `submissions`. Each row here is what the
+// text looked like *before* one particular edit, so replaying them oldest-first
+// reconstructs the contribution from the author's original words onward.
+//
+// `submissions.userId` never changes. The contributor is the author of the
+// contribution whether or not a reviewer later fixed a spelling in it, and the
+// dataset credits them. What the dataset must also carry is that an edit
+// happened, which is why this is a table and not an in-place overwrite.
+export const submissionRevisions = pgTable(
+  'submission_revisions',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    submissionId: uuid('submission_id')
+      .notNull()
+      .references(() => submissions.id, { onDelete: 'cascade' }),
+
+    // The superseded text.
+    textSo: text('text_so').notNull(),
+    textEn: text('text_en'),
+    meaningEn: text('meaning_en'),
+
+    // Who replaced it, and why. The note is shown to the contributor, so it is
+    // written for them rather than as an internal log line.
+    editedBy: uuid('edited_by')
+      .notNull()
+      .references(() => users.id),
+    note: text('note'),
+
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  },
+  (t) => [index('submission_revisions_submission_idx').on(t.submissionId)]
+);
+
 // ---- Validations -----------------------------------------------------------
 
 export const validations = pgTable(

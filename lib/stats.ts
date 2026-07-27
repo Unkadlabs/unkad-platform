@@ -3,7 +3,7 @@
 
 import { and, asc, count, desc, eq, gte, isNull, sql } from 'drizzle-orm';
 import { db } from './db';
-import { submissions, users, validations, prompts } from './schema';
+import { submissions, submissionRevisions, users, validations, prompts } from './schema';
 import { countSentences } from './sentences';
 
 // The public campaign goal: 100,000 validated sentences.
@@ -665,4 +665,36 @@ export async function contributorProfile(userId: string) {
     votesCast: votes(votesCast as { verdict: string; n: number }[]),
     votesReceived: votes(votesReceived as { verdict: string; n: number }[]),
   };
+}
+
+// Edit history for one contributor's submissions, newest edit first.
+//
+// Returned as a map keyed by submission id so the contributor page can render
+// history inline without a query per card. Superseded text is joined to whoever
+// replaced it: an edit nobody can attribute is not a correction, it is just a
+// change.
+export async function revisionsForUser(userId: string) {
+  const rows = await db
+    .select({
+      revision: submissionRevisions,
+      editorHandle: users.handle,
+    })
+    .from(submissionRevisions)
+    .innerJoin(submissions, eq(submissionRevisions.submissionId, submissions.id))
+    .innerJoin(users, eq(submissionRevisions.editedBy, users.id))
+    .where(eq(submissions.userId, userId))
+    .orderBy(desc(submissionRevisions.createdAt));
+
+  const by = new Map<string, { text: string; editor: string; note: string | null; at: Date }[]>();
+  for (const r of rows) {
+    const list = by.get(r.revision.submissionId) ?? [];
+    list.push({
+      text: r.revision.textSo,
+      editor: r.editorHandle,
+      note: r.revision.note,
+      at: r.revision.createdAt,
+    });
+    by.set(r.revision.submissionId, list);
+  }
+  return by;
 }
