@@ -11,7 +11,7 @@
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import bcrypt from 'bcryptjs';
-import { and, eq, ne, notInArray, sql } from 'drizzle-orm';
+import { and, count, desc, eq, ne, notInArray, sql } from 'drizzle-orm';
 import { db } from './db';
 import {
   users,
@@ -376,12 +376,37 @@ export async function nextSubmissionToValidate(userId: string, reviewer: boolean
       .orderBy(sql`random()`)
       .limit(1);
 
-  if (reviewer) {
-    const escalated = await queue('escalated');
-    if (escalated.length > 0) return escalated[0];
-  }
-  const pending = await queue('pending');
-  return pending[0] ?? null;
+  const picked = reviewer ? (await queue('escalated'))[0] ?? (await queue('pending'))[0]
+                          : (await queue('pending'))[0];
+  if (!picked) return null;
+
+  // How the item has been judged so far, and whether anyone has already
+  // corrected it. Both are shown on the validate screen: a validator deciding
+  // on a sentence should be able to see that two people already read it, and
+  // that a reviewer changed a word.
+  //
+  // At most one prior vote can exist on a pending item, because the second one
+  // settles it, so this exposes very little that could sway a judgement. An
+  // escalated item is a 1-1 split, which the page already announces.
+  const [votes, revisions] = await Promise.all([
+    db
+      .select({ verdict: validations.verdict, n: count() })
+      .from(validations)
+      .where(eq(validations.submissionId, picked.submission.id))
+      .groupBy(validations.verdict),
+    db
+      .select({ text: submissionRevisions.textSo, note: submissionRevisions.note,
+                at: submissionRevisions.createdAt, editor: users.handle })
+      .from(submissionRevisions)
+      .innerJoin(users, eq(submissionRevisions.editedBy, users.id))
+      .where(eq(submissionRevisions.submissionId, picked.submission.id))
+      .orderBy(desc(submissionRevisions.createdAt)),
+  ]);
+
+  const approve = Number(votes.find((v) => v.verdict === 'approve')?.n ?? 0);
+  const reject = Number(votes.find((v) => v.verdict === 'reject')?.n ?? 0);
+
+  return { ...picked, votes: { approve, reject, total: approve + reject }, revisions };
 }
 
 export async function castValidation(formData: FormData): Promise<void> {
@@ -746,7 +771,11 @@ export async function reviseSubmission(id: string, formData: FormData): Promise<
   const [submission] = await db.select().from(submissions).where(eq(submissions.id, id));
   if (!submission) redirect('/admin');
 
-  const back = `/admin/contributors/${submission.userId}`;
+  // A reviewer can fix a submission from the contributor's page or from the
+  // validate queue, and should land back where they were rather than being
+  // thrown into the admin area mid-session.
+  const from = String(formData.get('back') ?? '');
+  const back = from === 'validate' ? '/validate' : `/admin/contributors/${submission.userId}`;
 
   const textSo = String(formData.get('textSo') ?? '').trim();
   const note = String(formData.get('note') ?? '').trim() || null;

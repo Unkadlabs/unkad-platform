@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { requireOnboarded, isReviewer } from '@/lib/auth';
 import { getLang } from '@/lib/lang';
 import { makeT, dialectLabel, sectorLabel } from '@/lib/i18n';
-import { nextSubmissionToValidate, castValidation } from '@/lib/actions';
+import { nextSubmissionToValidate, castValidation, reviseSubmission } from '@/lib/actions';
 
 export default async function ValidatePage() {
   const user = await requireOnboarded();
@@ -92,7 +92,64 @@ export default async function ValidatePage() {
             )}
           </div>
 
-          <p>
+          {/* What the crowd has said so far, and whether anyone has already
+              corrected this text. A validator judging a sentence should be able
+              to see that someone read it before them, and that a word was
+              changed. At most one prior vote exists on a pending item — the
+              second settles it — so this reveals very little that could sway a
+              judgement, and an escalated item is a 1-1 split the page already
+              announces. */}
+          <p className="mono muted" style={{ fontSize: '0.78rem', marginTop: '0.6rem' }}>
+            {item.votes.total === 0
+              ? 'Nobody has reviewed this yet.'
+              : `${item.votes.total} reviewed · ${item.votes.approve} said correct · ${item.votes.reject} said it has problems`}
+            {item.revisions.length > 0
+              ? ` · edited ${item.revisions.length} time${item.revisions.length > 1 ? 's' : ''}`
+              : ''}
+          </p>
+
+          {/* The author's own words, kept whenever a reviewer changes something,
+              so an edit is always visible next to what it replaced rather than
+              silently standing in for it. */}
+          {item.revisions.map((rev, i) => (
+            <details key={i} style={{ marginTop: '0.5rem' }}>
+              <summary className="mono muted" style={{ fontSize: '0.72rem', cursor: 'pointer' }}>
+                original, before {rev.editor} edited it
+                {rev.note ? ` — ${rev.note}` : ''}
+              </summary>
+              <p lang="so" className="muted" style={{ marginTop: '0.4rem', whiteSpace: 'pre-wrap' }}>
+                {rev.text}
+              </p>
+            </details>
+          ))}
+
+          {/* Reviewers and admins can correct the text here rather than
+              rejecting it. Contributors validating see none of this: editing
+              someone else's words is a trusted action, and the guard on
+              reviseSubmission enforces it server-side regardless of what the
+              page renders. */}
+          {reviewer && (
+            <details style={{ marginTop: '0.8rem' }}>
+              <summary className="mono muted" style={{ fontSize: '0.75rem', cursor: 'pointer' }}>
+                fix this text instead of rejecting it
+              </summary>
+              <form className="form form-wide" action={reviseSubmission.bind(null, item.submission.id)}>
+                <input type="hidden" name="back" value="validate" />
+                <textarea
+                  name="textSo"
+                  defaultValue={item.submission.textSo}
+                  rows={Math.min(12, Math.max(3, Math.ceil(item.submission.textSo.length / 70)))}
+                  lang="so"
+                />
+                <input name="note" placeholder="what you changed, in a few words" />
+                <button className="btn" type="submit">
+                  Save fix
+                </button>
+              </form>
+            </details>
+          )}
+
+          <p style={{ marginTop: '1rem' }}>
             <strong>{t('validateQuestion')}</strong>
           </p>
           <form action={castValidation}>
