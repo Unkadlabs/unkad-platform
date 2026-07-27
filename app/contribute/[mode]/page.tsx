@@ -177,6 +177,8 @@ export default async function ContributeModePage({ params, searchParams }: Props
                   label={t('yourAnswer')}
                   charsLabel={t('chars')}
                   minLength={10}
+                  draftKey={`unkad-draft-${prompt.id}`}
+                  draftRestoredLabel={t('draftRestored')}
                 />
                 <p className="hint">{t('minLength')}</p>
               </>

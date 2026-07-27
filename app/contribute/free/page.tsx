@@ -9,6 +9,7 @@ import { makeT, sectorLabel } from '@/lib/i18n';
 import { submitFreeWrite } from '@/lib/actions';
 import { prompts } from '@/lib/schema';
 import SomaliTextarea from '@/components/SomaliTextarea';
+import ClearDraft from '@/components/ClearDraft';
 
 const ERROR_KEY = { short: 'errShort', cap: 'errCap', sector: 'errSector' } as const;
 
@@ -32,6 +33,7 @@ export default async function FreeWritePage({ searchParams }: Props) {
         {t('freeWriteIntro')}
       </p>
 
+      {done && <ClearDraft promptId="free" />}
       {done && <p className="notice rise">{t('submitted')}</p>}
       {errorKey && (
         <p className="notice notice-error rise" role="alert">
@@ -66,6 +68,8 @@ export default async function FreeWritePage({ searchParams }: Props) {
           label={t('yourAnswer')}
           charsLabel={t('chars')}
           minLength={10}
+          draftKey="unkad-draft-free"
+          draftRestoredLabel={t('draftRestored')}
         />
         <p className="hint">{t('minLength')}</p>
 

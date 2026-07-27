@@ -4,6 +4,7 @@ import { getLang } from '@/lib/lang';
 import { makeT } from '@/lib/i18n';
 import { submitProverb } from '@/lib/actions';
 import SomaliTextarea from '@/components/SomaliTextarea';
+import ClearDraft from '@/components/ClearDraft';
 
 const ERROR_KEY = { short: 'errShort', cap: 'errCap' } as const;
 
@@ -27,6 +28,7 @@ export default async function ProverbPage({ searchParams }: Props) {
         {t('proverbIntro')}
       </p>
 
+      {done && <ClearDraft promptId="proverb" />}
       {done && <p className="notice rise">{t('submitted')}</p>}
       {errorKey && (
         <p className="notice notice-error rise" role="alert">
@@ -36,6 +38,8 @@ export default async function ProverbPage({ searchParams }: Props) {
 
       <form className="form form-wide" action={submitProverb}>
         <SomaliTextarea
+          draftKey="unkad-draft-proverb"
+          draftRestoredLabel={t('draftRestored')}
           id="proverb"
           name="proverb"
           label={t('proverbField')}
