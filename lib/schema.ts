@@ -76,6 +76,28 @@ export const users = pgTable(
     creditName: text('credit_name'),
     onboardingCompletedAt: timestamp('onboarding_completed_at'),
 
+    // Encouragement mail. A daily routine that reminds dormant contributors
+    // the platform is still here, and asks people to keep their address current
+    // so they can be told what the corpus does with their work.
+    //
+    // Three columns rather than one, because "did we email them" is not the
+    // question that keeps a sending domain alive. The questions are whether
+    // they still want it, when they last heard from us, and how many times we
+    // have asked without an answer. A mailer that cannot answer all three
+    // eventually mails someone for the fortieth time and takes the domain down
+    // with it, and every password reset rides that same domain.
+    emailOptOutAt: timestamp('email_opt_out_at'),
+    lastNudgeAt: timestamp('last_nudge_at'),
+    nudgeCount: integer('nudge_count').notNull().default(0),
+    // Capability token for one-click unsubscribe. Random per user and minted on
+    // first send, so the link works without a session: someone who has stopped
+    // using the platform is exactly the person least able to log in first, and
+    // an unsubscribe you have to log in to use is not an unsubscribe.
+    unsubToken: text('unsub_token'),
+    // Set when the provider reports the address is undeliverable. A hard bounce
+    // that keeps being retried is what convinces Gmail the sender is careless.
+    emailBouncedAt: timestamp('email_bounced_at'),
+
     // Provenance resolution. The admin profile flags accounts whose text
     // arrived faster than anyone types, which is a real signal and a poor
     // accusation: a writer pasting their own drafts looks identical to a

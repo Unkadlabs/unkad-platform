@@ -310,6 +310,28 @@ const dict = {
     so: 'Xiriirkan waa dhacay ama horey ayaa loo isticmaalay. Weydiiso mid cusub.',
     en: 'This link has expired or was already used. Ask for a new one.',
   },
+  // !! VERIFY SOMALI !!
+  unsubTitle: { so: 'Iimaylka waa la joojiyay', en: 'Emails stopped' },
+  unsubDone: {
+    so: 'Mar dambe xasuusin iimayl ah kaama soo dirayno. Akoonkaagu wuu shaqeynayaa, waxaadna wali qori kartaa markasta oo aad doonto.',
+    en: 'We will not send you reminder emails again. Your account still works and you can write whenever you want.',
+  },
+  unsubAlready: {
+    so: 'Horey ayaad u joojisay iimaylada xasuusinta.',
+    en: 'You had already stopped reminder emails.',
+  },
+  unsubInvalid: {
+    so: 'Xiriirkan ma shaqeynayo. Haddii aad rabto inaad joojiso iimaylada, nala soo xiriir.',
+    en: 'This link does not work. Contact us if you want to stop the emails.',
+  },
+  unsubResubscribe: {
+    so: 'Mar kale ma rabtaa inaad hesho warbixinta?',
+    en: 'Want to receive updates again?',
+  },
+  unsubResubscribed: {
+    so: 'Waad ku soo noqotay. Mahadsanid.',
+    en: 'You are back on the list. Thank you.',
+  },
   errBadLogin: { so: 'Iimayl ama furaha sirta ayaa khaldan.', en: 'Wrong email or password.' },
   errRequired: { so: 'Fadlan buuxi dhammaan meelaha.', en: 'Please fill in all fields.' },
   errLocked: {

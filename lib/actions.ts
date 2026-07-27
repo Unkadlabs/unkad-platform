@@ -648,6 +648,56 @@ export async function setUserRole(formData: FormData): Promise<void> {
   redirect('/admin?rolechanged=1');
 }
 
+// ---- Unsubscribe -------------------------------------------------------------
+
+// Stopping the mail, without logging in.
+//
+// The person most likely to want out is the one who stopped using the platform,
+// which makes them the one least able to sign in first. An unsubscribe behind a
+// login is not an unsubscribe, it is a maze, and the people who cannot find
+// their way out of it press "report spam" instead. That single press is worth
+// more damage to the sending domain than the contribution the mail was chasing,
+// and it takes password resets down with it, since reputation is per-domain.
+//
+// So the token in the link is the whole authorisation. It is random per user,
+// it grants exactly one capability, and the worst a leaked one can do is stop
+// somebody's mail, which is the thing the holder was asking for anyway.
+export async function unsubscribeByToken(token: string): Promise<'done' | 'already' | 'invalid'> {
+  if (!token || token.length < 20) return 'invalid';
+
+  const [user] = await db
+    .select({ id: users.id, optedOut: users.emailOptOutAt })
+    .from(users)
+    .where(eq(users.unsubToken, token))
+    .limit(1);
+
+  if (!user) return 'invalid';
+  if (user.optedOut) return 'already';
+
+  await db
+    .update(users)
+    .set({ emailOptOutAt: new Date(), updatedAt: new Date() })
+    .where(eq(users.id, user.id));
+
+  return 'done';
+}
+
+// The way back in. Someone who opted out in a bad week and later wants the
+// updates should not have to write to us, and a list you can only ever leave
+// tells you less about who wants to be on it.
+export async function resubscribeByToken(token: string): Promise<void> {
+  if (!token || token.length < 20) return;
+
+  await db
+    .update(users)
+    // Counter reset too: coming back is a fresh start, not a resumption of
+    // however many unanswered reminders they left behind.
+    .set({ emailOptOutAt: null, nudgeCount: 0, updatedAt: new Date() })
+    .where(eq(users.unsubToken, token));
+
+  redirect(`/unsubscribe/${token}?back=1`);
+}
+
 // ---- Provenance resolution --------------------------------------------------
 
 // Answering the pace flag, in writing.

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- macOS launchd job: the daily encouragement mail, 07:18 local.
+
+     Morning, because that is when people read mail and the ask is "write one
+     sentence today". 07:18 rather than 07:00 so it is not queued behind
+     everything else the machine does on the hour.
+
+     The job runs daily. An individual does not receive daily mail: nudge.mjs
+     keeps a minimum gap per person (NUDGE_MIN_DAYS, default 3) and stops
+     asking after NUDGE_MAX_TIMES. Set NUDGE_MIN_DAYS=1 below for true
+     per-person daily, knowing that 35 of the 38 dormant accounts are Gmail
+     and that the sending domain also carries password resets.
+
+     Install:
+       cp scripts/com.unkad.nudge.plist ~/Library/LaunchAgents/
+       launchctl load ~/Library/LaunchAgents/com.unkad.nudge.plist
+
+     Check:    launchctl list | grep nudge
+     Logs:     ~/UnkadBackups/nudge.log
+     Dry run:  ./scripts/nudge-daily.sh
+     Remove:   launchctl unload ~/Library/LaunchAgents/com.unkad.nudge.plist
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.unkad.nudge</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>/Users/khalidyusufdahir/research/unkad/unkad-platform/scripts/nudge-daily.sh</string>
+    <string>--send</string>
+  </array>
+
+  <key>StartCalendarInterval</key>
+  <dict>
+    <key>Hour</key><integer>7</integer>
+    <key>Minute</key><integer>18</integer>
+  </dict>
+
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    <key>NUDGE_MIN_DAYS</key><string>3</string>
+    <key>NUDGE_MAX_TIMES</key><string>4</string>
+    <key>NUDGE_DAILY_CAP</key><string>40</string>
+  </dict>
+
+  <key>RunAtLoad</key>
+  <false/>
+
+  <key>StandardOutPath</key>
+  <string>/Users/khalidyusufdahir/UnkadBackups/nudge.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/khalidyusufdahir/UnkadBackups/nudge.log</string>
+</dict>
+</plist>

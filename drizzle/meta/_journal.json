@@ -64,6 +64,13 @@
       "when": 1785168441781,
       "tag": "0008_daily_wallow",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1785170882980,
+      "tag": "0009_naive_elektra",
+      "breakpoints": true
     }
   ]
 }
