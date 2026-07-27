@@ -241,6 +241,8 @@ const dict = {
   editorList: { so: 'Liis', en: 'List' },
   editorPreview: { so: 'Fiiri', en: 'Preview' },
   editorWrite: { so: 'Qor', en: 'Write' },
+  // !! VERIFY SOMALI !!
+  editorDone: { so: 'Ka bax diiradda', en: 'Leave focus' },
   editorFocus: { so: 'Diirad', en: 'Focus' },
   editorWords: { so: 'erey', en: 'words' },
   draftRestored: { so: 'Qabyo-qoraal hore ayaa la soo celiyay.', en: 'A saved draft was restored.' },

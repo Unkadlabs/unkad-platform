@@ -179,6 +179,27 @@ export default async function ContributeModePage({ params, searchParams }: Props
                   minLength={10}
                   draftKey={`unkad-draft-${prompt.id}`}
                   draftRestoredLabel={t('draftRestored')}
+                  focusLabel={t('editorFocus')}
+                  doneLabel={t('editorDone')}
+                  // Whatever the writer is working from follows them into focus
+                  // mode. Translate has an English source; transcribe has the
+                  // Somali being transcribed. Free write and proverbs have
+                  // neither, and correctly get no panel.
+                  sourceLabel={
+                    mode === 'translate'
+                      ? t('translateThis')
+                      : mode === 'transcribe'
+                        ? t('transcribeThis')
+                        : undefined
+                  }
+                  sourceText={
+                    mode === 'translate'
+                      ? (prompt.sourceText ?? undefined)
+                      : mode === 'transcribe'
+                        ? ((lang === 'so' ? prompt.textSo : prompt.textEn) ?? undefined)
+                        : undefined
+                  }
+                  sourceLang={mode === 'translate' ? 'en' : 'so'}
                 />
                 <p className="hint">{t('minLength')}</p>
               </>

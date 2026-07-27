@@ -70,6 +70,8 @@ export default async function FreeWritePage({ searchParams }: Props) {
           minLength={10}
           draftKey="unkad-draft-free"
           draftRestoredLabel={t('draftRestored')}
+          focusLabel={t('editorFocus')}
+          doneLabel={t('editorDone')}
         />
         <p className="hint">{t('minLength')}</p>
 

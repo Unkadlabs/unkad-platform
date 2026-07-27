@@ -45,6 +45,8 @@ export default async function ProverbPage({ searchParams }: Props) {
           label={t('proverbField')}
           charsLabel={t('chars')}
           minLength={5}
+          focusLabel={t('editorFocus')}
+          doneLabel={t('editorDone')}
         />
         <div>
           <label htmlFor="translation">{t('translationField')}</label>
