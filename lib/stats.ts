@@ -10,12 +10,41 @@ import { countSentences } from './sentences';
 export const CORPUS_GOAL = 100_000;
 
 export async function corpusStats() {
-  const [[accepted], [pending], [contributors]] = await Promise.all([
+  const [[accepted], [pending], [contributors], [registered]] = await Promise.all([
     db.select({ n: count() }).from(submissions).where(eq(submissions.status, 'accepted')),
     db.select({ n: count() }).from(submissions).where(eq(submissions.status, 'pending')),
+
+    // A contributor is someone who has done something, not someone who has an
+    // account. This used to count every non-deleted user row, so every public
+    // surface — the homepage counter, the leaderboard, the share card, the
+    // marketing site — reported registrations under the label
+    // `wax-ku-biiriyayaal`. At 67 accounts against 40 people who had actually
+    // taken part, that overstated participation by two thirds.
+    //
+    // Validating counts. Someone working the review queue is contributing to
+    // the corpus as directly as someone writing into it, and the thank-you
+    // artefacts already treat them that way.
+    db
+      .select({ n: count() })
+      .from(users)
+      .where(
+        sql`${users.deletedAt} is null and (
+          exists (select 1 from ${submissions} s where s.user_id = ${users.id})
+          or exists (select 1 from ${validations} v where v.user_id = ${users.id})
+        )`
+      ),
+
+    // Kept separately rather than dropped: signups are a real number, worth
+    // watching, and worth being able to state as what it is.
     db.select({ n: count() }).from(users).where(sql`${users.deletedAt} is null`),
   ]);
-  return { accepted: accepted.n, pending: pending.n, contributors: contributors.n };
+
+  return {
+    accepted: accepted.n,
+    pending: pending.n,
+    contributors: contributors.n,
+    registered: registered.n,
+  };
 }
 
 // Submissions per day for the last `days` days (all statuses) for one user.
