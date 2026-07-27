@@ -336,11 +336,18 @@ export async function contributorActivity(limit = 100) {
 
 // The newest submissions, all statuses, with their text — so an admin can
 // read what is actually coming in without waiting for peer acceptance.
-export async function recentSubmissions(limit = 30) {
-  return db
+//
+// `byUserId` narrows it to one contributor. Without it, a single fast writer
+// fills the whole list and everyone else's work becomes invisible: on launch
+// night one account held 42 of the first 183 submissions, so the unfiltered
+// feed was mostly one person.
+export async function recentSubmissions(limit = 30, byUserId?: string) {
+  const q = db
     .select({ submission: submissions, author: users })
     .from(submissions)
-    .innerJoin(users, eq(submissions.userId, users.id))
+    .innerJoin(users, eq(submissions.userId, users.id));
+
+  return (byUserId ? q.where(eq(submissions.userId, byUserId)) : q)
     .orderBy(desc(submissions.createdAt))
     .limit(limit);
 }

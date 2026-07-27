@@ -23,6 +23,8 @@ export const dynamic = 'force-dynamic';
 
 const DAYS = 14;
 
+type Props = { searchParams: Promise<{ by?: string }> };
+
 function when(date: Date | null) {
   if (!date) return '—';
   const mins = Math.round((Date.now() - date.getTime()) / 60000);
@@ -33,17 +35,21 @@ function when(date: Date | null) {
   return `${Math.round(hours / 24)}d ago`;
 }
 
-export default async function AdminActivityPage() {
+export default async function AdminActivityPage({ searchParams }: Props) {
   await requireRole('admin');
+  const { by } = await searchParams;
+  const filterBy = by && /^[0-9a-f-]{36}$/i.test(by) ? by : undefined;
 
   const [activity, breakdown, contributors, recent, health, supply] = await Promise.all([
     adminActivity(DAYS),
     submissionBreakdown(),
     contributorActivity(),
-    recentSubmissions(30),
+    recentSubmissions(30, filterBy),
     pipelineHealth(),
     promptSupply(),
   ]);
+
+  const filtered = filterBy ? contributors.find((c) => c.id === filterBy) : undefined;
 
   const total = (rows: { n: number }[]) => rows.reduce((sum, r) => sum + r.n, 0);
   const totalChars = breakdown.byMode.reduce((sum, r) => sum + r.chars, 0);
@@ -282,10 +288,60 @@ export default async function AdminActivityPage() {
         </table>
       </div>
 
-      {/* ---- The actual text ------------------------------------------------- */}
-      <span className="eyebrow">Latest submissions</span>
+      {/* ---- The actual text -------------------------------------------------
+          Filterable by author. Unfiltered, one prolific contributor can fill
+          the whole feed and hide everyone else: 42 of the first 183 submissions
+          came from a single account. A plain GET form, so the filtered view has
+          its own URL and can be linked or reloaded. */}
+      <span className="eyebrow">
+        Latest submissions{filtered ? ` — ${filtered.handle}` : ''}
+      </span>
+
+      <form method="get" className="review-toolbar" style={{ marginBottom: '0.8rem' }}>
+        <label htmlFor="by" className="mono muted" style={{ fontSize: '0.78rem' }}>
+          author
+        </label>
+        {/* Keyed on the filter so React remounts it when the URL changes. A
+            select is uncontrolled, so on a client-side navigation it keeps
+            whatever the user last picked: after hitting "clear" the feed showed
+            everyone while the dropdown still displayed one contributor. */}
+        <select
+          key={filterBy ?? 'all'}
+          id="by"
+          name="by"
+          defaultValue={filterBy ?? ''}
+          style={{ maxWidth: '18rem' }}
+        >
+          <option value="">everyone</option>
+          {contributors
+            .filter((c) => c.submitted > 0)
+            .map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.handle} ({c.submitted})
+              </option>
+            ))}
+        </select>
+        <button className="btn btn-quiet" type="submit">
+          Show
+        </button>
+        {filterBy && (
+          <Link href="/admin/activity" className="mono muted" style={{ fontSize: '0.78rem' }}>
+            clear
+          </Link>
+        )}
+      </form>
+
+      {filtered && (
+        <p className="muted" style={{ marginTop: 0, fontSize: '0.85rem' }}>
+          Showing the {recent.length} most recent of {filtered.submitted} from {filtered.handle}.{' '}
+          <Link href={`/admin/contributors/${filtered.id}`}>Full profile and rulings →</Link>
+        </p>
+      )}
+
       {recent.length === 0 ? (
-        <p className="muted">Nothing submitted yet.</p>
+        <p className="muted">
+          {filterBy ? 'Nothing from that contributor.' : 'Nothing submitted yet.'}
+        </p>
       ) : (
         recent.map(({ submission, author }) => (
           <div key={submission.id} className="card">
