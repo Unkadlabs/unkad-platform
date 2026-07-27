@@ -109,6 +109,46 @@ export const sessions = pgTable(
   ]
 );
 
+// ---- Password resets -------------------------------------------------------
+
+// One-time links that let someone set a new password.
+//
+// There is no email provider here and adding one would be the first paid
+// dependency, so a self-serve "email me a link" flow is not available. Instead
+// an admin generates a link and sends it however they already talk to the
+// person, which in practice is WhatsApp. That is the right shape for this
+// audience anyway: contributors reach the platform through a phone, not an
+// inbox they check.
+//
+// Same discipline as sessions: only a SHA-256 hash of the token is stored, so
+// a database leak cannot be replayed into account takeovers. Single use and
+// short-lived, because a link sitting in a chat thread is a standing key to an
+// account until one of those two things stops it.
+export const passwordResets = pgTable(
+  'password_resets',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    tokenHash: text('token_hash').notNull(),
+
+    // Who issued it. A reset is a privileged act on someone else's account and
+    // should never be anonymous in the record.
+    issuedBy: uuid('issued_by')
+      .notNull()
+      .references(() => users.id),
+
+    expiresAt: timestamp('expires_at').notNull(),
+    usedAt: timestamp('used_at'),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex('password_resets_token_hash_unique').on(t.tokenHash),
+    index('password_resets_user_idx').on(t.userId),
+  ]
+);
+
 // ---- Source registry (transcribe mode) -------------------------------------
 
 // Only verified public-domain / openly licensed sources may be transcribed.

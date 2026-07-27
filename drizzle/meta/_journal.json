@@ -43,6 +43,13 @@
       "when": 1785134008542,
       "tag": "0005_tan_yellow_claw",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1785153849268,
+      "tag": "0006_complete_storm",
+      "breakpoints": true
     }
   ]
 }

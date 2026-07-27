@@ -295,6 +295,11 @@ const dict = {
 
   // Errors
   errEmailTaken: { so: 'Iimaylkan hore ayaa loo isticmaalay.', en: 'That email is already registered.' },
+  // !! VERIFY SOMALI !! — new string, founder to review.
+  errResetInvalid: {
+    so: 'Xiriirkan waa dhacay ama horey ayaa loo isticmaalay. Weydiiso mid cusub.',
+    en: 'This link has expired or was already used. Ask for a new one.',
+  },
   errBadLogin: { so: 'Iimayl ama furaha sirta ayaa khaldan.', en: 'Wrong email or password.' },
   errRequired: { so: 'Fadlan buuxi dhammaan meelaha.', en: 'Please fill in all fields.' },
   errLocked: {

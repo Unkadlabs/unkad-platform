@@ -7,6 +7,7 @@ import { db } from '@/lib/db';
 import { prompts, submissions, users, sources, auditLog } from '@/lib/schema';
 import { requireRole } from '@/lib/auth';
 import { addPrompts, addSource, setUserRole } from '@/lib/actions';
+import IssueResetLink from '@/components/IssueResetLink';
 
 type Props = {
   searchParams: Promise<{ added?: string; rolechanged?: string; roleerr?: string }>;
@@ -213,6 +214,14 @@ export default async function AdminPage({ searchParams }: Props) {
           </table>
         </div>
       )}
+
+      <span className="eyebrow">Password reset</span>
+      <p className="muted" style={{ marginTop: 0, fontSize: '0.9rem' }}>
+        There is no email provider here, so resets are issued by hand: generate a link and send it
+        to the person however you normally reach them. Nobody, including you, can read an existing
+        password — a reset is the only way back into an account.
+      </p>
+      <IssueResetLink />
 
       <span className="eyebrow">Roles</span>
       <form className="form" action={setUserRole}>

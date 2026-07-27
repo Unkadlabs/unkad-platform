@@ -11,6 +11,7 @@
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import bcrypt from 'bcryptjs';
+import { createHash, randomBytes } from 'crypto';
 import { and, count, desc, eq, ne, notInArray, sql } from 'drizzle-orm';
 import { db } from './db';
 import {
@@ -21,6 +22,7 @@ import {
   validations,
   auditLog,
   sources,
+  passwordResets,
 } from './schema';
 import { allow, clientIp } from './ratelimit';
 import {
@@ -826,4 +828,120 @@ export async function reviseSubmission(id: string, formData: FormData): Promise<
 
   revalidatePath(back);
   redirect(`${back}?revised=1`);
+}
+
+// ---- Password resets --------------------------------------------------------
+
+// A link lives for two hours. Long enough to send it and have someone act on
+// it across a patchy connection, short enough that a link left sitting in a
+// chat thread stops being a key to the account fairly quickly.
+const RESET_HOURS = 2;
+
+const hashResetToken = (token: string) => createHash('sha256').update(token).digest('hex');
+
+// Issue a one-time password reset link for another account.
+//
+// There is no email provider, so this hands the link to the admin and they send
+// it however they already talk to the person. Returned to the page rather than
+// carried in a redirect URL, so the token never lands in browser history or a
+// server log.
+export async function createPasswordReset(
+  _prev: string | null,
+  formData: FormData
+): Promise<string | null> {
+  const admin = await requireRole('admin');
+
+  const email = String(formData.get('email') ?? '').trim().toLowerCase();
+  if (!email) return 'ERR:no email given';
+
+  const [target] = await db.select().from(users).where(eq(users.email, email));
+  if (!target || target.deletedAt) return 'ERR:no account with that email';
+
+  // Any earlier link for this person stops working the moment a new one is
+  // issued, so a forwarded old message cannot be used later.
+  await db
+    .update(passwordResets)
+    .set({ usedAt: new Date() })
+    .where(and(eq(passwordResets.userId, target.id), sql`${passwordResets.usedAt} is null`));
+
+  const token = randomBytes(32).toString('hex');
+  await db.insert(passwordResets).values({
+    userId: target.id,
+    tokenHash: hashResetToken(token),
+    issuedBy: admin.id,
+    // Computed by the database, not by JavaScript. `created_at` defaults to
+    // Postgres now(), so a JS Date here puts two different clocks in one row:
+    // the column is `timestamp` without a zone, and whether the driver writes
+    // UTC or local wall-clock depends on the process TZ. Locally that produced
+    // a window of minus one hour — links born already expired — while
+    // surviving in production only because Vercel and Neon both run UTC.
+    // Deriving it in SQL makes the two columns comparable by construction.
+    expiresAt: sql`now() + (${RESET_HOURS} * interval '1 hour')`,
+  });
+
+  await audit(admin.id, 'user.reset_issued', 'user', target.id, { email });
+
+  const base = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://qor.unkad.com';
+  return `OK:${target.handle}:${base}/reset/${token}`;
+}
+
+// Look up a reset link without consuming it, so the page can tell a good link
+// from a dead one before asking anyone to type a password.
+export async function findPasswordReset(token: string) {
+  if (!/^[0-9a-f]{64}$/.test(token)) return null;
+  // Liveness is decided in SQL for the same reason it is written there: a
+  // `timestamp` column read back into a JS Date is interpreted against the
+  // process timezone, so comparing it to `new Date()` is only correct when
+  // every machine involved agrees on UTC.
+  const [row] = await db
+    .select({ reset: passwordResets, handle: users.handle })
+    .from(passwordResets)
+    .innerJoin(users, eq(passwordResets.userId, users.id))
+    .where(
+      and(
+        eq(passwordResets.tokenHash, hashResetToken(token)),
+        sql`${passwordResets.usedAt} is null`,
+        sql`${passwordResets.expiresAt} > now()`
+      )
+    );
+  if (!row) return null;
+  return { userId: row.reset.userId, handle: row.handle };
+}
+
+// Redeem a link and set a new password.
+export async function resetPassword(
+  token: string,
+  _prev: string | null,
+  formData: FormData
+): Promise<string | null> {
+  const found = await findPasswordReset(token);
+  if (!found) return 'errResetInvalid';
+
+  const password = String(formData.get('password') ?? '');
+  if (!password) return 'errRequired';
+  if (password.length < 8) return 'errPasswordShort';
+
+  await db
+    .update(users)
+    .set({
+      passwordHash: await bcrypt.hash(password, 12),
+      // Someone who could not get in may have been locked out by failed
+      // attempts. Clear that too, or the new password fails on first use.
+      failedLogins: 0,
+      lockedUntil: null,
+      updatedAt: new Date(),
+    })
+    .where(eq(users.id, found.userId));
+
+  await db
+    .update(passwordResets)
+    .set({ usedAt: new Date() })
+    .where(eq(passwordResets.tokenHash, hashResetToken(token)));
+
+  // Every existing session dies. If the account was reached by someone else,
+  // this is the moment that access ends; the owner logs in fresh below.
+  await revokeAllSessions(found.userId);
+  await audit(found.userId, 'auth.password_reset', 'user', found.userId);
+
+  redirect('/login?reset=1');
 }
