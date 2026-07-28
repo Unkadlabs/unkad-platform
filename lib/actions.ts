@@ -615,7 +615,9 @@ export async function verifyBatch(formData: FormData): Promise<void> {
   await audit(reviewer.id, 'review.batch_verified', 'submission', undefined, {
     count: verified,
   });
-  redirect(`/review?verified=${verified}`);
+  // In place. The verify queue is worked top to bottom in long passes, and the
+  // redirect reset scroll on every batch.
+  revalidatePath('/review');
 }
 
 // A linguist can overturn a peer-accepted item that is actually wrong.
@@ -636,7 +638,7 @@ export async function overturnSubmission(id: string, _formData: FormData): Promi
     .where(eq(submissions.id, id));
 
   await audit(reviewer.id, 'review.overturned', 'submission', id);
-  redirect('/review');
+  revalidatePath('/review');
 }
 
 export async function addSource(formData: FormData): Promise<void> {
@@ -894,8 +896,12 @@ async function applyRuling(
     author: authorId,
   });
 
+  // Refresh in place, no redirect. The redirect was a full navigation, which
+  // reset scroll to the top of a page hundreds of cards long; whoever was
+  // ruling item forty then scrolled back down to find item forty-one, on every
+  // single click. With a bare revalidate the card's status chip changes under
+  // the cursor, which is better feedback than the banner the redirect bought.
   revalidatePath(back);
-  redirect(`${back}?ruled=${changed}&decision=${decision}`);
 }
 
 // Correcting a submission instead of discarding it.
@@ -975,8 +981,10 @@ export async function reviseSubmission(id: string, formData: FormData): Promise<
     note,
   });
 
+  // In place, same reason as applyRuling: the fix happens mid-list during a
+  // review pass, and a redirect threw the reviewer back to the top. The card
+  // showing the corrected text and a pending chip is the confirmation.
   revalidatePath(back);
-  redirect(`${back}?revised=1`);
 }
 
 // ---- Password resets --------------------------------------------------------
