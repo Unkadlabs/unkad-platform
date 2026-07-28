@@ -73,52 +73,30 @@ const FROM = env.EMAIL_FROM_BULK ?? 'Unkad <no-reply@unkad.com>';
 const local = /localhost|127\.0\.0\.1/.test(cs);
 const pool = new Pool({ connectionString: cs, ssl: local ? undefined : { rejectUnauthorized: false } });
 
-// !! VERIFY SOMALI !! Founder review required before this reaches anyone.
+// The founder's own words, verbatim, 28 Jul. One message for everyone: the
+// two-variant draft was retired because his single text covers both asks,
+// writing and validating, in his own voice. Do not edit the Somali here;
+// changes go through him.
 //
-// Two audiences, because they are not in the same situation and one message
-// for both would be wrong for each. Someone who has never written needs an
-// invitation. Someone who returns to validate other people's Somali but has
-// never written their own has already shown up; they need a smaller ask, not a
-// louder one.
+// The subject is the campaign name rather than composed Somali, so the one
+// line he did not write is one that already exists everywhere on the platform.
+// The unsubscribe line is the single remaining non-founder Somali string; it
+// shipped in the drafts he reviewed.
+const FOUNDER_BODY = (unsub) => `Asalaamu Calaykum
+
+Mudane/Marwo waan kaaga mahad celineynaa sida wanaagsan ee aad oogu soo biirtay mareegtan iyo sida wanaagsan ee aad kaaga qeyb qaadatay olalahan lagu horumarinayo af somaliga si loo helo jumlado saxan oo somali ah nadiifna ah si loogu isticmaalo taba barida garaad gacmeedka.
+
+waxaan kaa rajayneynaa inaad marar badan na soo booqato mareegtan kuna biiriso jumlado cuusb, turjumid jumlado english ah oo meesha yaala, ama u codeynta tayada qoraalada kale. aad baan kaaga mahad celineyna markale sida wanaagsan ee aad ugu soo biirtay mareegtan
+
+${BASE}/contribute
+
+Unkad Labs
+
+Jooji iimaylada: ${unsub}`;
+
 const COPY = {
-  silent: {
-    subject: 'Hal jumlad ayaa ku filan',
-    body: (h, unsub) => `Salaan ${h},
-
-Waad ku biirtay Qor Af-Soomaali, waana ku mahadsan tahay.
-
-Waxaan jeclaan lahayn inaad mar kale soo booqato oo aad ka qeyb qaadato qorista Af-Soomaaliga. Hal jumlad ayaa ku filan.
-
-Wax kasta oo aad qorto waxay noqonaysaa qeyb ka mid ah keyd Af-Soomaali ah oo furan, oo qof kastaa isticmaali karo.
-
-${BASE}/contribute/free
-
-Haddii aad rabto in lagugu soo wargeliyo horumarka mashruuca, hubi in iimaylkaagu sax yahay:
-${BASE}/account
-
-Mahadsanid,
-Unkad Labs
-
-Jooji iimaylada: ${unsub}`,
-  },
-  validator: {
-    subject: 'Waad akhrisay. Hadda qor hal jumlad.',
-    body: (h, unsub) => `Salaan ${h},
-
-Waad na caawisay adigoo akhrinaya oo ansixinaya jumladaha dadka kale. Taasi aad bay muhiim u tahay.
-
-Hadda waxaan jeclaan lahayn inaad adigu qorto hal jumlad. Waqti badan kama qaadanayso.
-
-${BASE}/contribute/free
-
-Haddii aad rabto in lagugu soo wargeliyo horumarka mashruuca, hubi in iimaylkaagu sax yahay:
-${BASE}/account
-
-Mahadsanid,
-Unkad Labs
-
-Jooji iimaylada: ${unsub}`,
-  },
+  silent: { subject: 'Qor Af-Soomaali', body: (h, unsub) => FOUNDER_BODY(unsub) },
+  validator: { subject: 'Qor Af-Soomaali', body: (h, unsub) => FOUNDER_BODY(unsub) },
 };
 
 const { rows } = await pool.query(
