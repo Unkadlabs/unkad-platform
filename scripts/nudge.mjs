@@ -93,7 +93,7 @@ ${BASE}/contribute
 
 Unkad Labs
 
-Jooji iimaylada: ${unsub}`;
+Sidoo kale waad iska joojin kartaa in iimeyladan kusoo gaaraan: ${unsub}`;
 
 const COPY = {
   silent: { subject: 'Qor Af-Soomaali', body: (h, unsub) => FOUNDER_BODY(unsub) },
