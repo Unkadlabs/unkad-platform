@@ -17,7 +17,8 @@
 //   opted out          never mailed again, no exceptions
 //   hard bounced       never retried; repeatedly mailing a dead address is
 //                      what convinces a provider the sender is careless
-//   NUDGE_MAX_TIMES    someone who has ignored four asks has answered
+//   NUDGE_MAX_TIMES    safety ceiling on total asks per person (default high:
+//                      the exit from a recurring reminder is unsubscribe)
 //   NUDGE_MIN_DAYS     minimum quiet period per person
 //   NUDGE_DAILY_CAP    ceiling per run, kept under the provider allowance so
 //                      password resets always have headroom
@@ -36,7 +37,7 @@ import path from 'path';
 const SEND = process.argv.includes('--send');
 
 const MIN_DAYS = Number(process.env.NUDGE_MIN_DAYS ?? 3);
-const MAX_TIMES = Number(process.env.NUDGE_MAX_TIMES ?? 4);
+const MAX_TIMES = Number(process.env.NUDGE_MAX_TIMES ?? 365);
 // Under Resend's 100/day free allowance, leaving room for resets. Bulk mail
 // must never be able to consume the quota a locked-out user depends on.
 const DAILY_CAP = Number(process.env.NUDGE_DAILY_CAP ?? 40);
@@ -110,10 +111,12 @@ const { rows } = await pool.query(
       and u.email_bounced_at is null
       and coalesce(u.nudge_count, 0) < $1
       and (u.last_nudge_at is null or u.last_nudge_at < now() - ($2 || ' days')::interval)
-      -- The ask is "write something", so anyone who has is not the audience.
-      and not exists (select 1 from submissions s where s.user_id = u.id)
-      -- Give a new arrival a night before chasing them. Someone who signed up
-      -- an hour ago has not ignored anything yet.
+      -- Everyone who joined, by the founder's decision on 28 Jul: this is a
+      -- community reminder on a three-day rhythm, not a chase of the silent.
+      -- Contributors who are already active receive it too; his text thanks
+      -- them rather than nags, and the unsubscribe is one click.
+      -- Give a new arrival a night before the first mail. Someone who signed
+      -- up an hour ago has not had time to need reminding.
       and u.created_at < now() - interval '12 hours'
     order by u.created_at asc
     limit $3`,
