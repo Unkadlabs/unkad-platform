@@ -372,3 +372,136 @@ general	instructional	numbers	Count the change twice before leaving the counter.
 general	formal	time	Punctuality is a quiet form of respect.
 general	conversational	weather	The wind changed in the afternoon, and everyone said the rains were close.
 general	narrative	morning	The city wakes in stages: first the bakers, then the buses, then everyone else.
+law	instructional	police	Ask for the officer's name and badge number, and write them down calmly.
+law	formal	consumer	A shop must take back goods that were faulty when they were sold.
+law	conversational	tenancy	The landlord wants the room back in June, but the agreement runs to September.
+law	formal	elections	Every citizen's vote counts once, and the count must be public.
+law	technical	tax	A receipt is proof of payment; keep every one for three years.
+law	instructional	id	Report a lost identity card before anyone can misuse it in your name.
+law	conversational	elders	The elders sat under the tree from morning until the dispute was settled.
+law	formal	property	A sale of land is not complete until it is recorded with the authority.
+law	narrative	trial	The young lawyer stood for her first client, voice shaking, argument solid.
+law	instructional	contracts	Cross out any blank spaces in a contract before signing, so nothing can be added later.
+law	formal	assembly	People may gather peacefully; violence is where the right ends.
+law	conversational	fine	He paid the traffic fine the same day, complaining the whole way to the counter.
+law	technical	evidence	A photograph is stronger evidence when it shows the date and the place.
+law	formal	privacy	Reading another person's messages without consent is a violation, even inside a family.
+law	instructional	dispute	Try written communication first; a dated letter is calmer than a shouted argument.
+law	conversational	shop	The two partners disagreed about the till, so they hired a bookkeeper both of them trust.
+law	formal	minors	A contract signed by a child has no force in law.
+law	narrative	release	After the ruling, the family waited at the gate with new clothes for him.
+law	technical	registry	The registry assigns each parcel of land a number that never changes.
+law	instructional	witness2	If you fear for your safety as a witness, tell the court before the hearing.
+law	formal	pay	Wages must be paid on the agreed day, in full, without unexplained deductions.
+law	conversational	borrow	She lent the sewing machine to her cousin, and now the whole family is in the discussion.
+law	formal	duty	The law binds officials more strictly than citizens, not less.
+law	instructional	reporting2	Keep copies of everything you submit to any office, stamped with the date.
+law	narrative	archive	The clerk found the fifty-year-old title deed in a tin trunk, intact.
+media	instructional	photo	Ask permission before photographing a person, and honour a no.
+media	formal	corrections	A visible correction builds more trust than a quiet deletion.
+media	conversational	rumor	The rumour reached the market before breakfast and the radio had to answer it by noon.
+media	technical	studio	Test the microphone and the backup recorder before the guest arrives.
+media	narrative	drama	The whole street knew the radio drama's characters like neighbours.
+media	formal	balance	Give the accused the chance to answer, in the same report that accuses them.
+media	instructional	caption	A caption should say who is in the picture, where, and when.
+media	conversational	press	The young reporter laminated her first press card the day it was issued.
+media	technical	live	During a live broadcast, keep one line open for the studio to reach you.
+media	formal	minors2	Do not name a child in a report that could follow them for life.
+media	narrative	deadline	Two minutes to air, and the lead story was still being typed.
+media	instructional	sources2	Save the original document, not only your notes about it.
+media	conversational	podcast2	They record the fishing podcast on Thursdays, when the boats stay in.
+media	formal	ownership	Listeners deserve to know who owns the station they trust.
+media	technical	signal	The repeater on the hill carries the signal to the valley towns.
+media	instructional	fact	Numbers need sources; "many" and "some" need examples.
+media	conversational	tv	The generator hums through the evening news and everyone pretends not to hear it.
+media	formal	silence	What a newsroom chooses not to cover shapes the town as much as what it prints.
+media	narrative	first	Her first byline was one paragraph about a broken water pipe, and she kept the clipping.
+media	instructional	social	Read the whole article before sharing it; headlines are not summaries.
+media	formal	training	A newsroom that trains juniors is building its own future editors.
+media	conversational	sport2	The referee's decision fed the call-in show for a full week.
+media	technical	edit2	Cut the pause, keep the hesitation; one is dead air, the other is honesty.
+media	formal	archive2	Yesterday's broadcast is tomorrow's historical record.
+media	narrative	market	She interviewed the oldest trader in the market, and he spoke for three tapes.
+health	instructional	tb	A cough lasting more than two weeks should be tested, not ignored.
+health	formal	cholera	Cholera moves through water, so the response starts at the well, not the ward.
+health	conversational	elderly	Grandmother takes her tablets with breakfast so nobody forgets, including her.
+health	technical	physio	After the cast comes off, the exercises decide how well the arm returns.
+health	narrative	nurse	The night nurse knew every patient's name and their mother's name too.
+health	instructional	hearing	Cotton buds push wax deeper; leave the ear canal alone.
+health	formal	nutrition2	A child's first thousand days decide much of their whole life's health.
+health	conversational	clinic2	The queue formed before sunrise, and the ticket numbers ran out by eight.
+health	technical	sugar	Diabetics should check their feet daily, because small wounds go unnoticed.
+health	instructional	malaria2	Clear standing water around the house; mosquitoes breed in anything that holds a cup of rain.
+health	formal	mental2	Talking about a problem is treatment, not weakness.
+health	conversational	pharmacy2	The pharmacist refused to sell the antibiotic without a prescription, and she was right.
+health	narrative	vaccine	The vaccination team reached the settlement by donkey cart, cool-box strapped tight.
+health	instructional	pregnancy2	Any bleeding in pregnancy is a reason to go to the clinic the same day.
+health	formal	smoking2	The shopkeeper who quit smoking saves enough each month for a sack of rice.
+health	technical	bp	Blood pressure medicine works only if taken every day, not only on bad days.
+health	instructional	burns2	Never break a blister; it is the body's own clean bandage.
+health	conversational	teeth2	The child lost the first tooth and negotiated its price like a trader.
+health	formal	water2	A covered well and a long-handled cup keep a whole village's water clean.
+health	narrative	recovery2	He walked out of the clinic on the same legs they said he might lose.
+agriculture	instructional	poultry	Keep the chicks warm and dry for the first two weeks; cold kills more than hunger.
+agriculture	formal	sesame	Sesame tolerates drought better than maize and sells for more per sack.
+agriculture	conversational	banana	The banana plots by the river survived the dry year and paid for two weddings.
+agriculture	technical	vaccine2	Vaccinate the whole herd on the same day, and record the date on the shed door.
+agriculture	narrative	well	Three families dug the well together, and three families share its water.
+agriculture	instructional	pests2	Rotate what you plant, and the insects that specialise will starve.
+agriculture	formal	charcoal	An acacia turned to charcoal earns once; standing, it shades fodder every year.
+agriculture	conversational	donkey	The donkey knows the way to the water point better than the boy leading it.
+agriculture	technical	yield	Weigh the harvest each season; memory flatters, scales do not.
+agriculture	instructional	seeds2	Never plant all your seed; keep a reserve for a failed first sowing.
+agriculture	formal	fish2	Drying and salting let the catch travel three days inland.
+agriculture	narrative	locust	The cloud crossed the valley at noon, and by evening the field was stems.
+agriculture	conversational	rain2	Everyone becomes a forecaster when the clouds build in the afternoon.
+agriculture	technical	graft	A grafted mango bears fruit years earlier than one grown from seed.
+agriculture	instructional	fence	A thorn fence costs sweat, not money, and the goats respect it.
+agriculture	formal	coop2	The cooperative's truck takes everyone's milk to town while it is still cold.
+agriculture	conversational	sheep2	The ram won the argument with the fence, and the fence lost a post.
+agriculture	narrative	planting	The whole family planted the field in one long morning, oldest to youngest.
+agriculture	technical	storage2	A sealed drum with a handful of ash keeps beans safe for a year.
+agriculture	instructional	milk2	Cool the milk fast; the first two hours decide whether it reaches town sweet.
+culture	narrative	shax	The old men play shax with stones and lines drawn in the dust, and mercy is not among the rules.
+culture	conversational	henna	The night before the wedding, the house smelled of henna and nobody slept.
+culture	formal	oral	A people's history can be carried entirely by voice, if the voices keep telling it.
+culture	instructional	incense	Light the dabqaad after the meal, and carry it through every room.
+culture	narrative	naming	On the seventh day the child was named after her grandmother, and the ululation reached the street.
+culture	conversational	milkcustom	The first cup of camel milk goes to the guest, however small the vessel.
+culture	formal	dance	Each region's dance tells you where a person grew up before they say a word.
+culture	instructional	story	Begin the tale the old way, "Sheeko sheeko...", and the children will settle by themselves.
+culture	narrative	drought2	In the worst year, the poets made verses about rain until it came.
+culture	conversational	respect	She stood when her aunt entered, without thinking, the way she was raised.
+culture	formal	diaspora	The songs travel with the diaspora and come home with new instruments.
+culture	instructional	weave2	Teach the pattern by hand over hand, the way it was taught to you.
+culture	narrative	sea	The coast people read the sea's moods the way herders read clouds.
+culture	conversational	nickname	Nobody remembers his real name; the nickname his grandmother gave him won.
+culture	formal	proverb2	A proverb is a library that fits in a sentence.
+technology	instructional	spreadsheet	Put each expense in its own row, and the month explains itself.
+technology	conversational	elearning	She finished the accounting course on her phone, one lesson per bus ride.
+technology	formal	simcard	Registering the SIM in your own name protects you if the number is misused.
+technology	technical	cooling	Electronics fail young in heat; shade and airflow are maintenance.
+technology	narrative	repairshop	The repair stall fixes in an hour what the city shop quotes a week for.
+technology	instructional	scam2	No real company asks for your PIN; the moment they ask, hang up.
+technology	conversational	wifi2	The cafe's wifi password is the year the owner's team last won the league.
+technology	formal	access	A ramp at the door and a screen reader on the site are the same kind of access.
+technology	technical	solar2	Point the panel where the noon sun stands, and wipe the dust weekly.
+technology	instructional	backup2	One copy at home and one in the cloud; fire cannot reach both.
+technology	conversational	group	The family group chat solved in an hour what letters once took a month to arrange.
+technology	formal	jobs	Typing, translating, and design are exports that need no port.
+technology	technical	network2	When everyone streams at dusk, the whole neighbourhood's connection kneels.
+technology	instructional	password2	A sentence you can remember beats a symbol soup you must write down.
+technology	narrative	firstphone	Her first phone arrived with one bar of charge and changed the shape of her week.
+education	instructional	special	A child who learns differently is not learning less; adjust the road, not the destination.
+education	formal	meals	A school meal is an education policy disguised as lunch.
+education	conversational	library	The new library has three shelves and a waiting list for every shelf.
+education	narrative	chalk	He wrote until the chalk was a crumb, then sharpened his sentence instead.
+education	technical	training	A teacher observed and coached improves faster than one merely inspected.
+education	instructional	kindergarten	Play is the curriculum before seven; the letters can wait for the bell.
+education	formal	fees	When fees rise, the girls leave first; every budget is a policy about daughters.
+education	conversational	exam2	The whole house went quiet for exam week, even the radio.
+religion	formal	fasting	The sick, the traveller, and the elderly are excused from fasting.
+religion	conversational	eid	New clothes, early prayer, and the smell of rice from every kitchen.
+religion	formal	orphans	Caring for an orphan is among the most honoured of deeds.
+religion	narrative	quran	The oldest reciter in the mosque learned his first verses under a tree that is no longer there.
+religion	formal	greeting	The greeting of peace is answered with more than it was given.
