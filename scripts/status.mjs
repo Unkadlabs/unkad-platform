@@ -50,9 +50,14 @@ const [subs, agg, prov] = await Promise.all([
   pool.query(`select provenance_cleared_at is not null cleared from users where handle ilike '%sharafdin%'`),
 ]);
 
-let written = 0, peer = 0, verified = 0, pending = 0;
+let written = 0, peer = 0, verified = 0, pending = 0, rejected = 0;
 for (const r of subs.rows) {
   const n = split(r.text_so).filter(usable).length;
+  // Written means the living corpus. Rejected text is counted separately so a
+  // cleanup shows up as a drop in trash, never as inflated progress: the
+  // Telegram-copy purge removed ~150 sentences that a naive total would have
+  // kept presenting as milestone credit.
+  if (r.st === 'rejected') { rejected += n; continue; }
   written += n;
   if (r.ver) verified += n;
   if (r.st === 'accepted' && Number(r.pa) >= 2) peer += n;
@@ -60,7 +65,7 @@ for (const r of subs.rows) {
 }
 
 const a = agg.rows[0];
-console.log(`sentences ${written} · peer-accepted ${peer} · awaiting ${pending} · verified ${verified}`);
+console.log(`sentences ${written} live (${rejected} rejected) · peer-accepted ${peer} · awaiting ${pending} · verified ${verified}`);
 console.log(`people ${a.registered} registered · ${a.onboarded} onboarded · ${a.wrote} ever wrote · ${a.opted_out} opted out of mail`);
 console.log(`last 24h: ${a.subs24} subs from ${a.writers24} writers · ${a.votes24} votes · ${a.signups24} signups`);
 console.log(`releases ${a.releases} · sharafdin flag ${prov.rows[0]?.cleared ? 'CLEARED' : 'open'}`);
