@@ -257,3 +257,118 @@ religion	conversational	ramadan	During the fasting month, the family wakes befor
 religion	formal	pilgrimage	Every year, pilgrims from all over the world travel to the holy city.
 religion	narrative	teaching	The children memorise verses in the morning and learn their meanings in the afternoon.
 religion	formal	tolerance	Respect for a neighbour's faith is a mark of good character.
+technology	conversational	mobilemoney	He sent the school fees through his phone while waiting for the bus.
+technology	instructional	mobilemoney	Check the confirmation message carefully before you agree to any transfer.
+technology	formal	ai	A computer program that writes fluent text can still be confidently wrong.
+technology	conversational	ai	My nephew asked the chatbot to write his homework, and the teacher noticed immediately.
+technology	technical	hardware	The router needs a stable power supply, or the connection will drop every few minutes.
+technology	instructional	repair	Back up the photos before you hand the phone to the repair shop.
+technology	formal	digital	A digital identity card cannot be lost in a house fire the way a paper one can.
+technology	conversational	socialmedia	She blocked the account after it kept sending her strange links.
+technology	technical	software	The update failed because the phone had less than one gigabyte of free storage.
+technology	instructional	security	Turn on two-step verification so a stolen password alone cannot open your account.
+technology	narrative	internet	The first internet cafe in the district had six computers and a queue that went around the corner.
+technology	formal	work	Many young people now earn a living online, translating, designing, and writing for clients they have never met.
+technology	conversational	battery	The power went out at noon, so everyone gathered where the generator was running.
+technology	technical	data	The survey answers are stored in a spreadsheet with one row for each family.
+technology	instructional	typing	Practise typing Somali with the accented letters, so your writing keeps its correct sounds.
+technology	formal	science	Satellites can measure how much the pasture has dried weeks before the animals feel it.
+technology	conversational	games	The boys play football outside in the afternoon and football on the phone at night.
+technology	technical	electricity	The inverter changes the battery's direct current into the alternating current the fridge needs.
+technology	instructional	photos	Delete the blurred copies and keep one good photograph of each document.
+technology	formal	future	A child learning to code today is learning to give precise instructions, which is useful far beyond computers.
+law	formal	marriage	A marriage should be registered so that both partners can prove it later if they need to.
+law	conversational	inheritance	The brothers asked the judge to divide their father's shop fairly between them.
+law	instructional	accident	After a road accident, write down the other driver's name and the number plate before anything else.
+law	formal	labor	A worker who is injured doing their job has a right to treatment and compensation.
+law	technical	procedure	The case file must contain the complaint, the evidence, and the statements of both parties.
+law	conversational	land	Our neighbour moved his fence during the night, and now the elders are involved.
+law	formal	women	The law protects a woman's right to own property in her own name.
+law	instructional	agreement	Put the payment dates in writing, even when the agreement is between friends.
+law	narrative	court	The courtroom was full, but the judge spoke so quietly that everyone leaned forward to hear.
+law	formal	children	A child accused of a crime must be treated differently from an adult, with education as the goal.
+law	conversational	debt	He paid back half the loan and promised the rest after the harvest.
+law	technical	appeal	The appeal must state which part of the judgment is challenged and on what grounds.
+law	formal	business	A partnership agreement should say clearly how profits and losses are shared.
+law	instructional	documents	Never sign a paper you have not read, even if the queue behind you is long.
+law	formal	rights	No official may demand payment for a service the law says is free.
+media	formal	verification	A photograph can be real and still misleading, if it is from a different time or place.
+media	conversational	radio	My grandfather trusts the seven o'clock bulletin more than anything on the internet.
+media	instructional	writing	Put the most important fact in the first sentence, because many readers stop there.
+media	technical	audio	Record in a quiet room and keep the microphone a hand's width from the speaker's mouth.
+media	formal	responsibility	Publishing a rumour spreads it further, even when the report calls it a rumour.
+media	narrative	newsroom	At sunset the newsroom went quiet, everyone typing toward the evening deadline.
+media	conversational	television	The children argue about cartoons while their mother waits for the news.
+media	instructional	interview	Confirm the spelling of every name before the guest leaves the studio.
+media	formal	women	Newsrooms with women editors cover stories that male-only newsrooms simply do not see.
+media	technical	publishing	Schedule the post for the morning, when people check their phones over breakfast.
+media	conversational	sports	The whole cafe erupted when the commentator announced the goal.
+media	formal	archives	Old recordings are history; a station that erases its tapes erases part of the country's memory.
+media	instructional	safety	A journalist covering a protest should agree on a check-in time with the editor beforehand.
+media	narrative	printing	The smell of ink filled the room as the first copies came off the press.
+media	formal	language	Broadcasting in plain Somali reaches farmers, teachers, and traders alike.
+health	conversational	sleep	He blames the coffee, but it is the phone that keeps him awake past midnight.
+health	instructional	wound	Clean the cut with boiled, cooled water and cover it with a clean cloth.
+health	formal	prevention	Preventing an illness is almost always cheaper than treating it.
+health	technical	heart	Chest pain that spreads to the arm or jaw needs a hospital immediately, not tomorrow.
+health	conversational	teeth	The dentist told her to brush twice a day, and she bought the children new brushes on the way home.
+health	instructional	fever	Give plenty of fluids and light clothing, and seek care if the fever passes three days.
+health	formal	mothers	A skilled attendant at every birth is the single change that saves the most mothers.
+health	technical	medicine	Antibiotics kill bacteria; they do nothing against the viruses that cause colds and flu.
+health	narrative	recovery	Every morning she walked a little further along the hospital corridor, counting the windows.
+health	conversational	food	The doctor said less sugar in the tea, and the whole family complained for a week.
+health	instructional	eyes	Rest your eyes by looking at something far away for a minute after every hour of screen work.
+health	formal	vaccination	When enough children are vaccinated, even the unvaccinated are protected.
+health	technical	asthma	Dust, smoke, and cold air can each trigger an asthma attack in a sensitive chest.
+health	conversational	exercise	They walk the long way to the mosque now, on the doctor's advice.
+health	instructional	poison	If a child swallows a cleaning product, take the bottle with you to the clinic.
+education	formal	purpose	A school teaches children not only facts, but how to sit with a problem until it opens.
+education	conversational	morning	The children leave at six because the school is an hour's walk and lessons start at seven.
+education	instructional	exams	Sleep the night before an exam; a tired mind loses more marks than an unread chapter.
+education	technical	teaching	A lesson plan states what the students should be able to do by the end of the hour.
+education	narrative	teacher	He taught three generations of the same family, and the youngest now teaches beside him.
+education	formal	adult	It is never too late; the oldest student in the literacy class is sixty-eight.
+education	conversational	homework	She does her homework by lamplight and checks her brother's afterwards.
+education	instructional	reading	Ask the child what might happen next in the story, before turning the page.
+education	formal	vocational	Carpentry, tailoring, and electrical work are educations that pay for themselves quickly.
+education	technical	assessment	Marks measure one kind of ability; patience and honesty are examined only by life.
+education	conversational	university	Her scholarship covers the fees, and her aunt covers the bus fare.
+education	instructional	notes	Write notes in your own words; copying the board teaches your hand, not your head.
+education	formal	girls	A school with a safe latrine keeps its older girls enrolled.
+education	narrative	graduation	The whole neighbourhood came to see the first graduate the street had ever produced.
+education	formal	language	Children learn fastest in the language they dream in.
+agriculture	conversational	milk	The milk is sweeter this month because the herd found new grass after the rain.
+agriculture	instructional	goats	Trim the hooves before the wet season, or the animals will go lame in the mud.
+agriculture	formal	drought	Selling some animals early in a drought saves the rest of the herd.
+agriculture	technical	soil	Dark, crumbly soil that smells fresh holds more water than pale, dusty ground.
+agriculture	narrative	fishing	The boats went out before dawn and came back low in the water, heavy with sardines.
+agriculture	conversational	market	Prices double in town, but so does the cost of getting there.
+agriculture	instructional	maize	Store the cobs off the ground and check weekly for weevils.
+agriculture	formal	bees	Beekeeping needs little land and turns flowering trees into income.
+agriculture	technical	irrigation	A canal loses water at every crack; a pipe delivers nearly all of it.
+agriculture	conversational	camels	The young camel refuses the load, and everyone has an opinion about whose fault that is.
+agriculture	instructional	tomatoes	Pick tomatoes in the cool of the morning and keep them out of the sun.
+agriculture	formal	cooperative	Twenty farmers selling together can bargain in a way one farmer cannot.
+agriculture	narrative	rain	The first drops hit the dust like small hammers, and the children ran out shouting.
+agriculture	technical	fodder	Chopped and dried, the maize stalks feed the animals long after the grain is eaten.
+agriculture	conversational	sheep	Before the holiday, every conversation in the market is about the price of sheep.
+culture	narrative	poetry	He recited the poem his mother taught him, and the room went completely still.
+culture	conversational	tea	No conversation truly starts until the tea is poured.
+culture	formal	names	A Somali name carries the father's name and the grandfather's, so a person walks with their history.
+culture	instructional	weaving	Soak the reeds overnight so they bend without cracking.
+culture	narrative	nomad	They folded the house onto the camel's back in the morning and raised it again by evening, a day's walk away.
+culture	conversational	wedding	The women sang the old songs, and even the shy uncle danced.
+culture	formal	proverbs	A proverb settles an argument faster than an hour of shouting.
+culture	narrative	stars	The elders read the seasons in the stars and named each one.
+culture	conversational	clothes	She saved for months for the fabric, and the tailor finished it the night before the celebration.
+culture	formal	hospitality	A guest is served first, even when the pot is nearly empty.
+religion	formal	knowledge	Seeking knowledge is a duty for every person, young and old.
+religion	conversational	friday	The market empties before the midday prayer and fills again after it.
+religion	formal	honesty	A trader who is honest about a fault in his goods is blessed in his earnings.
+religion	narrative	teaching	The teacher wrote the verse on the wooden board, and the children traced it letter by letter.
+religion	formal	neighbours	Kindness to neighbours is part of faith, whoever they are.
+general	conversational	directions	Turn left at the big acacia tree and ask again at the shops.
+general	instructional	numbers	Count the change twice before leaving the counter.
+general	formal	time	Punctuality is a quiet form of respect.
+general	conversational	weather	The wind changed in the afternoon, and everyone said the rains were close.
+general	narrative	morning	The city wakes in stages: first the bakers, then the buses, then everyone else.
