@@ -233,6 +233,21 @@ export async function submitContribution(formData: FormData): Promise<void> {
   const [prompt] = await db.select().from(prompts).where(eq(prompts.id, promptId));
   if (!prompt || !prompt.active) redirect(`/contribute/${mode}?error=unavailable${sectorQs}`);
 
+  // One answer per person per prompt. A contributor answered the same prompt
+  // thirteen times in four minutes: a slow phone connection swallowed the
+  // redirect, the page never advanced, and every extra tap on submit posted
+  // the same stale form again. Each post succeeded, so he was never told
+  // anything was wrong, and reviewers then met the same sentence thirteen
+  // times. The resubmit is treated as the success it already was, not an
+  // error: the first submission is real, and the person retrying deserves
+  // the same "done" they should have seen the first time.
+  const [already] = await db
+    .select({ id: submissions.id })
+    .from(submissions)
+    .where(and(eq(submissions.userId, user.id), eq(submissions.promptId, prompt.id)))
+    .limit(1);
+  if (already) redirect(`/contribute/${prompt.mode}?done=${prompt.id}${sectorQs}`);
+
   await db.insert(submissions).values({
     promptId: prompt.id,
     userId: user.id,
@@ -268,6 +283,17 @@ export async function submitFreeWrite(formData: FormData): Promise<void> {
   if (!sector) redirect('/contribute/free?error=sector');
   if (textSo.length < 10) redirect('/contribute/free?error=short');
 
+  // Free write has no prompt to key idempotency on, so the text itself is the
+  // key: the same person posting the identical text again is a double-tap or a
+  // stale page, not a second contribution. Treated as the success it already
+  // was, same as the prompted modes.
+  const [dup] = await db
+    .select({ id: submissions.id })
+    .from(submissions)
+    .where(and(eq(submissions.userId, user.id), eq(submissions.textSo, textSo)))
+    .limit(1);
+  if (dup) redirect('/contribute/free?done=free');
+
   await db.insert(submissions).values({
     promptId: null,
     userId: user.id,
@@ -296,6 +322,14 @@ export async function submitProverb(formData: FormData): Promise<void> {
   if (proverb.length < 5 || translation.length < 5 || meaning.length < 10) {
     redirect('/contribute/proverb?error=short');
   }
+
+  // Same text from the same person is a resubmit, not a second proverb.
+  const [dup] = await db
+    .select({ id: submissions.id })
+    .from(submissions)
+    .where(and(eq(submissions.userId, user.id), eq(submissions.textSo, proverb)))
+    .limit(1);
+  if (dup) redirect('/contribute/proverb?done=1');
 
   await db.insert(submissions).values({
     promptId: null,

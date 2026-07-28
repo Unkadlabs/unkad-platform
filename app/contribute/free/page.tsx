@@ -10,6 +10,7 @@ import { submitFreeWrite } from '@/lib/actions';
 import { prompts } from '@/lib/schema';
 import SomaliTextarea from '@/components/SomaliTextarea';
 import ClearDraft from '@/components/ClearDraft';
+import SubmitButton from '@/components/SubmitButton';
 
 const ERROR_KEY = { short: 'errShort', cap: 'errCap', sector: 'errSector' } as const;
 
@@ -76,9 +77,7 @@ export default async function FreeWritePage({ searchParams }: Props) {
         <p className="hint">{t('minLength')}</p>
 
         <div className="btn-row" style={{ maxWidth: '26rem' }}>
-          <button className="btn" type="submit">
-            {t('submit')}
-          </button>
+          <SubmitButton label={t('submit')} />
         </div>
       </form>
     </div>

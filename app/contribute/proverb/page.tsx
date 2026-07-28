@@ -5,6 +5,7 @@ import { makeT } from '@/lib/i18n';
 import { submitProverb } from '@/lib/actions';
 import SomaliTextarea from '@/components/SomaliTextarea';
 import ClearDraft from '@/components/ClearDraft';
+import SubmitButton from '@/components/SubmitButton';
 
 const ERROR_KEY = { short: 'errShort', cap: 'errCap' } as const;
 
@@ -71,9 +72,7 @@ export default async function ProverbPage({ searchParams }: Props) {
           />
         </div>
         <div className="btn-row" style={{ maxWidth: '26rem' }}>
-          <button className="btn" type="submit">
-            {t('submit')}
-          </button>
+          <SubmitButton label={t('submit')} />
         </div>
       </form>
     </div>

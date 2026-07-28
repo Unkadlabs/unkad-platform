@@ -9,6 +9,7 @@ import { prompts } from '@/lib/schema';
 import SomaliTextarea from '@/components/SomaliTextarea';
 import Editor from '@/components/Editor';
 import ClearDraft from '@/components/ClearDraft';
+import SubmitButton from '@/components/SubmitButton';
 
 const MODES = ['write', 'translate', 'transcribe'] as const;
 type Mode = (typeof MODES)[number];
@@ -205,9 +206,7 @@ export default async function ContributeModePage({ params, searchParams }: Props
               </>
             )}
             <div className="btn-row" style={{ maxWidth: '26rem' }}>
-              <button className="btn" type="submit">
-                {t('submit')}
-              </button>
+              <SubmitButton label={t('submit')} />
               <Link className="btn btn-quiet" href={sectorHref(sector)}>
                 {t('skip')}
               </Link>
