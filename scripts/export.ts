@@ -20,6 +20,7 @@ import path from 'path';
 import { and, eq, isNull, sql } from 'drizzle-orm';
 import { db } from '../lib/db';
 import { submissions, prompts, users, releases } from '../lib/schema';
+import { normalizeForRelease, needsNormalizing } from '../lib/normalize';
 
 const HF_ORG = process.env.HF_ORG ?? 'unkadlabs';
 const HF_DATASET = process.env.HF_DATASET ?? 'qor-af-soomaali';
@@ -51,12 +52,18 @@ async function main() {
     process.exit(0);
   }
 
+  // Published text is normalised; the stored row is not. Phone keyboards and
+  // chat apps substitute curly apostrophes, non-breaking hyphens and
+  // non-breaking spaces, which read identically and tokenize differently, so a
+  // model answering with ordinary punctuation would score wrong against them.
+  const touched = rows.filter(({ s }) => needsNormalizing(s.textSo)).length;
+
   const records = rows.map(({ s, p }) => ({
     id: s.id,
-    text_so: s.textSo,
-    text_en: s.textEn ?? null,
+    text_so: normalizeForRelease(s.textSo),
+    text_en: s.textEn ? normalizeForRelease(s.textEn) : null,
     // Proverbs carry an explanation of meaning and usage; other modes don't.
-    meaning_en: s.meaningEn ?? null,
+    meaning_en: s.meaningEn ? normalizeForRelease(s.meaningEn) : null,
     mode: s.mode,
     register: p?.register ?? null,
     sector: s.sector ?? p?.sector ?? 'general',
@@ -95,7 +102,11 @@ async function main() {
       register: p.register ?? null,
       refs: [],
     };
-    g.refs.push({ text_so: sub.textSo, dialect: sub.dialect ?? null, verified: sub.verifiedAt !== null });
+    g.refs.push({
+      text_so: normalizeForRelease(sub.textSo),
+      dialect: sub.dialect ?? null,
+      verified: sub.verifiedAt !== null,
+    });
     groups.set(sub.promptId, g);
   }
 
@@ -106,8 +117,11 @@ async function main() {
       references_so: g.refs.map((r) => r.text_so),
       n_references: g.refs.length,
       // Distinct renderings, so a reader can tell genuine variation from
-      // several people arriving at the same sentence.
-      n_distinct: new Set(g.refs.map((r) => r.text_so.trim())).size,
+      // several people arriving at the same sentence. Counted on normalised,
+      // case-folded text: three people writing the same words with different
+      // capitalisation are agreement, not variation, and counting them as
+      // three references would overstate how much the corpus actually covers.
+      n_distinct: new Set(g.refs.map((r) => r.text_so.trim().toLowerCase())).size,
       dialects: [...new Set(g.refs.map((r) => r.dialect).filter(Boolean))],
       sector: g.sector,
       register: g.register,
@@ -183,6 +197,21 @@ carries provenance: mode, register, sector, and (where shared) the contributor's
 | Sectors | ${sectors.join(', ')} |
 | Quality tier | ${SCOPE === 'verified' ? 'linguist-verified' : 'community-accepted'} |
 | License | CC BY-SA 4.0 |
+
+## Text normalisation
+
+Published text is normalised so that punctuation does not become a source of
+false errors when scoring a model. Phone keyboards and chat applications
+substitute characters that read identically and encode differently: curly
+apostrophes and quotes, non-breaking hyphens and spaces, zero-width
+characters. Those are replaced with their ordinary equivalents, runs of spaces
+are collapsed, and the ellipsis character becomes three dots. ${touched} of
+${records.length} items in this release were affected.
+
+Nothing else is altered. Letters, vowels and the apostrophe marking the Somali
+glottal stop are untouched; en and em dashes are kept, since contributors use
+them deliberately. The platform stores every contribution exactly as it was
+written, so the original text of any item remains recoverable.
 
 ## Fields
 
