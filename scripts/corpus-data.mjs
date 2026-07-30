@@ -8,6 +8,8 @@
 //   node scripts/corpus-data.mjs > /tmp/corpus.json
 
 import { Pool } from 'pg';
+// One definition of a sentence, shared with the app and the exporter.
+import { splitSentences as split, isUsableSentence as usable, countSentences as count } from '../lib/sentences.mjs';
 import fs from 'fs';
 import path from 'path';
 
@@ -29,8 +31,6 @@ const pool = new Pool({
   ssl: /localhost|127\.0\.0\.1/.test(host) ? undefined : { rejectUnauthorized: false },
 });
 
-const split = (r) => (!r ? [] : r.replace(/\r/g, '').split(/(?<=[.!?؟۔])\s+|\n+/).map((s) => s.trim()).filter(Boolean));
-const usable = (s) => s.length >= 10 && s.split(/\s+/).length >= 3;
 
 const { rows } = await pool.query(
   `select u.id, u.handle, u.credit_choice::text cc, u.credit_name,

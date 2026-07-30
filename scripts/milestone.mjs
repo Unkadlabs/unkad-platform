@@ -18,9 +18,10 @@
 // overnight, and the post would claim peer review that never happened. So they
 // are counted apart and only `peer` counts toward the goal.
 //
-// Sentences, not submissions: milestones are stated in sentences, and the split
-// matches lib/sentences.ts exactly. Counting submissions here would report a
-// different number from every other surface.
+// Sentences, not submissions: milestones are stated in sentences, using the
+// shared segmenter in lib/sentences.mjs. This script once carried its own
+// inline copy, which drifted from the app's and reported a different number for
+// the same corpus. Counting submissions instead would be wrong in a second way.
 //
 //   node scripts/milestone.mjs
 //   node scripts/milestone.mjs --json
@@ -30,6 +31,8 @@
 // against production.
 
 import { Pool } from 'pg';
+// One definition of a sentence, shared with the app and the exporter.
+import { splitSentences as split, isUsableSentence as usable, countSentences as count } from '../lib/sentences.mjs';
 import fs from 'fs';
 import path from 'path';
 
@@ -62,13 +65,6 @@ if (!cs) {
 }
 const local = /localhost|127\.0\.0\.1/.test(cs);
 const pool = new Pool({ connectionString: cs, ssl: local ? undefined : { rejectUnauthorized: false } });
-
-// Identical to lib/sentences.ts. Kept inline rather than imported because this
-// runs as a plain script with no TypeScript build step.
-const split = (r) =>
-  !r ? [] : r.replace(/\r/g, '').split(/(?<=[.!?؟۔])\s+|\n+/).map((s) => s.trim()).filter(Boolean);
-const usable = (s) => s.length >= 10 && s.split(/\s+/).length >= 3;
-const count = (t) => split(t).filter(usable).length;
 
 const { rows } = await pool.query(`
   select s.id, s.text_so, s.status::text st, s.created_at,
