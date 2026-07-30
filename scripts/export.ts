@@ -71,8 +71,13 @@ async function main() {
 
   const fresh = rows.filter((r) => r.s.releaseId === null);
 
-  if (fresh.length === 0) {
+  // REPUBLISH exists for corrections: a released version whose files need
+  // fixing has no new items by definition, and refusing to run would leave the
+  // fault published. Items keep the release_id of the version that first
+  // carried them, so republishing never rewrites that history.
+  if (fresh.length === 0 && !process.env.REPUBLISH) {
     console.log(`Nothing new to release (scope: ${SCOPE}); ${rows.length} items already published.`);
+    console.log('Set REPUBLISH=1 to publish a corrected version of the same content.');
     process.exit(0);
   }
 
@@ -217,6 +222,16 @@ async function main() {
   const words = records.reduce((a, r) => a + r.text_so.split(/\s+/).filter(Boolean).length, 0);
   console.log(`Wrote ${sentences.length} sentences to sentences.jsonl`);
 
+  const bySector = sentences.reduce<Record<string, number>>((acc, x) => {
+    acc[x.sector] = (acc[x.sector] ?? 0) + 1;
+    return acc;
+  }, {});
+  const sectorTable = Object.entries(bySector)
+    .sort((a, b) => b[1] - a[1])
+    .map(([k, v]) => `| ${k} | ${v} | ${((v / sentences.length) * 100).toFixed(1)}% |`)
+    .join('\n');
+  const withRegister = sentences.filter((x) => x.register).length;
+
   // ---- 3. Dataset card -------------------------------------------------------
   const sectors = [...new Set(records.map((r) => r.sector))].sort();
   const parallel = records.filter((r) => r.text_en).length;
@@ -255,10 +270,24 @@ carries provenance: mode, register, sector, and (where shared) the contributor's
 | Documents | ${records.length} |
 | New documents in this version | ${fresh.length} |
 | English–Somali parallel pairs | ${parallel} |
-| Sectors | ${sectors.join(', ')} |
+| Sectors | ${sectors.length} |
 | Quality tier | ${SCOPE === 'accepted' ? 'community-accepted' : 'linguist-verified'} |
 | Content | ${SCOPE === 'monolingual' ? 'monolingual Somali (English-paired items held back for a future evaluation set)' : 'Somali, with English source where the item was a translation'} |
 | License | CC BY-SA 4.0 |
+
+## Coverage by domain
+
+Nine domains are represented, but not evenly. The distribution is printed rather
+than summarised, because "nine sectors" is true and would leave a reader to
+discover the imbalance themselves.
+
+| sector | sentences | share |
+|---|---|---|
+${sectorTable}
+
+Long passages are labelled by the sector their author chose, so a single essay
+can contribute many sentences to one domain. Balancing coverage is an explicit
+goal of the ongoing collection.
 
 ## Text normalisation
 
@@ -289,7 +318,9 @@ Both contain the same text. Use whichever unit suits the task.
 ## Fields
 
 \`text_so\` (Somali text) · \`text_en\` (English source, translate mode only) · \`mode\`
-(write/translate/transcribe) · \`register\` (conversational/narrative/instructional/formal/technical)
+(write/translate/transcribe) · \`register\` (conversational/narrative/instructional/formal/technical — present on
+prompted items only, ${withRegister} of ${sentences.length} sentences; free writing carries none because
+nobody assigned it a register)
 · \`sector\` · \`topic\` · \`dialect\` (maxaa_tiri/maay/both/other, if shared) · \`verified\` ·
 \`license\` · \`created_at\`
 
@@ -329,6 +360,11 @@ them.
   in most volunteer language efforts. Per-item authorship is recoverable on request.
 - **Maay is absent.** Every item so far is Maxaa-tiri or unspecified. Somali is not one dialect,
   and a corpus of one dialect should not be read as representing the language.
+- **Sentence segmentation is automatic.** Sentences are split on terminal
+  punctuation and line breaks, then filtered: scriptural quotations in Arabic,
+  bracketed citations and term-equals-gloss glossary lines are excluded, since
+  none is a sentence of Somali. 96 such lines were removed from this version.
+  Speaker-labelled dialogue turns are kept.
 - **Verification granularity varies.** Items were signed off by a reviewer, but longer passages
   were judged as passages rather than sentence by sentence. Sentence-level review is planned.
 - **English pairs are held back.** Translated items are being reserved for a separate held-out
