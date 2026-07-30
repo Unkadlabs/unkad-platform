@@ -21,6 +21,7 @@ import { and, eq, isNull, sql } from 'drizzle-orm';
 import { db } from '../lib/db';
 import { submissions, prompts, users, releases } from '../lib/schema';
 import { normalizeForRelease, needsNormalizing } from '../lib/normalize';
+import { splitSentences, isUsableSentence } from '../lib/sentences';
 
 const HF_ORG = process.env.HF_ORG ?? 'unkadlabs';
 const HF_DATASET = process.env.HF_DATASET ?? 'qor-af-soomaali';
@@ -182,6 +183,40 @@ async function main() {
     '',
   ].join('\n');
 
+  // ---- 2b. Sentence-level view -------------------------------------------------
+  //
+  // Documents are the honest unit of contribution: someone wrote one passage,
+  // and cutting it apart would lose the paragraph structure they intended. But
+  // the corpus is measured in sentences, milestones are stated in sentences,
+  // and most downstream use wants one sentence per row. Shipping both means
+  // nobody has to re-implement the split, and everybody gets the same numbers
+  // this project reports publicly.
+  //
+  // Each sentence keeps its parent document id and its position inside it, so
+  // context is always recoverable: a sentence whose subject was named two
+  // sentences earlier can be read back in place.
+  const sentences = records.flatMap((r) =>
+    splitSentences(r.text_so)
+      .filter(isUsableSentence)
+      .map((text_so, i) => ({
+        id: `${r.id}#${i}`,
+        document_id: r.id,
+        position: i,
+        text_so,
+        mode: r.mode,
+        register: r.register,
+        sector: r.sector,
+        topic: r.topic,
+        dialect: r.dialect,
+        verified: r.verified,
+        license: r.license,
+        created_at: r.created_at,
+      }))
+  );
+  const sentenceJsonl = sentences.map((s) => JSON.stringify(s)).join('\n') + '\n';
+  const words = records.reduce((a, r) => a + r.text_so.split(/\s+/).filter(Boolean).length, 0);
+  console.log(`Wrote ${sentences.length} sentences to sentences.jsonl`);
+
   // ---- 3. Dataset card -------------------------------------------------------
   const sectors = [...new Set(records.map((r) => r.sector))].sort();
   const parallel = records.filter((r) => r.text_en).length;
@@ -198,7 +233,7 @@ tags:
 - community-contributed
 - unkad
 size_categories:
-- ${records.length < 1000 ? 'n<1K' : records.length < 10000 ? '1K<n<10K' : '10K<n<100K'}
+- ${sentences.length < 1000 ? 'n<1K' : sentences.length < 10000 ? '1K<n<10K' : sentences.length < 100000 ? '10K<n<100K' : '100K<n<1M'}
 ---
 
 # Qor Af-Soomaali — the Unkad Somali Corpus (${VERSION})
@@ -215,8 +250,10 @@ carries provenance: mode, register, sector, and (where shared) the contributor's
 
 | | |
 |---|---|
-| Items | ${records.length} |
-| New in this version | ${fresh.length} |
+| Sentences | ${sentences.length} |
+| Words | ${words.toLocaleString('en-US')} |
+| Documents | ${records.length} |
+| New documents in this version | ${fresh.length} |
 | English–Somali parallel pairs | ${parallel} |
 | Sectors | ${sectors.join(', ')} |
 | Quality tier | ${SCOPE === 'accepted' ? 'community-accepted' : 'linguist-verified'} |
@@ -238,6 +275,17 @@ glottal stop are untouched; en and em dashes are kept, since contributors use
 them deliberately. The platform stores every contribution exactly as it was
 written, so the original text of any item remains recoverable.
 
+## Files
+
+\`data/sentences.jsonl\` — one sentence per row, the unit this project counts and
+reports. Each carries \`document_id\` and \`position\`, so the passage it came from
+can be reassembled and read in context.
+
+\`data/train.jsonl\` — one document per row, as it was written. Long passages stay
+whole here, with their paragraph structure intact.
+
+Both contain the same text. Use whichever unit suits the task.
+
 ## Fields
 
 \`text_so\` (Somali text) · \`text_en\` (English source, translate mode only) · \`mode\`
@@ -250,6 +298,43 @@ written, so the original text of any item remains recoverable.
 Contributors explicitly consented to open release under CC BY-SA 4.0 during onboarding and chose
 how to be credited — by name, by pseudonym, or anonymously. See \`CREDITS.md\`.
 
+## Why this dataset exists
+
+Somali is normally collected by scraping. Corpora built that way carry text of unknown
+authorship, unknown licence, and unknown origin, and low-resource web text is heavily polluted
+with machine-translation output, which teaches models to reproduce their own errors.
+
+This corpus was written rather than found. Every sentence has a known author who agreed to
+CC BY-SA 4.0 before writing it and chose how to be credited. Nothing here was scraped, and
+nothing was machine translated.
+
+That claim is enforced rather than asserted. During collection, one contributor's submissions
+were found to be forwarded messages copied from a Telegram channel; all of them were removed,
+twice, at a cost of roughly 150 sentences and a public milestone. Another contributor who pasted
+long passages was investigated, gave permission for his own writing directly, and the judgement
+was recorded against his account with the reviewer's name and the date. Where text could not be
+licensed, it was rejected, however good the Somali was.
+
+The corpus also holds knowledge that has no English source to translate from: how frankincense
+is tapped, how a nomadic house is folded onto a camel at dawn, which cup of camel milk goes to
+the guest, how shax is played with stones in the dust.
+
+## Limitations
+
+Stated plainly, because a dataset that hides its weaknesses is worth less than one that names
+them.
+
+- **It is small.** This is an early release from an ongoing collection, not a finished corpus.
+- **Contribution is concentrated.** A minority of contributors wrote a majority of the text, as
+  in most volunteer language efforts. Per-item authorship is recoverable on request.
+- **Maay is absent.** Every item so far is Maxaa-tiri or unspecified. Somali is not one dialect,
+  and a corpus of one dialect should not be read as representing the language.
+- **Verification granularity varies.** Items were signed off by a reviewer, but longer passages
+  were judged as passages rather than sentence by sentence. Sentence-level review is planned.
+- **English pairs are held back.** Translated items are being reserved for a separate held-out
+  evaluation set, so this release is monolingual Somali. Publishing them here would let them be
+  trained on and destroy their value as a benchmark.
+
 ## Citation
 
 If you use this dataset, please cite it and credit the Qor Af-Soomaali contributor community.
@@ -261,6 +346,7 @@ Contact: research@unkad.com · Platform: https://qor.unkad.com
   const outDir = path.join(process.cwd(), 'export', VERSION);
   fs.mkdirSync(path.join(outDir, 'data'), { recursive: true });
   fs.writeFileSync(path.join(outDir, 'data', 'train.jsonl'), jsonl);
+  fs.writeFileSync(path.join(outDir, 'data', 'sentences.jsonl'), sentenceJsonl);
   if (multiRef.length) {
     fs.writeFileSync(path.join(outDir, 'data', 'multi_reference.jsonl'), multiRefJsonl);
   }
@@ -294,6 +380,7 @@ Contact: research@unkad.com · Platform: https://qor.unkad.com
     commitTitle: `Release ${VERSION} (${records.length} items, ${fresh.length} new, ${SCOPE})`,
     files: [
       { path: 'data/train.jsonl', content: new Blob([jsonl]) },
+      { path: 'data/sentences.jsonl', content: new Blob([sentenceJsonl]) },
       ...(multiRef.length
         ? [{ path: 'data/multi_reference.jsonl', content: new Blob([multiRefJsonl]) }]
         : []),
