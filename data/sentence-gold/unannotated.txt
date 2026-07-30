@@ -1,0 +1,596 @@
+# Somali sentence-boundary annotation
+#
+# Insert ||| at every sentence boundary. Change nothing else: not spelling,
+# not wording, not punctuation. Leave mistakes exactly as the writer made them.
+#
+# A boundary is where one complete thought ends and the next begins, whether or
+# not the writer used a full stop. If you are unsure, mark it and add ? on the
+# ITEM line so it can be discussed rather than silently guessed.
+#
+# Do NOT mark a boundary inside: a decimal (1.5), an abbreviation (iwm., Sh.),
+# a quotation that continues, or a line that was wrapped mid-sentence.
+#
+# 40 passages, sampled deterministically across sectors.
+
+ITEM 5055e584-89ed-4b1e-b063-1c02074d29be [health/write]
+Sida ugu caafimadka badan ee gacmaha lo dhaqdo Marka ugu horeesaba wa in biyaha gacmaha lagu dhaqaayo ay yihiin kuwo nadiif ah ok nadaafadooda la ilaaliyay wa inaad gacmaha mariso shaambada loogu Tala galay ee bakteeriyada disha kadibna aad biyo raaciso
+END
+
+ITEM 8c94fb9d-3e90-4367-b14d-6f17c227301d [general/write]
+Cimilada waqtigaan la jooga wa xiligii dayrta roobab waaweyn baana magaalada muqdisho ka da'aya isu socodka gaadiidka sidii hore ma'aha oo way adkaadeen balse saxsansaxada roobka baan wax la siisto jirin
+END
+
+ITEM 7e485a05-c802-4c2e-a540-33a95bba4121 [general/write]
+Layaab! Ma moodeyn in Soomaali ay ilaa heerkaan maangaab noqdeen.
+
+Arrinta Falastiin aan in yar dul istaago:
+
+Falastiin ayaa Soomaaliya soo cayday.
+
+Qadiyada Falastiin waa qadiyad Islaam, ma ahan mid Carbeed ama mid ay Falastiiniyiintu kaliya u taalo. Qof walba oo Muslim ah waa qadiyaddiisa—ha dafiro ama ha yeelo. Sidaas darteed, waa in aan u difaacnaa sidaan Saylac u difaaci lahayn. Falastiin waa muqadas. Intaas aan uga baxo qadiyaddeena.
+
+Dhanka kale, ummad yaa matala?
+
+Ma in yar oo ka mid ah ayaa matasha? Mise hoggaamiyaheeda?
+Horta waa kuma hoggaamiye?
+
+Hoggaamiyuhu waa mid hoggaan ama horseed u ah ummad. Ummaddana waxaa matala hoggaamiyaheeda. Soomaaliya go'aamadeeda iyo taageeradeeda waxaa matala madaxdeeda, ileen iyaga hoggaan u ah e.
+
+Dhanka Falastiin, hoggaamiyaheeda, Ismaaciil Haniyah (Allaha u naxariistee), waxa uu yiri: "Soomaalida waa dadka kaliya waxan dareemayno nala dareemay."
+
+Hadalkaas ayaa ah hadalka Falastiin ay Soomaaliya ka tiri, ee ma ahan in yar waxay dhaheen. Sidoo kalena, haddii aad tihiin kuwa wax akhriya ama documentary dhageysta, mar hore ayaad aragteen in Yahuudu ay leeyihiin qeyb dhan oo barata, daraaseysa luqadda iyo dhaqanka Carabta.
+
+Soomaalida waa ummadda kaliya ee Falastiin si indho la’aan ah u taageersanaa shacab ahaan. Ma idinla tahay in arrinkaas Yahuudu ogol yihiin?
+
+Soomaalida baraha bulshada ku qeylinayay aan u nimaadno:
+
+Waxaa jira laba qeybood:
+
+1️⃣ Kuwa ebelba diin naceyb ku jiray oo Carab naceyb kaaga dhigaayay mashruuc socda ah. Kuwaas waaba kuwa howshooda wata.
+
+2️⃣ Qolo labaad oo iska masakiin ah, aan waxba akhriyin, caqli yarana ku jirin, caqli wax garad ahna aan lahayn. Kuwaas waa kuwa indha-daboolan, oo ay indha dabooleen kuwii diin naceybka Carab naceyb ka dhigaayay. Iyada oo horey indho xernaayeen, ayeey baraha bulshada ku hayaan:
+"Falastiin ayaa na cayday, innagoo caawin jirnay, u duceyn jirnay ayeey sidaas noo galeen. Hadda kadib way noo kala dhamaatay!"
+
+Oh, Qazza iyo Falastiin waa qadiyad Carbeed oo ma ahan mid Islaam?
+Marka adiga oo Muslim ah kuma taalo? Wali ma arag Soomaali Muslim ilaa heerkaas doqon ah.
+
+Qadiyadda meel ino dhig, caawinaaduna ma aheyn Alle dartiis?
+
+﴿إِنَّمَا نُطْعِمُكُمْ لِوَجْهِ اللَّهِ لَا نُرِيدُ مِنكُمْ جَزَاءً وَلَا شُكُورًا﴾
+[ الإنسان: 9]
+
+Ma inay idin amaanaan ayaad u caawin jirteen? Ugu duceyn jirteen? Doqonnimo.
+
+Aan isku soo wada duubno:
+
+Dhulkaas waa dhul Islaam, waana isku kay mid dhul waliba oo Islaam leeyahay. Ummadda Falastiinna waa isku kay mid Soomaalida.
+
+Allow ha inaga dhigin kuwa jaahiliin ah, waxna qorin, waxna akhriyin, hana inaga dhigin kuwa indha-daboolan ee aan waxba garaneyn!
+END
+
+ITEM 616f93df-3731-43b6-9fa6-1acac2cdde3a [health/translate]
+Dhammayso dhammaan daawada antibiyootigga, xitaa haddii aad dareento fiicnaan laba maalmood ka dib.
+END
+
+ITEM 1b469306-9439-4423-a01c-80c1e579fda8 [technology/write]
+Smart Contracts – Heshiisyo Casri ah oo aan Gacan Dad ku Jirin
+
+Smart contract ama heshiis caqli leh waa barnaamij lagu qoro blockchain, kaasoo si toos ah u fulinaya qodobbada heshiis marka shuruudaha la xiriira la buuxiyo – iyadoon loo baahnayn garsoore, qareen ama qof saddexaad oo dhex gala.
+
+Si kale haddii loo dhigo, smart contract-ku waa “software” dhigaya: “Haddii arrin A dhacdo, samee arrin B” – wax walba si otomaatig ah ayuu u socdaa.
+
+Sidee ayuu u shaqeeyaa?
+
+Smart contracts waxa lagu code gareeyaa blockchain-yada la dhisay si loogu adeego barnaamijyada caqliga leh. Tusaale ahaan, Ethereum waa mid kamid ah blockchains-ka ugu caansan ee smart contracts lagu qoro, waxaana lagu qoraa luqad loo yaqaan Solidity.
+
+Qiyaas inaad leedahay website ama app iibinaya tigidho (tickets) – waxaad ku dhisi kartaa smart contract sidaan ah:
+
+> "Haddii qof lacagta $10 usoo diro cinwaankan, u dir tigidh digital ah."
+Waxaana taasi si toos ah u fuliya smart contract-ka – ma jiro qof gacantiisa ku xaqiijinaya.
+
+Tusaale la taaban karo
+
+Qof Soomaali ah ayaa doonaya inuu kiraysto guri ku yaal Nairobi muddo 1 bil ah. Meesha heshiis buug ah ama warqad lagu qoro, waxay adeegsadaan smart contract.
+
+Marka qofkii kiraystay uu lacagta blockchain ku diraayo:
+
+Smart contract-ka ayaa si otomaatig ah u xaqiijinaya in lacagta timid
+
+Keydka furaha guriga (digital lock) ayuu usoo dirayaa
+
+Dhamaadka bisha haddii lacagta kale la waayo, waxay xiranaysaa
+
+Heshiiskaas oo dhan wuxuu ku shaqeynayaa blockchain, mana jirto cid si toos ah u faragelin karta ama u beddeli karta.
+
+Maxay Soomaaliya uga dhigan tahay?
+
+Soomaaliya waxay la tacaaleysaa kalsooni darro iyo musuq. Smart contracts ayaa noqon kara xalka cusub ee hufnaanta. Waxyaabaha laga faa’iidi karo waxaa kamid ah:
+
+Mashruucyada dawladda: Qandaraasyada la bixiyo oo si furan loo arki karo
+
+Xafladaha ama adeegyada lacagta ku shaqeeya: Sida xaflad faneed ama training la bixinaayo – smart contract ayaa xaqiijin kara cidda iska diiwaan gelisay, lacagta bixisay, iyo tigidhka heshay.
+
+Kirada dhismayaasha: Kireystaha iyo milkiilaha oo aan is-arag, balse ay heshiiskooda smart contract ku fulayo.
+
+Smart contracts waxay Soomaaliya u noqon karaan dariiq cusub oo lagu gaari karo hufnaan, kalsooni, iyo xisaabtan. Meeshaan hadda qof walba ku jiro “word of mouth”, waxay beddel u noqonayaan heshiisyo digital ah oo la isku halleyn karo – gacan dadna aan ku jirin.
+END
+
+ITEM d9cdb4f1-3fa8-4ad5-8acf-96b6aa6ee168 [general/write]
+Weli ma is weydiisay sababta aad u tahay jinsiga aad tahay? Maxaad u tahay rag? Maxaad u tahay dumar? Qur’aanka ayaa si cad u sheegay hadafka bani’aadam-ka: وَمَا خَلَقْتُ الْجِنَّ وَالْإِنسَ إِلَّا لِيَعْبُدُونِ – “Jinniga iyo insigaba uma aanan abuurin, rususha oo idilna uma aanan soo dirin waxaan ka ahayn ujeeddo sarrayso, oo ah in keligay la i caabbudo, oo aan cid kale la caabbudin.” (Adh-Dhaariyaat: 56). Hadafka nolosha waa cibaadada Alle, balse cibaadadaas waxaa ku dhisan nidaam uu Alle ku saleeyay taran, xiriir, iyo isku dhis bulsho oo rag iyo dumar ku wada socda.
+
+Alle Qur’aankiisa wuxuu ku leeyahay: وَمِن كُلِّ شَيْءٍ خَلَقْنَا زَوْجَيْنِ لَعَلَّكُمْ تَذَكَّرُونَ – “Wax kasta oo ah waxyaabaha jira waxaan abuurnay isaga oo ah laba nooc oo kala duwan; si aad ugu cibraqaadataan uguna waansantaan awoodda Alle.” (Adh-Dhaariyaat: 49). Laba jinsi ayuu naga dhigay, si aan isu dhammeystirno oo aan isu hanuunino.
+
+Laakiin dhalinyarada maanta, guurka intooda badan way ka cararaan, gaar ahaan dumarka. Waxay u arkaan arrin aan muhiim ahayn oo dib loo dhigi karo ama laga maarmi karo. Hase yeeshee markaad fahanto macnaha dhabta ah, waxaad ogaan in guurku yahay sababta ugu weyn ee laguu abuuray, ka dib cibaadada Alle. Nebigu (NNKH) wuxuu yiri: “Guurku waa sunadayda, kii ka carara sunadayda igama mid aha.” Xadiiskani wuxuu muujinayaa in guurku yahay jidka xalaasha ah ee qofka Muslimka ahi ku dhammaystiro cibaadadiisa iyo akhlaaqdiisa.
+
+Guurku waa dariiqa taranka iyo dhismaha qoyska, waana sababta kala jinsi la inoo kala dhigay. Sinadu waa dambi weyn, inkastoo uusan ahayn dil, dhac, ama dhibaateyn, haddana waa dembi culus oo Alle xarrimay sababtoo ah wuxuu baabi’inayaa nidaamkii xalaasha ahaa. Ilmaha ku dhasha sinada ma laha aabe, xitaa haddii la yaqaan kii xaaraanta ku dhalay, sababtoo ah wado sharci kuma dhalan. Taasi waa digniin cad oo muujinaysa in guurku yahay arin muhiim ah.
+
+Dhalinyaro badan maanta waxay waqtigooda ku lumiyaan waxbarasho iyo shaqo, markay gaaraan da’da guurka waxay guurka u arkaan culays, halka ay si fudud ugu dhacaan xaaraanta. Natiijada waxay noqotay in guurka loo arko wax aan muhiim aheyn.
+
+Marka aad Eebbe caabuddo kadib, maxaa guur ka muhiimsan? Hanti? Hantida maxaad ugu tacban, haddii aadan guri iyo carruur ku dhiseyn? Guur la’aantiisu waxay nolosha ka dhigtaa mid aan dhammaystirnayn. Hadaf kasta oo nolosha laga gaadho waxaa ugu dambeyn ugu muhiimsan guri iyo caruur.
+
+Hadafka jinsiga oo aan la fahmin ayaa sababay in waxyaabo khatar badan loo qaato caadi – nin nin kale u taga, laba dumar isu taga, iyo jahawareerro kale oo badan. Laakiin marka aad dib u fikirto, waxaad garaneysaa in sababta aad u tahay rag ama dumar ay tahay in aad guursato, taran dhaco, bulshana la dhiso.
+
+Marka jinsiga la fahmo waxaa muuqan sida uu guurka muhiim u yahay, waxaana la garan xikmadda Alle: laba nooc ayuu naga dhigay, si aan isu dhammeystirno, uguna wada soconno cibaadadiisa. Haddii aad rabto inaad fahanto sababta aad u tahay rag ama dumar, eeg guurka; waa halka jinsiga micnihiisa lagu garto, waana halka nolosha macnaheeda laga helo.
+
+Qoys ❤️
+END
+
+ITEM f8c35247-d17b-45d0-970f-ec9dd587fb17 [general/write]
+Modernism wuxuu soo galay dunida Islaamka xilli adag, xilli ay Muslimiintu ku jireen burbur siyaasadeed, dhaqaale iyo gumeysi. Waxa uu ka yimid Yurub isagoo wata maskaxda gumeystaha, wuxuuna ku dhisnaa in caqliga iyo saynisku ka sarreeyaan diimaha. Laakiin xaqiiqdiisu waxay noqotay diin cusub oo loogu talagalay in lagu jebiyo Islaamka, loogana dhigo Muslimiinta kuwo ka tanaasula shareecada iyo qiyamka Alle. Waa diin lagu magacaabo horumar, balse dhab ahaantii u adeegta gumeysiga, lafdhabarna u ah siyaasadaha reer Galbeedka ee ku wajahan burburinta bulshada Muslimka ah. Waa diin lagu sharciyeeyo weerarrada, mamnuucista hijabka, xayiraadda hilibka xalaasha ah, aflagaadeynta Nebi Muxammad ﷺ, iyo taageerida nacaybka lagu hayo Muslimiinta. Waa diin lagu qasbo dunida Islaamka, lagu caburiyo culimada, laguna abuurayo jiil ka go’doona aqoonsigoodii Islaamiga ahaa.
+
+Masar waxaa hormuud ka ahaa rag sida Jamal al-Din al-Afghani iyo Maxamed Cabduh oo isku dayay inay isu keenaan diin iyo modernism. Waxay ku doodayeen in bulshada Muslimka ahi u baahan tahay inay la qabsato sayniska iyo tiknoolojiyadda, laakiin fikirkaasi wuxuu sababay in Qur’aanka iyo Sunada loo fasiray si khatar ah, oo mararka qaar loogu gogol xaadhay secularism iyo siyaasado diinta ka fog. Jiilal dambe waxay dhaxleen aragtiyo uu saldhig u noqday Modernism, waxaana fududaaday in bulshada loo diyaariyo waddo uu dalka ugu dhacayo gacanta fikirka Galbeedka. Turkiga Mustafa Kemal Atatürk wuxuu qaaday tallaabo ka sii fog: wuxuu meesha ka saaray khilaafadii Islaamka, wuxuu xannibay astaamihii diinta, wuxuuna ku beddelay xarfihii Carabiga Laatiin. Turkiga muuqaal ahaan wuxuu noqday casri (diin ka fog), laakiin wuxuu lumiyay aqoonsigii Islaamka, wuxuuna noqday tijaabo cad oo muujisay sida Modernism uu u yahay diin ka dhanka ah Islaamka. Iran waxay martay tijaabo la mid ah intii boqortooyada Pahlavi joogtay. Casriyeynta xoogga lagu qasbay waxay dhalisay caro iyo kacdoon, taas oo ugu dambeyntii keentay kacaankii 1979 oo shacabka Muslimka ahi ku muujiyey in horumar ay rabaan, laakiin aysan aqbalayn diin cusub ooga imanaysa Galbeedka.
+
+Culimada Islaamka waxay si xoog leh uga jawaabeen halista Modernism-ka. Sheekh Albaani wuxuu ku adkaystay in Islaamka uusan u baahnayn wax “cusbooneysiin” ah oo laga keeno Galbeedka, maadaama uu yahay diin dhammaystiran oo marwalba ku habboon xilliyo kasta. Qaradawi wuxuu sheegay in Islaamku yahay diin dabacsan oo la jaanqaadi karta casriga, laakiin dabacsanaantaasi marnaba ma taaban karto qawaaniinta aasaasiga ah ee shareecada. Sayyid Qutb wuxuu casriyadda Galbeedka ku tilmaamay jaahiliyah cusub oo burburisa akhlaaqda iyo iimaanka, halka Abul A’la Maududi uu ku adkeystay in horumarka dhabta ahi yahay mid lagu dhisayo aqoonta casriga ah iyadoo saldhig looga dhiganayo qiyamka Islaamka. Dhamaantood waxay isku raaceen in Modernism uusan ahayn oo keliya dhaqan cusub, balse uu yahay diin lagu magacaabo casri, laakiin dhab ahaantii ka dhigan mid lid ku ah Islaamka.
+
+Saameyntiisa maanta waa mid aan la dafiri karin. Dalal Muslimiin ah ayaa qaatey nidaamyo siyaasadeed iyo dhaqan dhaqaale laga keenay Galbeedka, iyagoo u arkay waddada keliya ee horumarka. Laakiin natiijadu waxay noqotay jahawareer, kala qaybsanaan bulsho, iyo dhalinyaro lumisay qiyamkii Islaamka. Dhaqamo qariban ayaa si xoog leh loo dhex geliyey: sinada, qoys burburka, iyo xorriyad xag-jir ah, halka shareecada Alle loo arkay wax lagu talo galay oo keliya meelaha gaarka ah. Dalal qaar waxay isku dayeen inay ku daydaan Turkiga Atatürk, balse jiilal badan ayay ka fogeeyeen salaadda iyo akhlaaqda, iyaga oo aan weligood gaadhin horumarkii ay ku riyoonayeen. Masar waxay noqotay meel u dhexaysa diin iyo modernism, balse inta badan waxaa ka dhashay dowlado cadaadis ah oo ku ciyaara magaca diinta iyo magaca casriyadda labadaba. Iran waxay tusaale u noqotay in casriyad xoog laysku qasbo ay dhalin karto kacdoon diimeed oo ka dhan ah Modernism.
+
+Doodaha wali way socdaan. Qaar ka mid ah Muslimiinta ayaa ku dooda in Islaamka la cusbooneysiiyo si uu ula jaanqaado casriga, laakiin cusboonaysiintaas ay sheegayaan waxay dhab ahaantii la macno tahay in shareecada Alle la qariyo ama la beddelo. Qaar kale waxay ku adkaystaan in horumarka dhabta ahi yahay mid aan ka hor imaanin diinta, balse ku dhisan ilaalinta qiyamka Qur’aanka iyo Sunada. Sida culimada waaweyn ay sheegeen, waxa ay Muslimiintu u baahan yihiin waa aqoon iyo tiknoolojiyad ay ku difaacaan diintooda, balse ma aha diin cusub oo lagu magacaabo Modernism.
+
+Modernism waa diin la soo hal abuuray si looga takhaluso Islaamka, waa diin lagu magacaabo casri, balse dhab ahaantii u adeegta gumeysiga iyo nacabka Muslimiinta. Waa cudur maskaxeed lagu qariyo magaca horumar, balse loo adeegsado in lagu burburiyo shareecada, lagu wiiqo qiyamka, laguna abuuro bulshada Muslimka ah inay ka fogaadaan Islaamka. Sidaas darteed jidka keliya ee badbaadada Muslimiintu waa inay si cad u diidaan Modernism-ka, kuna adkaystaan in ay qaataan aqoon casri ah iyo tiknoolojiyad, laakiin ku dhisaan Qur’aanka iyo Sunada. Islaamku hore ayuu u ahaa ilbaxnimo weyn oo qarniyo badan hoggaamisay dunida, wuxuuna mar kale noqon karaa haddii Muslimiintu ka fogaadaan diinta cusub oo lagu magacaabo Modernism, kuna adkaystaan Islaamka oo kaliya.
+
+Modernism maahan horumar ee waa lidka islamka.
+END
+
+ITEM 1c6454ec-eebe-462a-a231-1e08750cc63a [culture/write]
+Sanadkii 2020 Ayaa waxaan safar dhulka ah kaga baxay magaalada muqdisho waxaan ku wajahnaa baladweyne safarkaas wuxuu qaatay sadex Habeen Sida Caadiga ah waxaa laga rabay inuu qaato hal habeen laakiin Gaariga aan saarnaa oo cilaadoobay darteed ayaa safarkaas dheereysay mudo laba isbuuc ah oo aan joogay magaladaas wax aan sheeko ahaan uga soo tabiyo ayaan waayey sababtoo ah waxay ahayd meel aan xiiso lahayn qaab lahayn oo aan fahmi waayay aniga qudheydaba
+END
+
+ITEM a9f6284b-689d-4e7e-99ae-dafc3a7102a5 [general/write]
+Dhammaanteen dambiilayaal ayaan nahay. Waxaan dooranaa dambiyada aan jecelnahay, dadka kalena waxaan ku xukumnaa dambiyada aynan jecleyn.
+
+Waxaa laga yaabaa inaad been sheegto, laakiin waxaad xukuntaa qofka wax khiyaameeya. Waxaa laga yaabaa inaad khiyaano samayso, laakiin waxaad xukuntaa qofka wax xada. Waxaa laga yaabaa inaad wax xaddo, laakiin waxaad xukuntaa qofka maandooriyaha qabatimay.
+
+Qofka balwadda leh ayaa isna laga yaabaa inuu is dhaho, "Ugu yaraan anigu daacad ayaan ahay oo waan qirayaa waxa aan ahay." Taasi waa qaybta aannan doonayn inaan qiranno.
+
+Dhammaanteen cillad ayaan leenahay. Dhammaanteen waxaan leenahay xad aan ku dhaaranay in aannan weligeen dhaafi doonin. Kadibna waxaan iska dhignaa in is-ilaalintaasi ay na nadiifineyso.
+
+Qof kasta wuxuu sameystaa sharciyo u gaar ah. Waxay abuuraan anshax yar oo ku habboon noloshooda, caadooyinkooda, iyo raaxadooda. Kadibna waxay u difaacaan sidii inuu jannada ka yimid.
+
+Go'aannadeena waxaan ugu yeernaa "kuwo adag," "kuwo la fahmi karo," ama "kuwo aan aad u xumayn." Laakiin go'aannada dadka kale waxaan ugu yeernaa "kuwo laga yaqyaqsado," "kuwo daciif ah," ama "kuwo aan la cafin karin."
+
+Aad ayaan khabiiro ugu nahay inaan nafteena u naxariisano. Waan ognahay sheekooyinkeena. Waan ognahay xanuunkeena. Waan ognahay sababaheena. Waan ognahay wixii nagu dhacay iyo wixii halkaas na dhigay. Sidaas darteed waxaan dembiyadeena ku fududeynaa sharraxaad.
+
+Laakiin markii qof kale uu wax qalad ah sameeyo, ma raadino sababaha keenay. Ma weydiino wixii ay kasoo badbaadeen. Ma weydiino wixii ka maqnaa. Ma weydiino wixii sababay. Kaliya waxaan xukunnaa falka. Qofka ayaan magac u bixinnaa. Kadibna waxaan iska dhignaa inaan ka fiican nahay.
+
+Waxaan farta ku fiiqnaa dembiyadooda sababtoo ah dhib ayay nagu hayaan. Sidoo kale haddii aan dadka kale diiradda saarno, waxaa laga yaabaa inuusan qofna arkin waxa aan mugdiga ku sameyno. Waxaa laga yaabaa inaan iska dhignoo in cilladaheena aysan muhiim ahayn sababtoo ah waan la qabsannay.
+
+Waxaan iska indha tirnaa dembiyada aan galno maalin kasta. Kuwa aamusan. Kuwa qarsoon. Iyo kuwa ay bulshadu aqbasho. Kibirka. Xanta. Erayada xun-xun. Anaaninimada. Maseyrka. Iyo naxariis-darrada. Waa dembiyada xirta dhar nadiif ah oo si asluub leh u dhoola caddeeya.
+
+Kadibna waxaan sameynaa wax ka sii daran. Waxaan go'aaminnaa qofka istaahila cafiska. Waxaan niraahnaa dadka kale lama cafin karo. Laakiin nafteena ayaan cafis u weydiinnaa. Naxariis ayaan dalbannaa markaan kufno. Laakiin ciqaab ayaan u dalabnaa marka uu qof kale kufo. Waxaan dooneynaa in dadku na fahmaan. Laakiin waxaan diidnaa inaan iyaga fahamno. Waxaan dooneynaa dulqaad. Laakiin dulqaad ma bixinno. Waxaan dooneynaa jaceyl. Laakiin dadka kale waxaan ka rabnaa inay kasbadaan si ay u helaan.
+
+Xaqiiqadu way fududahay. Dhammaanteen hal meel ayaan wada joognaa. Kaliya waxaan leenahay qaladaad kala duwan iyo cudurdaaro kala duwan. Dhammaanteen waxaan leenahay meelo aannan arkin. Dhammaanteen waxaan leenahay qaybo nolosheena ka mid ah oo aan diidno inaan wajahno. Sidoo kale dhammaanteen waxaan leenahay dembiyo aan caadi ka dhiganno sababtoo ah waan la qabsannay.
+
+Sidaas darteed ka hor inta aadan qof kale xukumin, xasuuso arrintan: Qof kale ayaa adna ku xukumaya. Sidoo kale qofka aad u maleyneyso inuu kaa hooseeyo ayaa laga yaabaa inuu ku jiro dagaal aadan weligaa gelin.
+
+Khasab ma aha inaad oggolaato go'aannada qof kale. Sidoo kale ma lihid xaq aad isaga dhigto inaad tahay qof nadiif ah. Sababtoo ah midkeenna nadiif ma aha.
+END
+
+ITEM 72c40f04-6a47-46c7-a9ae-b85bf8f89d2c [agriculture/translate]
+Labaatan beeralay ah oo halmeel wax ku wada gada ayaa ka gorgortan fiican hal beerale oo kaligiis meel wax ku gada.
+END
+
+ITEM e3d0d1e9-b48b-468f-a3d3-a2c61525e13b [general/write]
+Xisaabtu waa luqadda koonka — waa dhawaaqa aamusan ee ay caddaaladda Alle ku hadasho, waa nidaamka aan indhaha lagu arkin balse lagu dareemo habsami socodka nolosha. Xiddiguhu u ma wareegaan si aan nidaam lahayn, roobkuna uma da’o si iskiis ah; xeerar adag oo xisaabeed ayaa hagaya, sidaas darteed xisaabtu waa furaha fahamka nolosha iyo qaddarka.
+
+Dadku inta badan waxay isku qaldan laba fikradood oo kala fog: possibility iyo probability. Labaduba waa erayo qurux badan, laakiin mid waa riyo, midna waa xaqiiqo. Possibility waa waxa dhici kara, probability waa inta ay u dhowdahay inay dhacdo. Mid waa albaab furan, midna waa furaha go’aaminaya intee in le’eg ayuu furan yahay.
+
+In theory, wax walba waa possible. Waxaa suuragal ah in isla hadda aad $100 bilyan heshid, in berri xiddig uu dhaco, ama in biyaha webi dhan si lama filaan ah cirka ugu duulaan. Laakiin in practice, waxaas dhammaan ma laha probability macquul ah. Dunida looma maamulo si ku saleysan waxa suuragal ah, ee waa waxa suurtogalnimadiisu caqli gal tahay. Aragti ahaan wax kasta waa possible, balse kaliya waxa leh probability la xisaabin karo ayaa dhaca.
+
+Eebbe Weyne wax walba wuu awoodaa, laakiin wax walba iskama sameeyo. Wuxuu u dejiyey koonka nidaam, sabab iyo xeerar uu xakameeyo. Xisaabtaas Rabbaani ah ayaa ah sababta aan ugu kalsoonahay in qoraxdu berri soo bixi doonto, in beer la waraabiyo ay midho dhalayso, iyo in noloshu ay u socoto si aan is-bedbeddelin. Haddii dunidu ku socon lahayd “everything is possible,” noloshu waxay noqon lahayd fawdo, qofna ma ogaan lahayn waxa dhici kara. Sababta aynu ugu noolnahay nolol xasiloon waa in Alle u dejiyey probabilities iyo xeerar go’an — sababta, waqtiga, iyo natiijada.
+
+قال الله تعالى: "إِنَّا كُلَّ شَيْءٍ خَلَقْنَاهُ بِقَدَرٍ" “Wax kasta waxaan u abuurnay qadar iyo miisaan.” (Al-Qamar: 49)
+
+Aayaddani waxay inoo sheegaysaa in koonku uusan ku shaqeyn fawdo, balse uu leeyahay nidaam iyo xad go’an. Xitaa waxa u muuqda lama filaan, waa qayb ka mid ah xisaabta Eebbe dejiyey. Sidaa darteed, noloshu ma aha dhacdo aan la xukumin, waa xisaab uu qaddar Alle u dhigay.
+
+Marka la eego nolosha, in aad guuleysato waa possible, balse in aad guuleysato adigoon dadaalin ma laha probability. In aad bogsato waa possible, balse in aad bogsato adigoon daawo qaadan waa improbable. Dunidu kuma shaqeyso “wax walba waa suuragal,” ee waxay ku shaqeysaa “wax kasta waxay dhacaan marka ay suurtagalnimadoodu la jaanqaaddo sababta iyo waqtiga.”
+
+Fikirku wuxuu jecel yahay xorriyad, balse xaqiiqadu waxay jeceshahay xad. Falsafaddu waxay tiraahdaa “wax walba waa suuragal,” laakiin noloshu waxay ina baraysaa in xorriyad la’aan xad ay tahay fawdo. Riyada iyo xisaabtu waa laba is dhameystira: mid waxay keentaa tamar, midna waxay keentaa nidaam. Mid la’aanteed, midda kale waa indho la’aan.
+
+Xaqiiqadu waa in “everything is possible” ay tahay aragti, balse noloshu uma dhacdo aragti ahaan. Noloshu waa tijaabo, waa xisaab. Waa halka ay ku kala baxaan falsafadda iyo xaqiiqada. Falsafaddu waxay dhahdaa: wax walba waa dhici kara. Laakiin xaqiiqadu waxay tiraahdaa: wax walba lama helayo, kaliya waxa la kasbado ayaa la hela.
+
+Eebbe wuxuu abuuray koon dhan leh malaayiin possibilities, balse wuxuu nolosha u dejiyey probabilities si ay u noqoto nidaam, ee ma ahan fawdo. Qofka fahma farqigaas, wuxuu fahmay sirta nolosha. Waxaa laga yaabaa in ay possible tahay in geed aad beertay berri miro bixiyo, balse probability-giisu waa sanado. Waxaa laga yaabaa in ay possible tahay in aad guuleysato, balse probability-daas waxaa kordhiya dadaalka, aqoonta iyo tawakalka.
+
+Nolosha laguma dhiso “what’s possible,” ee waxaa lagu dhisaa “what’s probable.” Riyada waa albaabka, xisaabtuna waa jidka. Qofkii ku nool possibility kaliya, wuxuu ku dhintaa riyo aan xaqiiqo noqon; qofkii ku noola probability, wuxuu bartaa sida loo qorsheeyo, loo dadaalo, loona sugo go’aanka Alle.
+
+Xaqiiqadu waa in koonku uusan ku dhisnayn “everything is possible,” ee uu ku dhisan yahay “everything has a measure.” Caddaaladda Alle ayaa ah xisaabtaas: wax walba wuxuu leeyahay miisaan, sabab iyo waqtigiisa. Inaad ku doodo waxa possible ah waa hadal; inaad fahamto waxa probable ah waa xikmad.
+
+“Qaddarka waa xisaabta Alle, xisaabtuna waa tarjumaadda qaddarka ee bini’aadamka.”
+END
+
+ITEM bdde49db-bdae-43df-b717-306190ad7f2c [education/write]
+Waxbarashadu waa furaha horumarka iyo dhisidda mustaqbal ifaya. Waxay qofka siisaa aqoon, xirfado, iyo garaad uu ku fahmo dunida ku xeeran, isagoo ku gaari kara himilooyinkiisa nolosha. Bulsho kasta oo horumartay waxay aasaas ka dhigatay kor u qaadista aqoonta iyo barbaarinta ubadka.
+END
+
+ITEM f74d8baf-6a15-4c08-881e-589de9a2a2a5 [religion/write]
+Saynu wada ogsoonnahay Diinteenna Islaamku waxay Xoogga Saartay Wax walba oo Qofka Bini'aadmiga ah Manfac u keenaya Aakhiro & Aduun Billowgii Waxyiga Suubanaha Naxariis iyo Nabadgalyo Korkiisa Ha ahaatee Waxaa lagu billaabay Akhri !!!
+Iyadoo lagu billaabi karayay Caabud, Cibaadeyso, Samee Iwm.
+Balse waxaa lagu billaabay Akhri Sababtu waa In Xadaarada Ummada Islaamka & Guusheedu Marka laga yimaado Gargaarka Alle kadib uu ku xidhan yahay Aqoon & Cilmi Kuwasina Uu Sees & saldhig u yahay Akhrisku 
+Ummada Islaamka Oo lagu yaqaannay Hogaaminta Caalamka Dabcanna Dunida Calanka u sidey Muddo 1000 sano & dheeraada Waxay Caalamka ku maamulayeen waxay ahayd Aqoon, Cilmi, Xadaarad, Ilbaxnimo & Diin Ay faafinayeen.
+Xadiis Saxiixa oo Suubanaheena N.N.K.H Ayaa Wuxuu Macnihiisu ahaa Qofkii Qaada wado , marin , Wadiiqad Uu ku dalbayo ama uu ku raadinayo Cilmi Isla markaasina Niyadiisu Ay tahay Aad Cilmi baratidoo Naftaadana anfac Ummadaadana Anfac Dalkaaga & dadkaagan anfac Ilaahay qofkaas wuxuu u yasiraa u sahlaa Wadadii & wadiiqadii uu U Mari lahaa Jannada.
+Waxaad arkeysaa markaa Diinteennu Sidey ahmiyad u siisey Akhriska & Cilmi korodhsiga iyadoo Rasuulka N.N.K.H Qur'aanka Marka la joogo Shayga Kaliyee uu Alle ku amrey in loo siyaadiyo oo lo kirdhiyo uu yahay Cilmiga & Aqoonta وقل ربي زدني علما
+Ummaduna kolkii ay ka seexatay horumarkii & Aqoontii ayaa laga badiyay Sartu waxay Noqotay Ninkii Seexdaa Sicii Dibi dhalay
+END
+
+ITEM a1162be7-11bf-4839-a9d9-e4f187aedc0a [general/write]
+Waa qoraal xigasho ah oo aad ii saameeyay
+
+August is the month my mother died. This is a memory to her wonderful mothering, love for peace and her constant support to the poor people.
+
+Dear Mother                                 Hooyo Macaan
+
+Source of mercy                            Ishi naxariistaay
+Spring of love                                Gugii jacaylkaay
+Beacon of Light                             Aqalki iftiinkaay (lighthouse)
+Rainbow of hope                            Jeegaanti rajadaay
+My dear Mother                              Hooyo macaaneey
+
+In love you conceived                      Jacayl baad igu qaaday
+In pain you labored                          Xanuun baad igu foolatay
+In tears you suffered                         Shiddo-fool baad la ilmeysay
+In sweat you drowned                      Dhidid baad ku hafatay 
+                                                          (fool darteed) 
+In joy you delivered                           Farxadna baad ku   
+                                                            umushay
+My dear Mother                                 Hooyo Macaan
+
+My dear mother                                  Hooyo Macaan
+When I cry                                           Markaan ooyo
+To my fill                                             Ilaa aan dhergo
+You breastfed me                               Naas baad i nuujisay
+When felt stressed                             Markan raaxadu daroodo
+Your soothed me                               Waxaad igu qaboojisay
+With kisses of peace                          Dhunkasho nabadeed
+If I didn't fall asleep                           Haddii aanan seexan
+You sang me                                      Waxaad ii heestay 
+Hubaaya Hubaaya                              Hubaaya Hubaa
+
+My dear mother                                  Hooyo Macaan
+You gave me security                       Waxaad sugtay nabadeydi
+You gave me a comfort                    Qalbiga ayaad ii dejisay
+Without your mothering                  Hooyooy laáantaa
+Would have I known love                 Ma Jacayl baan garan lahaa
+In life and in death                            Nolol iyo geeriba hooyo
+We remain bonded                           Dabar baa isku ken haya
+ strongly                                             kaasoo ka xoog badan
+As ever could be imagined              Inti baniadam qiyaasi karo
+Dear Mother Rest Firdowsa              Hooyo Macaan Hoygaagu
+ In Peace.                                           Firdowsa Allow ka dhig
+END
+
+ITEM c9860dea-35e0-4b47-9500-e40e5c30751b [media/write]
+Ruub
+Waa bur la xashay waqti kooban kadibana loo googooyey qaab goobo balaaran ah. Burkaas waxba laguma darin. Mudo yar kadib dab la shiday oo danbaskiisa ayaa la dhex galinaya burki wareegsana. Waxa dusha iyo hoosba ka maraya danbasa iyo dhinbilo dab ah. Amin yar kadib walagaso saaraya isago yeeshay barara cas noqdayn mid adag oo aysan kari karin ilkaha dadka waaweyn.
+
+Sidaas laguma cunayo waxa waa la jajabinaya waxana lagu guraya saxan balaaran. Waxa lagu daraya caano. Caanahaasi si fiican uma qoynayaan burki adkaday balse dhuun mar ayuu yeelanaya bur xabaalkaasi.
+
+Ma garan karo goorta iyo goobti u horeysay ee lagu sameyey burkaas. Balse waxa kaliya ee aan hubo waa in dani ku baday ku dhashay oo aan la hayn wax aan ka ahayn burkaas cad iyo caanaha.
+
+Aan ku su'aale burkaas dambaska lagu dubay caafimaad ahaan ma u wanaagsan yahay mise wuu u fiicanyahay?
+END
+
+ITEM 22e83d77-d78c-4ccf-9da1-b12fc84ea87e [education/write]
+Daraad dhoweyd baraha bulshada ayaan ka daawanayay muuqaal ku saabsan jir-dhiska. Yarka wax qaldan ma uusan sheegin, xogta uu soo gudbinayayna waa kuwo uu soo xigtay, ma aha kuwo uu iska dhahay. Mid ay ugu qoran tahay “Dr. Hebel”, dharka dhaqaatiirtana wataa, ayaa comment ugu soo qoray inuusan ka hadlin wax aanu aqoon u lahayn.
+
+Waxaan la yaabay; dadka jaamacadaha ka baxay ama shahaadooyinka wata yaa cilmiga siiyay? Waa run in qofku uu ka gaabsado waxa uusan aqoon, laakiin qofka cilmiga yaa siiyay? Haddii aad jaamacad ka baxday, cilmigaas waad taqaan miyaa ? Qofka jir-dhiska sameeya ee aqoon u leh jir-dhiska wuu ka hadli karaa wixii hoos yimaada, waayo waa wax uu yaqaan e.
+
+Jaamacad ≠ Aqoon.
+
+Jaamici ≠ Aqoonyahan.
+
+Degree-ga jaamacadda waa iska 'certificate of completion' oo suit leysku sawiro, ee cilmiga caqli halagu daro.
+END
+
+ITEM 5a45f3a6-b27c-4ece-aebc-8ffe97e247f3 [culture/write]
+Canjeero waxaa laga sameeyaa bur, biyo, cajiin iyo milix la isku darey.
+Marka hore, burka ayaa lagu daraa baaquli ama caag cajiin kadibna waxaa lagu daraa biyo, milix iyo cajiin, si fiican u walaaq ama u garaac ilaa uu noqdo cajiin dareere ah oo isku mid ah. Kadib cajiinka dabool oo meel dhig dhowr saacadood si uu u khamiiro.
+Marka uu cajiinku khamiiro kadib soo diyaarso birta canjeerada, furki aad ku dari laheed cajiinka caaga ku jiro. Birta dabka saar ilaa ey ka kululaato, marki ay kululaato, Qaado xoogaa cajiin ah oo birta ku shub, kadibna si wareeg ah u faafi. U daa birta ilaa ay ka bislaato. Ka daji marki ay bislaato kadib neh weelki aad ugu tala gashe inaa ku rido ku rid.
+END
+
+ITEM 6eb4f9bd-6364-403e-8a7c-3cf6ec7e4033 [culture/write]
+Markaa Rabto In aad sameyso canjeero waxaad au bahantahay sadax shey 
+Kow in aad diyaariso burka aidgo ku daraya cajiin hadii aad heleysid kadibna aad garaacdid ama qooshtid, labo mudo kadib wuxuu sameynaya inuu qamiiro ama uu gaaro heerka lagu dubi karo canjeero, waxaad soo diyaarsanaysa birta canjeerada waxaadna saaraysa dabka bilowga, sadex  waxaadna marineysa wax dufan leh sida saliid ama subag bilowga, kadibna waxaad bilaabeysa inaad dubto canjeerada.
+END
+
+ITEM e4aff788-07fe-413a-8a82-2c6e6aef21fb [religion/write]
+Marka Sharafdin iyo James ay doodayaan be like:
+Muslim Versus Christian:
+
+Sharafdin: Waa kuma Ilaahay?
+
+James: Ciise
+
+Sharafdin: Ciise ma ibnu Maryam?
+
+James: Haa
+
+Sharafdin: Yaa Abuuray Maryam?
+
+James: Ilaahay,
+
+Sharafdin: Waa kuma Ilaahay?
+
+James: Ciise
+
+Sharafdin: Ciise ma wiilkii la dhalay
+
+James: Haa
+
+Sharafdin: Waa kuma Aabihii?
+
+James: Ilaahay.
+
+Sharafdin: Waa kuma Ilaahay?
+
+James: Ciise.
+
+Sharafdin: Ciise ma addoon Eebbe?
+
+James: Haa
+
+Sharafdin: Ciise wuxuu ku dhintay iskutallaabta dusheeda?
+
+James: Haa
+
+Sharafdin: Ciise ma rasuul baa?
+
+James: Haa
+
+Sharafdin: yaa soo diray?
+
+James: Ilaahay.
+
+Sharafdin: Waa kuma Ilaahay?
+
+James: Ciise.
+
+Sharafdin: Ciise miyuu caabuday ilaahay intuu dhulka joogay?
+
+James: Haa
+
+Sharafdin: yuu caabuday?
+
+James: Ilaahaw.
+
+Sharafdin: Waa kuma Ilaahay?
+
+James: Ciise.
+
+Sharafdin: Ilaah miyuu lahaa bilow?
+
+James: Maya
+
+Sharafdin: Haddaba yaa dhashay 25/DEC?
+
+James: Ciise.
+
+Sharafdin: Ciise ma Ilaah baa?
+
+James: Haa
+
+Sharafdin: Aaway Ilaahay?
+
+James: jannada ayuu ku jiraa.
+
+Sharafdin: meeqa ilaah ayaa jannada ku sugan?
+
+James: Ilaah keliya.
+
+Sharafdin: aaway Ciise?
+
+James: Wuxuu ku fadhiyaa midigta aabihiis.
+
+Sharafdin: Haddaba meeqa jannada ku sugan yihiin?
+
+James: Ilaah keliya.
+
+Sharafdin: Marka meeqa kursi?
+
+James: hal
+
+Sharafdin: aaway Ciise?
+
+James: Wuxuu ag fadhiyaa Ilaah.
+
+Sharafdin: Sidee loogu fadhiistaa hal kursi?
+
+James: Waxaa kaliya fahma kuwa Ruuxa leh, Waxaad u baahan tahay Ruux saaxiibow.
+
+Yaa dooda ku guuleystayna?
+
+Diimaha samaawiga ah diinta ugu doqonnimada badan waa Masiixiyadda (Christianity).
+END
+
+ITEM 5af4c46c-343f-4c59-84a5-c0e0c905cd36 [education/translate]
+Tijaabada fiican kaliya waxay cabirtaa inta uu ardaygu wax fahmay oo kalia balse ma cabirto xawaaraha uu wax ku qiyaasi karo
+END
+
+ITEM 2ef120f3-48e2-4370-a972-b60529d18a37 [culture/write]
+Ka sheeke safar aad mar qaaday maaha waydiinta saxda ah. Waydiintani waxay ku haboonayd ka sheeke safar aad mar gashay.
+END
+
+ITEM 88eb7b40-0cb3-4a83-9916-bf3983553243 [culture/write]
+Sanadka maruu ahaa 2024 ayaa waxaa u safray awdheegle ama daanyeeree saa u taqaaniinba. Waxaa waddada ku sii arkay beero qurux badan iyo dhulka oo ahaa carro dhoobey sidoo kale waddada meysan laheen dhismo dhaadheer keliya waxaa ku arkeysaa beero wada cagaaran, iyo dabeysha oo wadata neecaw udgoon laakiin dhulka waa u kala koreeyey. Markaa gaaray halkaa usocday waxaa kaloo kusii arkay webi aan horay u arag iyo beero qurux badan oo ay isku agyaaliin. Waxaan dhex socday beeraha anigo la riyaaqaya bilicda, dabeysha dhabaneysa iyo shanqarta biyaha  webiga sidoo kale lagu dhexraacaya xoolaha. 
+Waxaan ka soo bartay sida beerta loo waraabiyo anigo biyaha kasoo dhuminaya webiga kadib ku waraabinaya beeraha, waxan kaloo kasoo guri jiray cowsaska aan loo baahneyn ee ka ag baxa dallaga iyo inaa soo guro miraha guriga looga baahanyahay sida liinta, bisbaaska iyo yaanyada. Waxan kusoo qaatay maalmo qurux badan anigo kasoo fahmay sida ay dadka halkaa ku nool udhaqmaan iyo afka ay ku hadlaan.
+END
+
+ITEM 41b67144-868a-49ad-8f0e-fca4efbe934b [education/write]
+Run ahaantii wax barashada dalkeenu waxay u baahan tahay, inalagu sameeyo horumar balaadhan si aanu usoo saarno, dad tayo ahaan aad u sareeya. Soomaliya wax barashadeeda inta badan waxaa ragaadiyay, tayo la'aan taas oo eey keentay in la helo dad aan tayo lahayn, waa inaynu ku bixinaa sii loo hormarin lahaa wax barashada dalka si aynu u helno dad tayo sare leh.
+END
+
+ITEM 6e81da8f-d3ff-4d98-b86b-5fcb5e497957 [religion/write]
+Ma Ogtahay Habeenka ugu Kheyrka badan ee uu Quraanka sheegay, inuu yahay Habeenka Leylatul Qadarka (10ka dambe Bisha Ramadaan).
+END
+
+ITEM 19f713b3-9c8f-4d99-a8a1-6c535fcf6121 [technology/translate]
+Kaamirada taleefankaan waxey sawiro wanaagsan qaadaa maalintii markii loo eego/ lala barbar dhigo fiidkii.
+END
+
+ITEM 6a16bdd9-c653-4d0b-8d5f-9b9f4b7c5ded [media/translate]
+Saxafiga ama wariyuhu wuxu u safrey tuulada si uu marka hore sheekada u dhageysto.
+END
+
+ITEM 5fa1d8dd-e971-43da-b91c-5a8f40445828 [health/write]
+Ugu horeyn soo diyaarso biyihii iyo saabuunti ama shaambadi aad gacmaha ku dhaqan laheed. Ku bilow magaca Allah (bismilaah) kadib gacmaha ku shubo in yar oo shaambo eh kadib biyo yar ku shubo gacmaha oo si fiican iskugu meydh adiga oo si fican isku dhax gelinaya faraha. Intaas kadib biyo caadi isticmaal oo shaambadi iska raaci.
+END
+
+ITEM 9ab1d1e4-fb04-4e3c-9758-9c6e22cff1a9 [agriculture/write]
+Taariikhda iyo Muhiimadda Beeraha
+Beeraha ayaa ah laf-dhabarta nolosha aadanaha iyo isha ugu weyn ee laga helo cuntada, nafaqada, iyo agabka ceeriin ee warshadaha. Laga soo bilaabo xilligii ay Aadanuhu ka tageen nolosha ugaarsiga ee guur-guurka ahayd kuna bara-kaceen dhulka, beerashadu waxay noqotay saldhigga ay ku taagan yihiin ilbaxnimadaha adduunku.
+Noocyada Beeraha
+Waqtigan xaadirka ah, beeraha waxaa loo qaybiyaa dhowr nooc oo kala duwan iyadoo la eegayo ujeeddada iyo hab-raaca loo isticmaalo:
+ Beeraha Roob-raaca (Rainfed Agriculture): Waa nooc ku tiirsan biyaha roobka oo keliya. Wuxuu aad ugu baah yahay meelaha ay roobabku ka da'aan xilliyada cayiman.
+ Beeraha Waraabka (Irrigated Agriculture): Waa hab lagu waraabiyo dhulka iyadoo la adeegsanayo ilaha biyaha sida webiyada, ceelasha, ama biyo-xireennada, taasoo sahlaysa in la beero xilli kasta oo sannadka ka mid ah.
+ Beeraha Ganacsiga (Commercial Agriculture): Waa beero waaweyn oo loo adeegsado farsamo casri ah, ujeedaduna tahay in dalagga la geeyo suuqyada si faa'iido dhaqaale looga helo.
+ Beeraha Qoyska (Subsistence Agriculture): Waa beerasho yar-yar oo qoysasku u adeegsadaan inay ku daboolaan baahidooda cunto ee maalinlaha ah.
+Caqabadaha ku Gudban Beeraha Casriga ah
+In kasta oo ay beeruhu muhiim u yihiin nolosha, haddana waxay wajahayaan dhibaatooyin xoog leh oo ay ka mid yihiin:
+ Isbeddelka Cimilada: Abaaro daba-dheeraaday, roobab aan xilligoodii ahayn, iyo kulaylka adduunka oo kordhaya ayaa halis ku ah wax-soosaarka dhulka.
+ Nabaad-guurka Carrada: Isticmaalka xad-dhaafka ah ee dhulka iyo daaqsin-daaqsimeedka xad-dhaafka ah waxay daciifiyaan bacriminta carrada.
+ Yaraanta Agabka Casriga ah: Beeraley badan oo ku nool waddamada soo korraya ayaan haysan tiknoolajiyad iyo tababaro ku filan oo kor u qaadi lahaa dalagooda.
+Xalka iyo Mustaqbalka Beeraha
+Si loo xaqiijiyo in adduunku helo cunto ku filan mustaqbalka, waxaa lagama maarmaan ah in la qaado tillaabooyin wax ku ool ah:
+1. Tiknoolajiyadda Casriga ah: Isticmaalka hababka waraabka dhibcaha ah (drip irrigation) si loo kaydiyo biyaha.
+2. Beeraha Waara (Sustainable Agriculture): Ilaalinta bay'adda iyo soo celinta nafaqada carrada iyadoo la isticmaalayo bacriminta dabiiciga ah.
+3. Taageeridda Beeraleyda: Siinta tababaro, abuur tayo leh, iyo suuqyo ay ku iibiyaan dalagooda si loo dhiirrigeliyo wax-soosaarka gudaha.
+Beeruhu ma aha oo kaliya il cunto, ee waa furaha shaqo-abuurka, kobaca dhaqaalaha, iyo xasiloonida dal kasta.
+END
+
+ITEM 2b18612c-105b-411e-aa2f-e79631542075 [media/write]
+Fatahaad.
+Yaraanteyda waxaan la kulmey fatahaado isdaba joog ah kuwaas oo sanadle ama sanadki labo (2) mar dhici jirey. Fatahaaduhu waxa ay saameyeen kumanan qoys ee ku nool xafadahooda, taas oo sababtey in tiro badan o qoysas ah heli waayen meel ey hoy ka dhigtaan inta ay fatahaadu socoto, halka kuwa kale ay dul saar ku noqdaan qarabadooda inta ay fatahaadu socoto.
+END
+
+ITEM 896cc2b6-3945-4ec9-9bc9-e4d488a54581 [religion/write]
+Ma Ogtahay Nabiga ugu badan ee Magaciisa ku soo Laab-laabtay Quraanka, inuu yahay Nabi Muse CS.
+END
+
+ITEM 2b4798d1-e683-4e93-aa0a-ddf11604d14d [technology/write]
+Sidee baynu uga faa' iiday san karanaa tignoolajiyada casriga ah:
+1: In aynu la socono waxyaalaha sida maalin laha ah usoo kordha taas waxay inoo sahli kartaa in aynu la qabsano tignoolajiyada casriga ah.
+2:In aynu dhisno xirfadeena shakhsiyadeed, oo uu qofkasta gaarkiisa isku diyaariyo marka hore.
+END
+
+ITEM c7b1a716-1bc4-42d6-9599-32396688c64f [media/write]
+Dhacdooyinka I saameyay ma'ahan kuwo laso koobi karo balse mida iigu cajiibsaneed iiguna naxdinta badneyd waxa ay aheyd markii ay gabadh ku umushay isbitaalka banaadir hortiisa ayadoon isbitaalka wax gargaar ka helin .
+END
+
+ITEM b4402111-d4d9-4a62-9a34-3b7ef487a4a2 [health/write]
+Nadaafaddu waa tiirka ugu muhiimsan ee caafimaadka. Gacmaha oo si joogto ah loo dhaqo, biyo nadiif ah la cabo, iyo deegaanka oo la ilaaliyo waxay yareeyaan cudurrada faafa. Sidoo kale, qof kasta waa inuu cunto nafaqo leh cunaa, jimicsi sameeyaa, talada dhakhtarkana raacaa marka uu xanuunsado. Bulsho caafimaad qabta waxay horseeddaa horumar iyo nolol wanaagsan.
+END
+
+ITEM 4456b083-1a8f-44e5-90aa-027d52285d77 [education/write]
+Judge                    = garsoore
+Jury                        = xeer-beegti 
+Law                        = xeer
+Lawyer                   = qareen 
+Suspect                 = eedeysane
+Criminal                 = dambiile
+Indictment            = dacwayn 
+Allegation              = eedeyn
+Conviction             = dambi-ku-helid 
+Acquittal                = dambi-ku-waayid 
+Prosecution           = dacwa-ku-oogid 
+Testimony              = marqaati 
+Procedure              = habraac 
+Appeal                    = racfaan
+Bail                          = dammiin
+Life sentence         = xabsi daa’in
+Case file                 = gal-dacwadeed
+Judicial review      = dib-u-eegis garsoor
+Verdict                   = xukun 
+Complaint              = cabasho
+Grievance              = wax-tabasho 
+Victim                     = dhibbane 
+Offence                  = gaf/ dambi
+Perjury                    = been-ku-dhaarasho 
+Incarceration         = xiris 
+Violation                 = ku-tumasho
+
+Waxaa qoray Ibrahim Osman
+END
+
+ITEM fe9a3de8-782e-4e88-9ea9-f09c16e71cc1 [religion/write]
+Ma Ogtahay, Xalaasha Alle ka Caroodo, misana Quraanka lagu Sheegay inuu yahay kala tagga Lamaanaha (Furiinka).
+END
+
+ITEM 69b1901d-5c00-482d-ba05-f6ef646dc875 [culture/write]
+Si'aad canjeero udubto wa inaad cajiinka qasato oo aad diyaarsato kadib subixiina aad bir ay somaalidu daawe utaqaano aad kulueyso kadib inta cajiinka aad ku shubto qaab wareeg ah ugu wareejiso
+END
+
+ITEM a3b2589e-55c8-4ce4-b302-ca2964b2e797 [technology/write]
+Waxaa jira baahi weyn oo aan wali la xallin. Haddii aad tahay app developer, ama aad taqaan qof app developer ah, tani waa fikrad mudan in laga shaqeeyo.
+
+Soomaaliya waxay u baahan tahay platform u eg Trustpilot, oo si guud lagu qiimeeyo adeegyada iyo goobaha kala duwan. Dadku waa inay si fudud uga arki karaan reviews-ka maqaayadaha, jaamacadaha, shirkadaha, xarumaha waxbarashada, isbitaallada, iyo adeegyo kale.
+
+Maanta waxaa si joogto ah usoo badanaya ganacsiyada online-ka iyo xarumaha adeegyada bixiya. Laakiin weli way adag tahay in la helo meel laga arko tayada adeegyadooda ka hor inta aan la isticmaalin adeegooda. Platform noocaan ah wuxuu dadka ka caawin karaa inay gaaraan go'aan xog ogaal ah, sidoo kalena wuxuu dhiirrigelin karaa adeeg bixiyeyaasha inay tayadooda kor u qaadaan.
+
+Waxaan jeclaan lahaa in review kasta uu yeesho:
+• Qiimeyn 1 ilaa 5 xiddig.
+• Faallo faahfaahsan.
+• Caddeyn haddii ay suurtagal tahay, sida sawir, receipt, ama wax kale oo taageeraya review-ga.
+• Upvote si dadka kale u muujiyaan inay ku raacsan yihiin.
+
+Review-yada daacadda ah waxay dhisaan kalsooni. Waxay sidoo kale ka caawiyaan dadka inay ka fogaadaan adeegyada liita, isla markaana waxay abaalmariyaan kuwa bixiya adeeg tayo leh.
+
+Haddii aad awood u leedahay inaad dhisto website-kan iyo app-kan, isku day inaad hirgeliso. Haddii aadan adigu dhisi karin, la wadaag qof xallin kara. Waxaan isleeyahay waxa uu noqon karaa mashruuc qiimo weyn u leh bulshada.
+END
+
+ITEM a6d40b12-892a-492b-a067-d845915c9d12 [religion/write]
+Waxaan qorayaa qisadan oo ku saabsan hoggaaminta wanaagsan ee Islaamka.
+Qisada waxa u dhaceysaa sida-tan:
+
+Markii Nebi Muxammad (عليه الصلاة والسلام) (NNKH) uu  geeriyooday, Abuu Bakr waxaa loo doortay Khaliifka Muslimiinta. 
+
+Inkastoo uu noqday hoggaamiyihii ugu sarreeyay ee ummadda, haddana ma uusan joojin adeegii uu u hayay dadka tabaaleysan. 
+
+Wuxuu si qarsoodi ah ugu adeegi jiray haweeney indho la'ayd gurigeeda ayuu u nadiifin jiray, cuntadeedana wuu u diyaarin jiray, timirtana lafta / iniinteeda ayuu uga saari jiray si ay ugu fududaato cunisteedu.
+
+Markii uu geeriyooday, Cumar ibnu Khadaab (Alle haka raalli noqdee) ayaa doonay inuu sii wado adeeggaas. 
+
+Markii uu timirtii u dhiibay islaantii, waxay tiri: Qofkii ii iman jiray maanta iima imaan ama mahan qofkii cuntada isiin jiray.
+
+Cumar ayaa la yaabay, markaasay ku tiri Qofkii ii iman jiray timirta iniinteeda ama lafta wuu iga saari jiray ka hor intuusan i siin.
+
+ Markaas Cumar ayaa ooyay isagoo garwaaqsaday heerka sare ee naxariista iyo adeegga Abuu Bakar sadiiq R.C.
+
+Casharka ugu weyn ee qisadani waa in hoggaamintu aysan ahayn kursi, awood iyo magac lagu faano waa mas'uuliyad, caddaalad iyo u adeegidda dadka, gaar ahaan masaakiinta, agoonta iyo dadka jilicsan.
+
+Hoggaamiyaha Islaamka waxaa laga rabaa inuu noqdo qof naxariis badan, dadka u adeega si daacad ah, kana hormariya danahooda kuwa naftiisa. 
+
+Hoggaaminta saxaabadii Nebiga (عليه الصلاة والسلام) waxay ahayd hoggaamin ku dhisnayd iimaan, caddaalad iyo adeeg bulsho.
+
+Qof kasta oo qisadan akhriya, waxa uu qiraa in hoggaamintii saxaabadu ahayd hoggaamin diimeed oo ku dhisnayd Alle ka cabsi, caddaalad iyo u adeegidda ummadda.
+
+ Ilaahayna ha nagu arsaaqo hoggaamiyeyaal wanaagsan  markasta.
+END
+
+ITEM c7f88aae-d33a-4b90-a76d-b41fdf63ae99 [law/translate]
+kala tagoodi kadib, hooyada iyo aabuhu waxay ku heshiiyeen inay si wadajira u qeybsadaan daryeelka caruurtooda
+END
+
+ITEM 19a27878-76ba-4849-b324-313ccd0d26e7 [culture/write]
+Waxaa la isku qasaa Bur, Biyo, Cajiin Markii La isku qaso Kadib Waxaa Jirto Heer Laga Rabo in ay gaarto si loo dubo
+
+Marki Heerkaas ay Gaarto Dabka Waxaa la saaraa bir Canjeero waysoo kululaataa kadib saliida la mariyaa sidaas ayaa loo dubaa
+END
+
