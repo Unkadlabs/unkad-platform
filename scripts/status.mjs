@@ -9,6 +9,8 @@
 //   node scripts/status.mjs            # local database
 
 import { Pool } from 'pg';
+// One definition of a sentence, shared with the app and the exporter.
+import { splitSentences as split, isUsableSentence as usable, countSentences as count } from '../lib/sentences.mjs';
 import fs from 'fs';
 import path from 'path';
 
@@ -27,8 +29,6 @@ const cs = env.DATABASE_URL || env.POSTGRES_URL_NON_POOLING;
 const local = /localhost|127\.0\.0\.1/.test(cs ?? '');
 const pool = new Pool({ connectionString: cs, ssl: local ? undefined : { rejectUnauthorized: false } });
 
-const split = (r) => (!r ? [] : r.replace(/\r/g, '').split(/(?<=[.!?؟۔])\s+|\n+/).map((s) => s.trim()).filter(Boolean));
-const usable = (s) => s.length >= 10 && s.split(/\s+/).length >= 3;
 
 const [subs, agg, prov] = await Promise.all([
   pool.query(`select s.text_so, s.status::text st, (s.verified_by is not null) ver,
