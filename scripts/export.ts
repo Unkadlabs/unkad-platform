@@ -25,7 +25,13 @@ import { normalizeForRelease, needsNormalizing } from '../lib/normalize';
 const HF_ORG = process.env.HF_ORG ?? 'unkadlabs';
 const HF_DATASET = process.env.HF_DATASET ?? 'qor-af-soomaali';
 const VERSION = process.env.VERSION ?? 'v0.1.0';
-const SCOPE = (process.env.SCOPE ?? 'verified') as 'verified' | 'accepted';
+// 'monolingual' is the safe default for a public corpus release: verified
+// items that carry no English pair. The paired items are the benchmark's raw
+// material, and a benchmark whose sentences were previously published as a
+// corpus measures nothing, because anyone could have trained on them. Holding
+// them back costs a small release today and protects the evaluation set that is
+// the lab's actual contribution.
+const SCOPE = (process.env.SCOPE ?? 'monolingual') as 'monolingual' | 'verified' | 'accepted';
 const HF_TOKEN = process.env.HF_TOKEN;
 
 const REPO = `${HF_ORG}/${HF_DATASET}`;
@@ -33,9 +39,15 @@ const REPO = `${HF_ORG}/${HF_DATASET}`;
 async function main() {
   // ---- 1. Collect the release rows -----------------------------------------
   const where =
-    SCOPE === 'verified'
-      ? and(eq(submissions.status, 'accepted'), sql`${submissions.verifiedAt} is not null`)
-      : eq(submissions.status, 'accepted');
+    SCOPE === 'monolingual'
+      ? and(
+          eq(submissions.status, 'accepted'),
+          sql`${submissions.verifiedAt} is not null`,
+          isNull(submissions.textEn)
+        )
+      : SCOPE === 'verified'
+        ? and(eq(submissions.status, 'accepted'), sql`${submissions.verifiedAt} is not null`)
+        : eq(submissions.status, 'accepted');
 
   // LEFT join on prompts: proverb-mode items are contributed freely and carry
   // no prompt, so an inner join would silently drop every proverb from the
@@ -180,12 +192,12 @@ size_categories:
 
 # Qor Af-Soomaali — the Unkad Somali Corpus (${VERSION})
 
-Community-contributed, peer-validated${SCOPE === 'verified' ? ', linguist-verified' : ''} Somali text,
+Community-contributed, peer-validated${SCOPE === 'accepted' ? '' : ', linguist-verified'} Somali text,
 built on [qor.unkad.com](https://qor.unkad.com) by [Unkad Labs](https://unkad.com) — a non-profit
 AI research laboratory in Mogadishu, Somalia.
 
 Every item was written by a consenting Somali speaker, validated by at least two community
-members${SCOPE === 'verified' ? ', and signed off by a trusted linguist reviewer' : ''}. Every item
+members${SCOPE === 'accepted' ? '' : ', and signed off by a trusted linguist reviewer'}. Every item
 carries provenance: mode, register, sector, and (where shared) the contributor's dialect.
 
 ## This release
@@ -195,7 +207,8 @@ carries provenance: mode, register, sector, and (where shared) the contributor's
 | Items | ${records.length} |
 | English–Somali parallel pairs | ${parallel} |
 | Sectors | ${sectors.join(', ')} |
-| Quality tier | ${SCOPE === 'verified' ? 'linguist-verified' : 'community-accepted'} |
+| Quality tier | ${SCOPE === 'accepted' ? 'community-accepted' : 'linguist-verified'} |
+| Content | ${SCOPE === 'monolingual' ? 'monolingual Somali (English-paired items held back for a future evaluation set)' : 'Somali, with English source where the item was a translation'} |
 | License | CC BY-SA 4.0 |
 
 ## Text normalisation
