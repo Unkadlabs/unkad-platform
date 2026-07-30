@@ -52,15 +52,26 @@ async function main() {
   // LEFT join on prompts: proverb-mode items are contributed freely and carry
   // no prompt, so an inner join would silently drop every proverb from the
   // release. Their register/topic are simply unset.
+  // Everything in scope, not only the unreleased part. The published files are
+  // cumulative: `data/train.jsonl` is the whole dataset as of this version,
+  // which is what someone calling load_dataset expects to receive, and older
+  // versions stay reachable through the Hub's own git history.
+  //
+  // Uploading only the new items would overwrite the file with them and shrink
+  // the dataset on every release: v0.2 would replace a hundred items with the
+  // forty added since v0.1. The release_id stamp still records which release
+  // first carried an item, so `fresh` below is what is genuinely new.
   const rows = await db
     .select({ s: submissions, p: prompts, u: users })
     .from(submissions)
     .leftJoin(prompts, eq(submissions.promptId, prompts.id))
     .innerJoin(users, eq(submissions.userId, users.id))
-    .where(and(where, isNull(submissions.releaseId)));
+    .where(where);
 
-  if (rows.length === 0) {
-    console.log(`Nothing to release (scope: ${SCOPE}, unreleased only).`);
+  const fresh = rows.filter((r) => r.s.releaseId === null);
+
+  if (fresh.length === 0) {
+    console.log(`Nothing new to release (scope: ${SCOPE}); ${rows.length} items already published.`);
     process.exit(0);
   }
 
@@ -205,6 +216,7 @@ carries provenance: mode, register, sector, and (where shared) the contributor's
 | | |
 |---|---|
 | Items | ${records.length} |
+| New in this version | ${fresh.length} |
 | English–Somali parallel pairs | ${parallel} |
 | Sectors | ${sectors.join(', ')} |
 | Quality tier | ${SCOPE === 'accepted' ? 'community-accepted' : 'linguist-verified'} |
@@ -279,7 +291,7 @@ Contact: research@unkad.com · Platform: https://qor.unkad.com
   await uploadFiles({
     repo,
     accessToken: HF_TOKEN,
-    commitTitle: `Release ${VERSION} (${records.length} items, ${SCOPE})`,
+    commitTitle: `Release ${VERSION} (${records.length} items, ${fresh.length} new, ${SCOPE})`,
     files: [
       { path: 'data/train.jsonl', content: new Blob([jsonl]) },
       ...(multiRef.length
@@ -298,13 +310,15 @@ Contact: research@unkad.com · Platform: https://qor.unkad.com
     .values({ version: VERSION, itemCount: records.length, hfUrl, notes: `scope: ${SCOPE}` })
     .returning();
 
-  for (const r of records) {
+  for (const r of fresh) {
     await db
       .update(submissions)
       .set({ releaseId: release.id })
-      .where(eq(submissions.id, r.id));
+      .where(eq(submissions.id, r.s.id));
   }
-  console.log(`Recorded release ${VERSION} (${release.id}) and stamped ${records.length} items.`);
+  console.log(
+    `Recorded release ${VERSION} (${release.id}): ${records.length} items published, ${fresh.length} newly stamped.`
+  );
 }
 
 main().then(() => process.exit(0));
