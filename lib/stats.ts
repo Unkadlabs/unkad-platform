@@ -1,7 +1,8 @@
 // Read-model queries for the richer UI: corpus progress, personal
 // daily activity, streaks, and coverage breakdowns.
 
-import { and, asc, count, desc, eq, gte, isNull, sql } from 'drizzle-orm';
+import { and, asc, count, desc, eq, gte, inArray, isNull, sql } from 'drizzle-orm';
+import { unstable_cache } from 'next/cache';
 import { db } from './db';
 import { submissions, submissionRevisions, users, validations, prompts } from './schema';
 import { countSentences } from './sentences';
@@ -9,10 +10,33 @@ import { countSentences } from './sentences';
 // The public campaign goal: 100,000 validated sentences.
 export const CORPUS_GOAL = 100_000;
 
-export async function corpusStats() {
-  const [[accepted], [pending], [contributors], [registered]] = await Promise.all([
-    db.select({ n: count() }).from(submissions).where(eq(submissions.status, 'accepted')),
-    db.select({ n: count() }).from(submissions).where(eq(submissions.status, 'pending')),
+// Sentences, not submissions.
+//
+// This counted `submissions` rows and every surface that reads it — the
+// progress bar, the homepage stat, the leaderboard card, the share image, and
+// unkad.com's live counter through /api/stats — labelled the result `jumlado`.
+// A submission is a passage, so at 313 accepted rows the platform was
+// advertising 313 sentences against a corpus that actually held 1,804. The
+// counters were reporting under a fifth of the work people had done.
+//
+// Counting has to go through `countSentences`, the same splitter the exporter
+// and scripts/status.mjs use, because there is no way to do it in SQL. That is
+// the point: one definition of a sentence, so the dashboard, the release and
+// the status line can never disagree the way they did before.
+//
+// Cached for a minute, matching the /api/stats edge cache. The alternative was
+// a stored per-row count, rejected because the splitter has already been
+// corrected once and a stored column would have quietly kept serving the old
+// numbers.
+async function computeCorpusStats() {
+  const [texts, [contributors], [registered]] = await Promise.all([
+    // Rejected rows are excluded: a cleanup must show as a drop, never as
+    // milestone credit. Escalated rows join `pending` because both are waiting
+    // on a human, which is what the label on that number says.
+    db
+      .select({ status: submissions.status, textSo: submissions.textSo })
+      .from(submissions)
+      .where(inArray(submissions.status, ['accepted', 'pending', 'escalated'])),
 
     // A contributor is someone who has done something, not someone who has an
     // account. This used to count every non-deleted user row, so every public
@@ -39,13 +63,37 @@ export async function corpusStats() {
     db.select({ n: count() }).from(users).where(sql`${users.deletedAt} is null`),
   ]);
 
+  let accepted = 0;
+  let pending = 0;
+  let acceptedDocs = 0;
+  let pendingDocs = 0;
+  for (const row of texts) {
+    const n = countSentences(row.textSo);
+    if (row.status === 'accepted') {
+      accepted += n;
+      acceptedDocs++;
+    } else {
+      pending += n;
+      pendingDocs++;
+    }
+  }
+
   return {
-    accepted: accepted.n,
-    pending: pending.n,
+    // Sentences. `accepted` is the campaign number: text two peers have passed.
+    accepted,
+    pending,
     contributors: contributors.n,
     registered: registered.n,
+    // Passages, kept because the review queue is worked in passages and the
+    // old value was useful — just never under the word `jumlado`.
+    acceptedDocs,
+    pendingDocs,
   };
 }
+
+export const corpusStats = unstable_cache(computeCorpusStats, ['corpus-stats'], {
+  revalidate: 60,
+});
 
 // Submissions per day for the last `days` days (all statuses) for one user.
 export async function userDailyCounts(userId: string, days = 14) {

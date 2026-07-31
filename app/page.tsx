@@ -12,6 +12,9 @@ export default async function LandingPage() {
 
   const lang = await getLang();
   const t = makeT(lang);
+  // Pinned to Somali: the mode names sit inside `lang="so"` and are glossed in
+  // English beside them, so `t` produced "Write · Write" for English readers.
+  const so = makeT('so');
   const corpus = await corpusStats();
   const pct = Math.min(100, (corpus.accepted / CORPUS_GOAL) * 100);
 
@@ -77,7 +80,7 @@ export default async function LandingPage() {
         <div className="mode-card">
           <span className="mode-name">
             <span className="so" lang="so">
-              {t('modeWrite')}
+              {so('modeWrite')}
             </span>
             {lang === 'so' ? '' : ' · Write'}
           </span>
@@ -86,7 +89,7 @@ export default async function LandingPage() {
         <div className="mode-card">
           <span className="mode-name">
             <span className="so" lang="so">
-              {t('modeTranslate')}
+              {so('modeTranslate')}
             </span>
             {lang === 'so' ? '' : ' · Translate'}
           </span>
@@ -95,7 +98,7 @@ export default async function LandingPage() {
         <div className="mode-card">
           <span className="mode-name">
             <span className="so" lang="so">
-              {t('modeTranscribe')}
+              {so('modeTranscribe')}
             </span>
             {lang === 'so' ? '' : ' · Transcribe'}
           </span>
@@ -104,7 +107,7 @@ export default async function LandingPage() {
         <div className="mode-card">
           <span className="mode-name">
             <span className="so" lang="so">
-              {t('modeValidate')}
+              {so('modeValidate')}
             </span>
             {lang === 'so' ? '' : ' · Validate'}
           </span>

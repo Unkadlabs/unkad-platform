@@ -24,12 +24,17 @@ export default async function HomePage() {
 
   const pct = Math.min(100, (corpus.accepted / CORPUS_GOAL) * 100);
 
+  // Pinned to Somali on purpose. The mode name is rendered inside `lang="so"`
+  // and glossed with the English below it, so resolving it through `t` gave an
+  // English reader "Write · Write" — and told a screen reader the first one was
+  // Somali.
+  const so = makeT('so');
   const modes = [
-    { href: '/contribute/write', so: t('modeWrite'), en: 'Write', n: available.write },
-    { href: '/contribute/translate', so: t('modeTranslate'), en: 'Translate', n: available.translate },
-    { href: '/contribute/transcribe', so: t('modeTranscribe'), en: 'Transcribe', n: available.transcribe },
-    { href: '/contribute/proverb', so: t('modeProverb'), en: 'Proverb', n: null },
-    { href: '/validate', so: t('modeValidate'), en: 'Validate', n: available.validate },
+    { href: '/contribute/write', so: so('modeWrite'), en: 'Write', n: available.write },
+    { href: '/contribute/translate', so: so('modeTranslate'), en: 'Translate', n: available.translate },
+    { href: '/contribute/transcribe', so: so('modeTranscribe'), en: 'Transcribe', n: available.transcribe },
+    { href: '/contribute/proverb', so: so('modeProverb'), en: 'Proverb', n: null },
+    { href: '/validate', so: so('modeValidate'), en: 'Validate', n: available.validate },
   ];
 
   return (
