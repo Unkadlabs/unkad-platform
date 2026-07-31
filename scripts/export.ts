@@ -255,7 +255,7 @@ size_categories:
 
 Community-contributed, peer-validated${SCOPE === 'accepted' ? '' : ', linguist-verified'} Somali text,
 built on [qor.unkad.com](https://qor.unkad.com) by [Unkad Labs](https://unkad.com) — a non-profit
-AI research laboratory in Mogadishu, Somalia.
+AI research laboratory.
 
 Every item was written by a consenting Somali speaker, validated by at least two community
 members${SCOPE === 'accepted' ? '' : ', and signed off by a trusted linguist reviewer'}. Every item

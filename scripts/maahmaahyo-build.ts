@@ -57,8 +57,7 @@ English translations, meanings, and dialect notes. Somali carries one of the
 world's great oral traditions; proverbs are its most concentrated form. This
 dataset writes a piece of that tradition down, openly.
 
-Curated by [Unkad Labs](https://unkad.com), a non-profit AI research laboratory
-in Mogadishu. Every entry is verified by a named Somali reviewer before release.
+Curated by [Unkad Labs](https://unkad.com), a non-profit AI research laboratory. Every entry is verified by a named Somali reviewer before release.
 
 ## Fields
 
