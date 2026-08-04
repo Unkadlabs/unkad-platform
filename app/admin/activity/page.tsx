@@ -23,7 +23,40 @@ export const dynamic = 'force-dynamic';
 
 const DAYS = 14;
 
-type Props = { searchParams: Promise<{ by?: string }> };
+type Props = { searchParams: Promise<{ by?: string; who?: string }> };
+
+// The contributor-table segments. Each answers one admin question directly so
+// nobody has to scroll a hundred rows to find, say, everyone whose work is
+// stuck in validation. Predicates over the already-loaded rows, not extra
+// queries.
+const SEGMENTS = {
+  all: { label: 'all', test: () => true },
+  pending: {
+    label: 'has pending',
+    test: (c: { pending: number }) => c.pending > 0,
+  },
+  unverified: {
+    label: 'awaiting verify',
+    test: (c: { accepted: number; verified: number }) => c.accepted > c.verified,
+  },
+  clear: {
+    label: 'all clear',
+    test: (c: { submitted: number; pending: number; accepted: number; verified: number }) =>
+      c.submitted > 0 && c.pending === 0 && c.accepted === c.verified,
+  },
+  quiet: {
+    label: 'never wrote',
+    test: (c: { submitted: number }) => c.submitted === 0,
+  },
+  idle: {
+    label: 'idle 7d+',
+    test: (c: { submitted: number; lastSubmissionAt: Date | null }) =>
+      c.submitted > 0 &&
+      c.lastSubmissionAt !== null &&
+      Date.now() - c.lastSubmissionAt.getTime() > 7 * 24 * 60 * 60 * 1000,
+  },
+} as const;
+type SegmentKey = keyof typeof SEGMENTS;
 
 function when(date: Date | null) {
   if (!date) return '—';
@@ -37,19 +70,34 @@ function when(date: Date | null) {
 
 export default async function AdminActivityPage({ searchParams }: Props) {
   await requireRole('admin');
-  const { by } = await searchParams;
+  const { by, who } = await searchParams;
   const filterBy = by && /^[0-9a-f-]{36}$/i.test(by) ? by : undefined;
+  const segment: SegmentKey = who && who in SEGMENTS ? (who as SegmentKey) : 'all';
 
   const [activity, breakdown, contributors, recent, health, supply] = await Promise.all([
     adminActivity(DAYS),
     submissionBreakdown(),
-    contributorActivity(),
+    // High limit on purpose: the default 100 is ordered by output, so the
+    // segments that exist to find the quiet people (never wrote, idle) would
+    // silently lose exactly the rows they are for.
+    contributorActivity(1000),
     recentSubmissions(30, filterBy),
     pipelineHealth(),
     promptSupply(),
   ]);
 
   const filtered = filterBy ? contributors.find((c) => c.id === filterBy) : undefined;
+
+  // The active segment, sorted by what the admin came to act on: the deepest
+  // validation backlog first, or the largest unverified pile first. Other
+  // segments keep the by-output order the table has always had.
+  const rows = contributors
+    .filter(SEGMENTS[segment].test)
+    .sort((a, b) => {
+      if (segment === 'pending') return b.pending - a.pending;
+      if (segment === 'unverified') return (b.accepted - b.verified) - (a.accepted - a.verified);
+      return 0;
+    });
 
   const total = (rows: { n: number }[]) => rows.reduce((sum, r) => sum + r.n, 0);
   const totalChars = breakdown.byMode.reduce((sum, r) => sum + r.chars, 0);
@@ -238,7 +286,31 @@ export default async function AdminActivityPage({ searchParams }: Props) {
       </p>
 
       {/* ---- Engagement ------------------------------------------------------ */}
-      <span className="eyebrow">Contributors ({contributors.length})</span>
+      <span className="eyebrow">
+        Contributors ({rows.length}
+        {segment === 'all' ? '' : ` of ${contributors.length}`})
+      </span>
+
+      {/* Segment chips. Plain links so every view has a URL — an admin can
+          bookmark "has pending" or paste it into a message. The `by` feed
+          filter below survives the switch. */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', margin: '0.5rem 0 0.8rem' }}>
+        {(Object.keys(SEGMENTS) as SegmentKey[]).map((key) => {
+          const n = contributors.filter(SEGMENTS[key].test).length;
+          const href = `?who=${key}${filterBy ? `&by=${filterBy}` : ''}`;
+          return (
+            <Link
+              key={key}
+              href={href}
+              className={key === segment ? 'chip' : 'chip chip-plain'}
+              style={{ textDecoration: 'none' }}
+            >
+              {SEGMENTS[key].label} · {n}
+            </Link>
+          );
+        })}
+      </div>
+
       <div className="table-wrap">
         <table className="table">
           <thead>
@@ -246,6 +318,7 @@ export default async function AdminActivityPage({ searchParams }: Props) {
               <th>Who</th>
               <th>Sub</th>
               <th>Acc</th>
+              <th>Ver</th>
               <th>Rej</th>
               <th>Pend</th>
               <th>Val</th>
@@ -254,7 +327,7 @@ export default async function AdminActivityPage({ searchParams }: Props) {
             </tr>
           </thead>
           <tbody>
-            {contributors.map((contributor) => (
+            {rows.map((contributor) => (
               <tr key={contributor.id}>
                 <td>
                   <Link
@@ -277,6 +350,7 @@ export default async function AdminActivityPage({ searchParams }: Props) {
                 </td>
                 <td className="mono">{contributor.submitted}</td>
                 <td className="mono">{contributor.accepted}</td>
+                <td className="mono">{contributor.verified}</td>
                 <td className="mono">{contributor.rejected}</td>
                 <td className="mono">{contributor.pending}</td>
                 <td className="mono">{contributor.validations}</td>
