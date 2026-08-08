@@ -96,8 +96,6 @@ passages in markup get `lang="so"`.
 
 ## Known rough edges
 
-- `scripts/maahmaahyo-cards.tsx` hardcodes `FONTS = /Users/khalidyusufdahir/research/dhiblabs/assets/fonts`,
-  which no longer exists — the site repo moved to `research/unkad/dhiblabs`.
 - Anything joining `submissions` to `prompts` must use a **left** join: proverb-mode items have
   `promptId = null`, and an inner join silently drops them from releases and breakdowns.
 - Deploys go through the Vercel app, not GitHub Actions (the workflows were deliberately

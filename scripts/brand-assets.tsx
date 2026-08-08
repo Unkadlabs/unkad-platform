@@ -10,8 +10,8 @@ import fs from 'fs';
 import path from 'path';
 import { ImageResponse } from 'next/og';
 
-const FONTS_DIR = '/Users/khalidyusufdahir/research/dhiblabs/assets/fonts';
-const OUT_DIR = '/Users/khalidyusufdahir/research/dhiblabs/assets/brand';
+const FONTS_DIR = path.join(__dirname, '..', '..', 'dhiblabs', 'assets', 'fonts');
+const OUT_DIR = path.join(__dirname, '..', '..', 'dhiblabs', 'assets', 'brand');
 
 const LIGHT = { bg: '#FCFBF8', text: '#1A1917', muted: '#6B6862', accent: '#0F6B5C' };
 const DARK = { bg: '#141312', text: '#E8E6E1', muted: '#A5A19A', accent: '#4DB6A5' };
