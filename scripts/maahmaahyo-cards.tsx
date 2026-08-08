@@ -11,7 +11,7 @@ import { ImageResponse } from 'next/og';
 const ROOT = path.join(__dirname, '..');
 const SRC = path.join(ROOT, 'data', 'maahmaahyo', 'maahmaahyo.tsv');
 const OUT = path.join(ROOT, 'export', 'maahmaahyo', 'cards');
-const FONTS = '/Users/khalidyusufdahir/research/dhiblabs/assets/fonts';
+const FONTS = path.join(__dirname, '..', '..', 'dhiblabs', 'assets', 'fonts');
 
 const DARK = { bg: '#141312', text: '#E8E6E1', muted: '#A5A19A', accent: '#4DB6A5' };
 
