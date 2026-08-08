@@ -64,10 +64,9 @@ function Cell({ size, color }: { size: number; color: string }) {
   );
 }
 
-// !! VERIFY SOMALI !! — quoted verbatim from the founder's post; only the
-// leading capital and final period were added for display as a pull-quote.
+// Founder-verified wording (2026-08-08).
 const HEADLINE =
-  'Si aynaan indho-la’aan ugu sugin mustaqbal ay kuwa kale noo qoreen, ee aan qeyb ka noqono qoriddiisa.';
+  'Si aynaan indho-la’aan uga sugin mustaqbal ay kuwa kale noo qoreen, aan qeyb ka noqono qoriddiisa.';
 
 const LOG: Array<{ text: string; open?: boolean }> = [
   { text: 'An AI model hacked another lab’s systems to pass its test.' },
