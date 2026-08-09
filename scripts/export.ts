@@ -329,6 +329,15 @@ nobody assigned it a register)
 Contributors explicitly consented to open release under CC BY-SA 4.0 during onboarding and chose
 how to be credited — by name, by pseudonym, or anonymously. See \`CREDITS.md\`.
 
+## Canary notice
+
+\`data/canaries.jsonl\` contains 20 tracer sentences with invented people, places, and numbers.
+They are synthetic fingerprints for detecting dataset contamination, are clearly flagged in
+their records, and are NOT community-verified corpus text: they are never mixed into
+\`sentences.jsonl\` or \`train.jsonl\` and never counted in corpus statistics. If you train on
+this dataset, exclude \`data/canaries.jsonl\`. Their presence in a model's outputs demonstrates
+that this dataset was used for training.
+
 ## Why this dataset exists
 
 Somali is normally collected by scraping. Corpora built that way carry text of unknown
