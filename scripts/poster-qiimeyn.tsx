@@ -1,16 +1,17 @@
 // Facebook posters for the qiimeyn results (Aug 2026) — benchmark-chart
-// style, the way the big labs present evaluations.
+// style, in Somali, to pair with the founder-verified Somali post.
 //
-//   fb-qiimeyn-results.png  1080x1350  vertical bar chart: catch rate on the
-//                                      23 community-rejected texts, humans
-//                                      vs the three frontier models
-//   fb-qiimeyn-square.png   1080x1080  grouped horizontal bars: agreement
-//                                      (the number that looks great) vs bad
-//                                      submissions caught (the number that
-//                                      measures the job)
+//   fb-qiimeyn-results.png  1080x1350  catch-rate bar chart (Somali):
+//                                      who caught the 23 rejected texts
+//   fb-qiimeyn-sectors.png  1080x1350  NEW category chart (Somali): sector
+//                                      accuracy per domain, Somali sector
+//                                      names from the platform's i18n
+//   fb-qiimeyn-square.png   1080x1080  the 96% illusion (English companion,
+//                                      for the comment/international share)
 //
-// Same dark system as poster-alignment: bg #141312, teal #4DB6A5, Source
-// Serif 4. Poster copy is English; the Somali carries the Facebook post.
+// Somali copy: sentences lifted verbatim from khalid's verified FB post
+// where possible; chart-only labels (titles, axis names) are drafts.
+// !! VERIFY SOMALI !! — khalid reviews the rendered posters before posting.
 //
 // Run: npx tsx scripts/poster-qiimeyn.tsx
 // Out: ../dhiblabs/assets/promo/
@@ -96,14 +97,16 @@ const Footer = () => (
 );
 
 // ---------------------------------------------------------------------------
-// Poster 1 — the benchmark chart. One metric, drawn to scale: of the 23
-// texts the community rejected, how many did each judge catch?
+// Poster 1 — the catch-rate benchmark, in Somali.
+// !! VERIFY SOMALI !! title/sub are drafts; caption sentences are from the
+// verified post ("Way akhriyi karaan Soomaaliga", "ma kala garan karaan
+// qoraal saxan iyo mid khaldan").
 
-const CHART_H = 470; // px height of the 100% mark
-const NAME_H = 84;   // reserved lane under the baseline for model names
+const CHART_H = 470;
+const NAME_H = 84;
 
 const BENCH: Array<{ name: string[]; pct: number; human?: boolean }> = [
-  { name: ['Qor', 'volunteers'], pct: 100, human: true },
+  { name: ['Asxaabta', 'Qor'], pct: 100, human: true },
   { name: ['Claude', 'Sonnet 5'], pct: 13 },
   { name: ['GPT-5.6', ''], pct: 0 },
   { name: ['Gemini', '3.1 Pro'], pct: 0 },
@@ -118,7 +121,7 @@ function ResultsPoster() {
       }}
     >
       <Header />
-      <Eyebrow mt={58}>QIIMEYN · EVALUATING THE FRONTIER ON SOMALI</Eyebrow>
+      <Eyebrow mt={58}>QIIMEYN · MODELADA HORMUUDKA AH</Eyebrow>
 
       <div
         style={{
@@ -126,17 +129,16 @@ function ResultsPoster() {
           lineHeight: 1.2, color: C.text, letterSpacing: '-0.01em',
         }}
       >
-        Who catches bad Somali?
+        Yaa qabtay qoraalka khaldan?
       </div>
       <div style={{ display: 'flex', marginTop: 14, fontSize: 25, color: C.muted }}>
-        23 community-rejected submissions out of 593. Higher is better.
+        23 qoraal oo asxaabta Qor ay diideen, 593 qoraal oo la tijaabiyay.
       </div>
 
       <div style={{ display: 'flex', flexGrow: 1 }} />
 
       {/* Chart */}
       <div style={{ display: 'flex', position: 'relative', height: CHART_H + NAME_H + 60 }}>
-        {/* gridlines + y labels, each anchored exactly at its value */}
         {[0, 25, 50, 75, 100].map((v) => (
           <div
             key={`l-${v}`}
@@ -160,7 +162,6 @@ function ResultsPoster() {
           </div>
         ))}
 
-        {/* bars */}
         <div
           style={{
             display: 'flex', position: 'absolute', left: 100, right: 10, bottom: 0,
@@ -204,8 +205,8 @@ function ResultsPoster() {
       <div style={{ display: 'flex', flexGrow: 1 }} />
 
       <div style={{ display: 'flex', fontSize: 26, color: C.muted, lineHeight: 1.5, marginBottom: 38 }}>
-        The same models place a Somali text in the right domain two times out
-        of three. They can read it. They cannot judge it.
+        Way akhriyi karaan Soomaaliga. Laakiin ma kala garan karaan qoraal
+        saxan iyo mid khaldan.
       </div>
 
       <Footer />
@@ -214,8 +215,97 @@ function ResultsPoster() {
 }
 
 // ---------------------------------------------------------------------------
-// Poster 2 — the illusion, as a grouped-bar chart. For each model, the
-// metric that looks perfect next to the metric that measures the job.
+// Poster 2 — NEW: the category chart, in Somali. Sector accuracy averaged
+// across the three models; Somali sector names come from the platform's
+// live i18n dictionary (lib/i18n.ts sector_* keys).
+// !! VERIFY SOMALI !! title/sub/caption are drafts built from the verified
+// post's sentence "saddex meelood laba way saxeen".
+
+const SECTORS: Array<{ name: string; pct: number }> = [
+  { name: 'Caafimaad', pct: 98 },
+  { name: 'Tignoolajiyad', pct: 96 },
+  { name: 'Beeraha', pct: 93 },
+  { name: 'Diin', pct: 91 },
+  { name: 'Waxbarasho', pct: 86 },
+  { name: 'Sharci', pct: 61 },
+  { name: 'Dhaqan', pct: 55 },
+  { name: 'Guud', pct: 49 },
+  { name: 'Warbaahin', pct: 43 },
+];
+const SBAR_MAX = 620;
+
+function SectorsPoster() {
+  return (
+    <div
+      style={{
+        width: '100%', height: '100%', display: 'flex', flexDirection: 'column',
+        backgroundColor: C.bg, padding: '72px 84px', fontFamily: 'Source Serif 4',
+      }}
+    >
+      <Header />
+      <Eyebrow mt={54}>QIIMEYN · MOWDUUCA QORAALKA</Eyebrow>
+
+      <div
+        style={{
+          display: 'flex', marginTop: 16, fontSize: 52, fontWeight: 700,
+          lineHeight: 1.2, color: C.text, letterSpacing: '-0.01em',
+        }}
+      >
+        Mowduuca qoraalka way garan karaan
+      </div>
+      <div style={{ display: 'flex', marginTop: 14, fontSize: 25, color: C.muted, lineHeight: 1.45 }}>
+        Markii la weydiiyay mowduuca uu qoraalku ku saabsan yahay, saddex
+        meelood laba way saxeen. Celceliska saddexda model.
+      </div>
+
+      <div style={{ display: 'flex', flexGrow: 1 }} />
+
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        {SECTORS.map((s, i) => (
+          <div
+            key={s.name}
+            style={{
+              display: 'flex', alignItems: 'center', padding: '15px 0',
+              borderTop: i === 0 ? `1px solid ${C.rule}` : 'none',
+            }}
+          >
+            <div style={{ display: 'flex', width: 250, flexShrink: 0, fontSize: 28, color: C.text }}>
+              {s.name}
+            </div>
+            <div
+              style={{
+                display: 'flex',
+                width: Math.max(6, (s.pct / 100) * SBAR_MAX),
+                height: 30, borderRadius: 7,
+                backgroundColor: s.pct >= 80 ? C.accent : C.bar,
+              }}
+            />
+            <div
+              style={{
+                display: 'flex', marginLeft: 18, fontSize: 27, fontWeight: 700,
+                color: s.pct >= 80 ? C.accent : C.muted,
+              }}
+            >
+              {`${s.pct}%`}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ display: 'flex', flexGrow: 1 }} />
+
+      <div style={{ display: 'flex', fontSize: 26, color: C.muted, lineHeight: 1.5, marginBottom: 38 }}>
+        Akhrin way karaan. Laakiin qoraalka khaldan, 23 ka mid ah 23, asxaabta
+        Qor keliya ayaa qabtay.
+      </div>
+
+      <Footer />
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Poster 3 — the 96% illusion, English companion for the comments.
 
 const ILLUSION: Array<{ name: string; agree: number; caught: number }> = [
   { name: 'GPT-5.6', agree: 95.8, caught: 0 },
@@ -245,7 +335,6 @@ function SquarePoster() {
         A judge that only says yes still scores 96%.
       </div>
 
-      {/* legend */}
       <div style={{ display: 'flex', gap: 36, marginTop: 30 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <div style={{ display: 'flex', width: 22, height: 22, borderRadius: 6, backgroundColor: C.bar }} />
@@ -316,6 +405,7 @@ async function render(name: string, node: React.ReactElement, width: number, hei
 
 async function main() {
   await render('fb-qiimeyn-results.png', <ResultsPoster />, 1080, 1350);
+  await render('fb-qiimeyn-sectors.png', <SectorsPoster />, 1080, 1350);
   await render('fb-qiimeyn-square.png', <SquarePoster />, 1080, 1080);
 }
 
