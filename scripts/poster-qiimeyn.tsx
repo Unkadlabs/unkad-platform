@@ -1,15 +1,16 @@
-// Facebook posters for the qiimeyn results (Aug 2026).
+// Facebook posters for the qiimeyn results (Aug 2026) — benchmark-chart
+// style, the way the big labs present evaluations.
 //
-// Two renders:
-//   fb-qiimeyn-results.png  1080x1350  the 0/23 catch grid, the experiment's
-//                                      central image, one cell per rejected
-//                                      submission
-//   fb-qiimeyn-square.png   1080x1080  the one-sentence finding with the
-//                                      scoreboard, for feed/profile
+//   fb-qiimeyn-results.png  1080x1350  vertical bar chart: catch rate on the
+//                                      23 community-rejected texts, humans
+//                                      vs the three frontier models
+//   fb-qiimeyn-square.png   1080x1080  grouped horizontal bars: agreement
+//                                      (the number that looks great) vs bad
+//                                      submissions caught (the number that
+//                                      measures the job)
 //
 // Same dark system as poster-alignment: bg #141312, teal #4DB6A5, Source
-// Serif 4. Poster copy is English (like the alignment log lines); the Somali
-// carries the Facebook post itself, drafted separately for founder review.
+// Serif 4. Poster copy is English; the Somali carries the Facebook post.
 //
 // Run: npx tsx scripts/poster-qiimeyn.tsx
 // Out: ../dhiblabs/assets/promo/
@@ -29,6 +30,7 @@ const C = {
   muted: '#A5A19A',
   accent: '#4DB6A5',
   rule: '#2E2C29',
+  bar: '#4A4642', // non-highlighted bars, the "them" color
 };
 
 const fonts = [
@@ -72,7 +74,7 @@ const Eyebrow = ({ children, mt }: { children: string; mt: number }) => (
     style={{
       display: 'flex',
       marginTop: mt,
-      fontSize: 25,
+      fontSize: 24,
       color: C.accent,
       letterSpacing: '0.22em',
     }}
@@ -81,171 +83,210 @@ const Eyebrow = ({ children, mt }: { children: string; mt: number }) => (
   </div>
 );
 
-const JUDGES: Array<{ name: string; caught: number; human?: boolean }> = [
-  { name: 'Qor validators', caught: 23, human: true },
-  { name: 'Claude Sonnet 5', caught: 3 },
-  { name: 'GPT-5.6', caught: 0 },
-  { name: 'Gemini 3.1 Pro', caught: 0 },
-];
-
-function CellRow({ caught, human }: { caught: number; human?: boolean }) {
-  return (
-    <div style={{ display: 'flex', gap: 7, marginTop: 14 }}>
-      {Array.from({ length: 23 }, (_, i) => (
-        <div
-          key={i}
-          style={
-            i < caught
-              ? {
-                  display: 'flex', width: 33, height: 33, borderRadius: 8,
-                  backgroundColor: human ? C.accent : C.text,
-                }
-              : {
-                  display: 'flex', width: 33, height: 33, borderRadius: 8,
-                  border: `2px solid ${C.rule}`,
-                }
-          }
-        />
-      ))}
+const Footer = () => (
+  <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
+    <div style={{ display: 'flex', gap: 26, fontSize: 26 }}>
+      <div style={{ display: 'flex', color: C.accent }}>unkad.com</div>
+      <div style={{ display: 'flex', color: C.muted }}>qor.unkad.com</div>
     </div>
-  );
-}
+    <div style={{ display: 'flex', fontSize: 22, color: C.muted }}>
+      Unkad — creation from nothing
+    </div>
+  </div>
+);
+
+// ---------------------------------------------------------------------------
+// Poster 1 — the benchmark chart. One metric, drawn to scale: of the 23
+// texts the community rejected, how many did each judge catch?
+
+const CHART_H = 470; // px height of the 100% mark
+const NAME_H = 84;   // reserved lane under the baseline for model names
+
+const BENCH: Array<{ name: string[]; pct: number; human?: boolean }> = [
+  { name: ['Qor', 'volunteers'], pct: 100, human: true },
+  { name: ['Claude', 'Sonnet 5'], pct: 13 },
+  { name: ['GPT-5.6', ''], pct: 0 },
+  { name: ['Gemini', '3.1 Pro'], pct: 0 },
+];
 
 function ResultsPoster() {
   return (
     <div
       style={{
         width: '100%', height: '100%', display: 'flex', flexDirection: 'column',
-        backgroundColor: C.bg, padding: '76px 84px', fontFamily: 'Source Serif 4',
+        backgroundColor: C.bg, padding: '72px 84px', fontFamily: 'Source Serif 4',
       }}
     >
       <Header />
-      <Eyebrow mt={70}>QIIMEYN · WE TESTED THE FRONTIER</Eyebrow>
+      <Eyebrow mt={58}>QIIMEYN · EVALUATING THE FRONTIER ON SOMALI</Eyebrow>
 
       <div
         style={{
-          display: 'flex', marginTop: 18, fontSize: 56, fontWeight: 700,
-          lineHeight: 1.22, color: C.text, letterSpacing: '-0.01em',
+          display: 'flex', marginTop: 16, fontSize: 54, fontWeight: 700,
+          lineHeight: 1.2, color: C.text, letterSpacing: '-0.01em',
         }}
       >
-        23 bad Somali submissions. The strongest AI models caught 0.
+        Who catches bad Somali?
+      </div>
+      <div style={{ display: 'flex', marginTop: 14, fontSize: 25, color: C.muted }}>
+        23 community-rejected submissions out of 593. Higher is better.
       </div>
 
       <div style={{ display: 'flex', flexGrow: 1 }} />
 
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
-        {JUDGES.map((j, i) => (
+      {/* Chart */}
+      <div style={{ display: 'flex', position: 'relative', height: CHART_H + NAME_H + 60 }}>
+        {/* gridlines + y labels, each anchored exactly at its value */}
+        {[0, 25, 50, 75, 100].map((v) => (
           <div
-            key={j.name}
+            key={`l-${v}`}
             style={{
-              display: 'flex', flexDirection: 'column',
-              padding: '24px 0',
-              borderTop: `1px solid ${C.rule}`,
-              ...(i === JUDGES.length - 1 ? { borderBottom: `1px solid ${C.rule}` } : {}),
+              display: 'flex', position: 'absolute', left: 84, right: 0, height: 0,
+              bottom: NAME_H + (v / 100) * CHART_H,
+              borderTop: v === 0 ? `2px solid ${C.muted}` : `1px solid ${C.rule}`,
+            }}
+          />
+        ))}
+        {[0, 25, 50, 75, 100].map((v) => (
+          <div
+            key={`t-${v}`}
+            style={{
+              display: 'flex', position: 'absolute', left: 0, width: 70,
+              bottom: NAME_H + (v / 100) * CHART_H - 13,
+              fontSize: 21, color: C.muted, justifyContent: 'flex-end',
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
-              <div
-                style={{
-                  display: 'flex', fontSize: 30,
-                  color: j.human ? C.text : C.muted,
-                  fontWeight: j.human ? 700 : 400,
-                }}
-              >
-                {j.name}
-              </div>
-              <div
-                style={{
-                  display: 'flex', fontSize: 30, fontWeight: 700,
-                  color: j.human ? C.accent : j.caught ? C.text : C.muted,
-                }}
-              >
-                {`${j.caught}/23`}
-              </div>
-            </div>
-            <CellRow caught={j.caught} human={j.human} />
+            {`${v}%`}
           </div>
         ))}
+
+        {/* bars */}
+        <div
+          style={{
+            display: 'flex', position: 'absolute', left: 100, right: 10, bottom: 0,
+            alignItems: 'flex-end', justifyContent: 'space-between',
+          }}
+        >
+          {BENCH.map((b) => (
+            <div key={b.name[0]} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: 190 }}>
+              <div
+                style={{
+                  display: 'flex', fontSize: 40, fontWeight: 700,
+                  color: b.human ? C.accent : b.pct ? C.text : C.muted,
+                  marginBottom: 10,
+                }}
+              >
+                {`${b.pct}%`}
+              </div>
+              <div
+                style={{
+                  display: 'flex', width: 150,
+                  height: Math.max(5, (b.pct / 100) * CHART_H),
+                  backgroundColor: b.human ? C.accent : C.bar,
+                  borderRadius: '10px 10px 0 0',
+                }}
+              />
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: NAME_H, paddingTop: 14 }}>
+                <div style={{ display: 'flex', fontSize: 26, color: b.human ? C.text : C.muted, fontWeight: b.human ? 700 : 400 }}>
+                  {b.name[0]}
+                </div>
+                {b.name[1] ? (
+                  <div style={{ display: 'flex', fontSize: 26, color: b.human ? C.text : C.muted, fontWeight: b.human ? 700 : 400 }}>
+                    {b.name[1]}
+                  </div>
+                ) : null}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       <div style={{ display: 'flex', flexGrow: 1 }} />
 
-      <div style={{ display: 'flex', fontSize: 27, color: C.muted, lineHeight: 1.5 }}>
-        They can read Somali. They cannot judge it. That is why the corpus is
-        built by people.
+      <div style={{ display: 'flex', fontSize: 26, color: C.muted, lineHeight: 1.5, marginBottom: 38 }}>
+        The same models place a Somali text in the right domain two times out
+        of three. They can read it. They cannot judge it.
       </div>
 
-      <div
-        style={{
-          display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginTop: 40,
-        }}
-      >
-        <div style={{ display: 'flex', gap: 26, fontSize: 26 }}>
-          <div style={{ display: 'flex', color: C.accent }}>unkad.com</div>
-          <div style={{ display: 'flex', color: C.muted }}>qor.unkad.com</div>
-        </div>
-        <div style={{ display: 'flex', fontSize: 22, color: C.muted }}>
-          Unkad — creation from nothing
-        </div>
-      </div>
+      <Footer />
     </div>
   );
 }
+
+// ---------------------------------------------------------------------------
+// Poster 2 — the illusion, as a grouped-bar chart. For each model, the
+// metric that looks perfect next to the metric that measures the job.
+
+const ILLUSION: Array<{ name: string; agree: number; caught: number }> = [
+  { name: 'GPT-5.6', agree: 95.8, caught: 0 },
+  { name: 'Gemini 3.1 Pro', agree: 96.1, caught: 0 },
+  { name: 'Claude Sonnet 5', agree: 93.6, caught: 13 },
+];
+
+const BAR_MAX = 660;
 
 function SquarePoster() {
   return (
     <div
       style={{
         width: '100%', height: '100%', display: 'flex', flexDirection: 'column',
-        backgroundColor: C.bg, padding: '72px 80px', fontFamily: 'Source Serif 4',
+        backgroundColor: C.bg, padding: '68px 80px', fontFamily: 'Source Serif 4',
       }}
     >
       <Header />
-      <Eyebrow mt={56}>QIIMEYN · 2026</Eyebrow>
+      <Eyebrow mt={44}>QIIMEYN · THE 96% ILLUSION</Eyebrow>
 
       <div
         style={{
-          display: 'flex', marginTop: 20, fontSize: 60, fontWeight: 700,
-          lineHeight: 1.22, color: C.text, letterSpacing: '-0.01em',
+          display: 'flex', marginTop: 14, fontSize: 48, fontWeight: 700,
+          lineHeight: 1.2, color: C.text, letterSpacing: '-0.01em',
         }}
       >
-        The frontier can read Somali. It cannot judge it.
+        A judge that only says yes still scores 96%.
+      </div>
+
+      {/* legend */}
+      <div style={{ display: 'flex', gap: 36, marginTop: 30 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{ display: 'flex', width: 22, height: 22, borderRadius: 6, backgroundColor: C.bar }} />
+          <div style={{ display: 'flex', fontSize: 23, color: C.muted }}>agreement with human validators</div>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{ display: 'flex', width: 22, height: 22, borderRadius: 6, backgroundColor: C.accent }} />
+          <div style={{ display: 'flex', fontSize: 23, color: C.muted }}>bad Somali caught</div>
+        </div>
       </div>
 
       <div style={{ display: 'flex', flexGrow: 1 }} />
 
       <div style={{ display: 'flex', flexDirection: 'column' }}>
-        {[
-          ['Bad Somali the community caught', '23/23', true],
-          ['Bad Somali Claude Sonnet 5 caught', '3/23', false],
-          ['Bad Somali GPT-5.6 caught', '0/23', false],
-          ['Bad Somali Gemini 3.1 Pro caught', '0/23', false],
-        ].map(([label, score, human], i, arr) => (
+        {ILLUSION.map((m, i) => (
           <div
-            key={String(label)}
+            key={m.name}
             style={{
-              display: 'flex', alignItems: 'baseline', justifyContent: 'space-between',
-              padding: '26px 4px',
+              display: 'flex', flexDirection: 'column', padding: '22px 0',
               borderTop: `1px solid ${C.rule}`,
-              ...(i === arr.length - 1 ? { borderBottom: `1px solid ${C.rule}` } : {}),
+              ...(i === ILLUSION.length - 1 ? { borderBottom: `1px solid ${C.rule}` } : {}),
             }}
           >
-            <div
-              style={{
-                display: 'flex', fontSize: 30,
-                color: human ? C.text : C.muted,
-                fontWeight: human ? 700 : 400,
-              }}
-            >
-              {String(label)}
+            <div style={{ display: 'flex', fontSize: 28, color: C.text, marginBottom: 14 }}>{m.name}</div>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <div
+                style={{
+                  display: 'flex', width: (m.agree / 100) * BAR_MAX, height: 26,
+                  backgroundColor: C.bar, borderRadius: 6,
+                }}
+              />
+              <div style={{ display: 'flex', marginLeft: 16, fontSize: 25, color: C.muted }}>{`${m.agree}%`}</div>
             </div>
-            <div
-              style={{
-                display: 'flex', fontSize: 34, fontWeight: 700,
-                color: human ? C.accent : C.muted,
-              }}
-            >
-              {String(score)}
+            <div style={{ display: 'flex', alignItems: 'center', marginTop: 10 }}>
+              <div
+                style={{
+                  display: 'flex', width: Math.max(5, (m.caught / 100) * BAR_MAX), height: 26,
+                  backgroundColor: C.accent, borderRadius: 6,
+                }}
+              />
+              <div style={{ display: 'flex', marginLeft: 16, fontSize: 25, fontWeight: 700, color: C.accent }}>{`${m.caught}%`}</div>
             </div>
           </div>
         ))}
@@ -253,19 +294,13 @@ function SquarePoster() {
 
       <div style={{ display: 'flex', flexGrow: 1 }} />
 
-      <div
-        style={{
-          display: 'flex', alignItems: 'baseline', justifyContent: 'space-between',
-        }}
-      >
-        <div style={{ display: 'flex', gap: 26, fontSize: 26 }}>
-          <div style={{ display: 'flex', color: C.accent }}>unkad.com</div>
-          <div style={{ display: 'flex', color: C.muted }}>qor.unkad.com</div>
-        </div>
-        <div style={{ display: 'flex', fontSize: 22, color: C.muted }}>
-          Unkad — creation from nothing
-        </div>
+      <div style={{ display: 'flex', fontSize: 25, color: C.muted, lineHeight: 1.5, marginBottom: 34 }}>
+        96% of submissions are good, so approving everything looks like
+        expertise. Qor volunteers caught all 23 bad ones. The frontier's best
+        caught 3.
       </div>
+
+      <Footer />
     </div>
   );
 }
