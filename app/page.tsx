@@ -35,6 +35,11 @@ export default async function LandingPage() {
             {t('login')}
           </Link>
         </div>
+        <div className="btn-row" style={{ maxWidth: '24rem', marginTop: '0.6rem' }}>
+          <Link className="btn btn-guest" href="/visitor">
+            {t('guestCta')}
+          </Link>
+        </div>
       </div>
 
       <div className="card progress-card">

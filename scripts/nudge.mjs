@@ -106,6 +106,7 @@ const { rows } = await pool.query(
           exists (select 1 from validations v where v.user_id = u.id) validates
      from users u
     where u.deleted_at is null
+      and u.email is not null
       and u.onboarding_completed_at is not null
       and u.email_opt_out_at is null
       and u.email_bounced_at is null

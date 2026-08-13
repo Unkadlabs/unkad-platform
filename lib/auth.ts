@@ -16,14 +16,19 @@ import { sessions, users } from './schema';
 
 const COOKIE = 'unkad_session';
 const SESSION_DAYS = 30;
+// Visitors have no credentials to log back in with, so their session IS
+// their key. A year keeps the door open across long gaps; the row and
+// everything attached to it is permanent regardless.
+const GUEST_SESSION_DAYS = 365;
 
 export const MAX_FAILED_LOGINS = 5;
 export const LOCKOUT_MINUTES = 15;
 
 export type CurrentUser = {
   id: string;
-  email: string;
+  email: string | null;
   handle: string;
+  isGuest: boolean;
   role: 'contributor' | 'reviewer' | 'admin';
   reputation: number;
   dialect: 'maxaa_tiri' | 'maay' | 'both' | 'other' | null;
@@ -38,9 +43,10 @@ function hashToken(token: string): string {
   return createHash('sha256').update(token).digest('hex');
 }
 
-export async function createSession(userId: string) {
+export async function createSession(userId: string, opts?: { guest?: boolean }) {
   const token = randomBytes(32).toString('hex');
-  const expiresAt = new Date(Date.now() + SESSION_DAYS * 24 * 60 * 60 * 1000);
+  const days = opts?.guest ? GUEST_SESSION_DAYS : SESSION_DAYS;
+  const expiresAt = new Date(Date.now() + days * 24 * 60 * 60 * 1000);
   const ua = (await headers()).get('user-agent')?.slice(0, 250) ?? null;
 
   await db.insert(sessions).values({
@@ -88,6 +94,7 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
       id: users.id,
       email: users.email,
       handle: users.handle,
+      isGuest: users.isGuest,
       role: users.role,
       reputation: users.reputation,
       dialect: users.dialect,

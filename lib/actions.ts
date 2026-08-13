@@ -23,6 +23,7 @@ import {
   auditLog,
   sources,
   passwordResets,
+  goals,
   passwordResetRequests,
 } from './schema';
 import { allow, clientIp } from './ratelimit';
@@ -74,6 +75,20 @@ export async function signup(_prev: string | null, formData: FormData): Promise<
   if (existing.length > 0) return 'errEmailTaken';
 
   const passwordHash = await bcrypt.hash(password, 12);
+
+  // A guest who joins keeps their row: every sentence and the goal they
+  // set in visitor mode stays theirs, which is the whole promise of
+  // letting people start without details.
+  const current = await getCurrentUser();
+  if (current?.isGuest) {
+    await db
+      .update(users)
+      .set({ email, handle, passwordHash, isGuest: false, updatedAt: new Date() })
+      .where(eq(users.id, current.id));
+    await audit(current.id, 'user.claimed', 'user', current.id, {});
+    redirect(current.onboardingCompletedAt ? '/home' : '/onboarding');
+  }
+
   const [user] = await db.insert(users).values({ email, handle, passwordHash }).returning();
   await createSession(user.id);
   redirect('/onboarding');
@@ -91,6 +106,9 @@ export async function login(_prev: string | null, formData: FormData): Promise<s
   if (!user || user.deletedAt) return 'errBadLogin';
 
   if (user.lockedUntil && user.lockedUntil > new Date()) return 'errLocked';
+
+  // Guest rows have no credentials; they log in by claiming, not here.
+  if (!user.passwordHash) return 'errBadLogin';
 
   const ok = await bcrypt.compare(password, user.passwordHash);
   if (!ok) {
@@ -140,7 +158,7 @@ export async function changePassword(
   if (newPassword.length < 8) return 'errPasswordShort';
 
   const [user] = await db.select().from(users).where(eq(users.id, current.id));
-  if (!user || !(await bcrypt.compare(currentPassword, user.passwordHash))) {
+  if (!user || !user.passwordHash || !(await bcrypt.compare(currentPassword, user.passwordHash))) {
     return 'errWrongPassword';
   }
 
@@ -203,7 +221,9 @@ export async function giveConsent(_prev: string | null, formData: FormData): Pro
     .where(eq(users.id, user.id));
 
   await audit(user.id, 'user.consented', 'user', user.id, { creditChoice });
-  redirect('/contribute');
+  // The last onboarding step is a choice, not a form: set a weekly goal
+  // or skip straight to contributing. The goal page carries the skip.
+  redirect('/goal?welcome=1');
 }
 
 // ---- Contribution ----------------------------------------------------------
@@ -449,6 +469,8 @@ export async function nextSubmissionToValidate(userId: string, reviewer: boolean
 
 export async function castValidation(formData: FormData): Promise<void> {
   const user = await requireOnboarded();
+  // Validation shapes the corpus; it stays with accountable accounts.
+  if (user.isGuest) redirect('/join');
 
   if (!(await allow(`validate:${user.id}`, 500, 86400))) redirect('/validate');
 
@@ -1144,7 +1166,8 @@ export async function requestPasswordReset(
     )[0].id;
 
   // With a provider configured, fulfil it now and leave the row as a record.
-  if (emailConfigured()) {
+  // Guests have no address; their path back in is claiming, not resetting.
+  if (emailConfigured() && target.email) {
     const link = await mintResetLink(target.id, target.id);
     const result = await sendEmail({
       to: target.email,
@@ -1231,4 +1254,92 @@ export async function fulfilResetRequest(
   // anyone. The count going stale until the next page load is the cheaper
   // problem by a wide margin.
   return `OK:${row.handle}:${link}`;
+}
+
+
+// ---- Personal goals --------------------------------------------------------
+
+// Upsert the caller's weekly goal. Two numbers and a notify flag; both
+// numbers zero is treated as clearing the goal. Caps keep a typo from
+// becoming a 100,000-sentence personal week.
+export async function setGoal(_prev: string | null, formData: FormData): Promise<string | null> {
+  const user = await requireOnboarded();
+
+  const weeklyWrite = clampInt(formData.get('weeklyWrite'), 0, 500);
+  const weeklyValidate = clampInt(formData.get('weeklyValidate'), 0, 1000);
+  const notify = formData.get('notify') === 'on';
+
+  if (weeklyWrite === null || weeklyValidate === null) return 'ERR:bad numbers';
+
+  if (weeklyWrite === 0 && weeklyValidate === 0) {
+    await db.delete(goals).where(eq(goals.userId, user.id));
+    await audit(user.id, 'goal.cleared', 'user', user.id, {});
+    revalidatePath('/home');
+    redirect('/home');
+  }
+
+  await db
+    .insert(goals)
+    .values({ userId: user.id, weeklyWrite, weeklyValidate, notify })
+    .onConflictDoUpdate({
+      target: goals.userId,
+      set: { weeklyWrite, weeklyValidate, notify, updatedAt: new Date() },
+    });
+
+  await audit(user.id, 'goal.set', 'user', user.id, { weeklyWrite, weeklyValidate, notify });
+  revalidatePath('/home');
+  redirect('/home');
+}
+
+function clampInt(v: FormDataEntryValue | null, min: number, max: number): number | null {
+  const n = Number(v);
+  if (!Number.isFinite(n) || !Number.isInteger(n)) return null;
+  if (n < min || n > max) return null;
+  return n;
+}
+
+
+// ---- Visitor mode ----------------------------------------------------------
+
+// Start contributing with no details at all: one consent tick, an
+// optional dialect, and a session. The row is real, so everything a
+// guest writes and any goal they set survives, and joining later
+// simply claims the same row. Consent is the one thing that cannot be
+// skipped; nothing enters the corpus without it.
+export async function startGuestSession(
+  _prev: string | null,
+  formData: FormData
+): Promise<string | null> {
+  // Honeypot, same as signup: real people never fill the hidden field.
+  if (String(formData.get('website') ?? '') !== '') return 'errRequired';
+
+  const ip = await clientIp();
+  if (!(await allow(`guest:${ip}`, 5, 3600))) return 'errRateLimited';
+
+  if (formData.get('consent') !== 'on') return 'errConsentRequired';
+
+  const rawDialect = String(formData.get('dialect') ?? '');
+  const dialect = ['maxaa_tiri', 'maay', 'both', 'other'].includes(rawDialect)
+    ? (rawDialect as 'maxaa_tiri' | 'maay' | 'both' | 'other')
+    : null;
+
+  // VERIFY SOMALI: "Marti" (guest) as the handle prefix.
+  const handle = `Marti-${Math.floor(1000 + Math.random() * 9000)}`;
+  const now = new Date();
+
+  const [user] = await db
+    .insert(users)
+    .values({
+      handle,
+      isGuest: true,
+      dialect,
+      consentAt: now,
+      creditChoice: 'anonymous',
+      onboardingCompletedAt: now,
+    })
+    .returning();
+
+  await audit(user.id, 'user.guest_started', 'user', user.id, { dialect });
+  await createSession(user.id, { guest: true });
+  redirect('/home');
 }

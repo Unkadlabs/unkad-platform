@@ -26,6 +26,71 @@ const dict = {
   logout: { so: 'Ka bax', en: 'Log out' },
   join: { so: 'Ku biir', en: 'Join' },
 
+  // Personal goals  !! VERIFY SOMALI: every so string below is a draft !!
+  goalCardTitle: { so: 'Yoolkaaga toddobaadkan', en: 'Your goal this week' },
+  goalWelcomeTitle: {
+    so: 'Ku dhawoow. Ma samaysanaysaa yool toddobaadle?',
+    en: 'Welcome. Want to set a weekly goal?',
+  },
+  goalSkip: {
+    so: 'Ka bood, oo si caadi ah wax ugu biiri',
+    en: 'Skip, and contribute the classic way',
+  },
+  goalSetCta: { so: 'Samee yool toddobaadle', en: 'Set a weekly goal' },
+  goalSetHint: {
+    so: 'Dooro inta jumladood ee aad qori doonto iyo inta aad hubin doonto toddobaadkiiba. Yool yar oo joogto ah ayaa gaarsiiya 100,000.',
+    en: 'Choose how many sentences you will write and how many you will validate each week. Small steady goals reach 100,000.',
+  },
+  goalWriteLabel: { so: 'Jumlado aan qori doono toddobaadkiiba', en: 'Sentences I will write per week' },
+  goalValidateLabel: { so: 'Hubin aan samayn doono toddobaadkiiba', en: 'Validations I will do per week' },
+  goalNotifyLabel: {
+    so: 'Iigu soo dir email ku saabsan yoolkayga',
+    en: 'Email me about my goal',
+  },
+  goalNotifyHint: {
+    so: 'Hal email toddobaadkiiba, oo ku saabsan yoolkaaga keliya. Ma jiro email guud.',
+    en: 'One email a week, about your goal only. No generic blasts.',
+  },
+  goalSave: { so: 'Kaydi yoolka', en: 'Save goal' },
+  goalClearHint: {
+    so: 'Labada tiro eber ka dhig si aad yoolka u tirtirto.',
+    en: 'Set both numbers to zero to clear your goal.',
+  },
+  goalWritten: { so: 'qoran', en: 'written' },
+  goalValidated: { so: 'hubiyay', en: 'validated' },
+  goalDaysMissed: { so: 'maalmood oo maqan', en: 'days missed' },
+  goalEdit: { so: 'Wax ka beddel yoolka', en: 'Edit goal' },
+  goalShareLine: {
+    so: 'Yoolkaagu waa qayb ka mid ah 100,000-ka. Waad garan kartaa saamaynta.',
+    en: 'Your goal is a slice of the 100,000. You can see your share move it.',
+  },
+  goalShareOf: { so: 'saamigaaga inta hadhay', en: 'your share of what remains' },
+  goalPace: { so: 'jumlado 12 toddobaad gudahood, haddaad sii socoto', en: 'sentences in 12 weeks at this pace' },
+  goalWeekWindow: { so: '7-dii maalmood ee u dambeeyay', en: 'last 7 days' },
+
+  // Visitor mode  !! VERIFY SOMALI: drafts !!
+  guestCta: { so: 'Isku day adigoo aan is-diiwaangelin', en: 'Try it without signing up' },
+  guestTitle: { so: 'Ku bilow marti ahaan', en: 'Start as a visitor' },
+  guestIntro: {
+    so: 'Wax kuma qorna: magac, email, ama password midna uma baahnid. Waxaad u baahan tahay oggolaansho keliya. Waxa aad qorto iyo yoolka aad samayso way kuu hadhayaan, haddii aad mar dambe biirtana way ku raacayaan.',
+    en: 'No name, no email, no password. Only consent is required. What you write and any goal you set is kept, and if you join later it all comes with you.',
+  },
+  guestConsentLabel: {
+    so: 'Waan oggolahay in qoraalkaygu ku biiro kaydka furan ee CC BY-SA 4.0',
+    en: 'I agree that my text joins the open corpus under CC BY-SA 4.0',
+  },
+  guestDialectLabel: { so: 'Lahjaddaada (ikhtiyaari)', en: 'Your dialect (optional)' },
+  guestStart: { so: 'Bilow', en: 'Start' },
+  guestNotice: {
+    so: 'Waxaad ku jirtaa qaab marti. Ku biir si aad magac iyo email ugu darsato; waxaad qortay way kuu hadhayaan.',
+    en: 'You are in visitor mode. Join to add a name and email; everything you wrote stays yours.',
+  },
+  guestJoinCta: { so: 'Ku biir oo keydso shaqadaada', en: 'Join and keep your work' },
+  guestNoEmailHint: {
+    so: 'Email ma lihid weli. Ku biir si aad u hesho warbixinta yoolkaaga.',
+    en: 'No email yet. Join to receive your goal follow-up.',
+  },
+
   // Landing
   heroTitle: { so: 'Qor Af-Soomaali', en: 'Qor Af-Soomaali — Write Somali' },
   heroSub: {
