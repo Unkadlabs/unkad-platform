@@ -23,7 +23,9 @@ export const metadata: Metadata = {
 
 export default async function JoinPage() {
   const user = await getCurrentUser();
-  if (user) redirect('/contribute');
+  // Members have nothing to do here, but a guest's path to keeping
+  // their work IS this page: the same form claims their existing row.
+  if (user && !user.isGuest) redirect('/contribute');
 
   const lang = await getLang();
   const t = makeT(lang);
@@ -31,6 +33,7 @@ export default async function JoinPage() {
   return (
     <div className="container">
       <h1>{t('joinTitle')}</h1>
+      {user?.isGuest && <p className="notice">{t('guestNotice')}</p>}
       <AuthForm
         kind="signup"
         labels={{

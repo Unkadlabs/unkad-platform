@@ -22,12 +22,14 @@ export default function GoalForm({
   initialWrite,
   initialValidate,
   initialNotify,
+  hasEmail,
   remaining,
   labels,
 }: {
   initialWrite: number;
   initialValidate: number;
   initialNotify: boolean;
+  hasEmail: boolean;
   remaining: number;
   labels: Labels;
 }) {
@@ -68,13 +70,17 @@ export default function GoalForm({
         <p className="hint">{labels.clearHint}</p>
       </div>
 
-      <div className="goal-notify">
-        <label htmlFor="goalNotify" className="goal-notify-label">
-          <input id="goalNotify" name="notify" type="checkbox" defaultChecked={initialNotify} />
-          <span>{labels.notify}</span>
-        </label>
+      {hasEmail ? (
+        <div className="goal-notify">
+          <label htmlFor="goalNotify" className="goal-notify-label">
+            <input id="goalNotify" name="notify" type="checkbox" defaultChecked={initialNotify} />
+            <span>{labels.notify}</span>
+          </label>
+          <p className="hint">{labels.notifyHint}</p>
+        </div>
+      ) : (
         <p className="hint">{labels.notifyHint}</p>
-      </div>
+      )}
 
       <div className="goal-preview mono tnum">
         <p>

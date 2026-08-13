@@ -79,6 +79,7 @@ const { rows } = await pool.query(
       -- same-day echo of setting it.
       and g.created_at < now() - interval '6 days'
       and u.deleted_at is null
+      and u.email is not null
       and u.email_opt_out_at is null
       and u.email_bounced_at is null
     order by g.created_at asc

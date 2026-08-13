@@ -35,6 +35,9 @@ export default async function LandingPage() {
             {t('login')}
           </Link>
         </div>
+        <p className="hint" style={{ marginTop: '0.8rem' }}>
+          <Link href="/visitor">{t('guestCta')}</Link>
+        </p>
       </div>
 
       <div className="card progress-card">
