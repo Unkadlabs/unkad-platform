@@ -1488,3 +1488,18 @@ a.chip:hover {
 }
 
 .goal-preview p { margin: 0.15rem 0; }
+
+/* Visitor-mode entry: as visible as the join button, styled as the
+   open door it is rather than a footnote. */
+.btn-guest {
+  background: transparent;
+  color: var(--accent);
+  border: 2px dashed var(--accent);
+  width: 100%;
+  text-align: center;
+}
+
+.btn-guest:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
