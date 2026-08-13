@@ -10,8 +10,13 @@ import { getGoal } from '@/lib/goals';
 import { corpusStats, CORPUS_GOAL } from '@/lib/stats';
 import GoalForm from '@/components/GoalForm';
 
-export default async function GoalPage() {
+export default async function GoalPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ welcome?: string }>;
+}) {
   const user = await requireOnboarded();
+  const { welcome } = await searchParams;
   const lang = await getLang();
   const t = makeT(lang);
 
@@ -24,8 +29,13 @@ export default async function GoalPage() {
         <Link href="/home">&larr; {t('navHome')}</Link>
       </p>
 
-      <h1>{t('goalCardTitle')}</h1>
+      <h1>{welcome ? t('goalWelcomeTitle') : t('goalCardTitle')}</h1>
       <p className="muted">{t('goalSetHint')}</p>
+      {welcome && (
+        <p className="hint">
+          <Link href="/contribute">{t('goalSkip')}</Link>
+        </p>
+      )}
 
       <GoalForm
         initialWrite={goal?.weeklyWrite ?? 20}

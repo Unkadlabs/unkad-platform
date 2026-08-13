@@ -28,6 +28,14 @@ const dict = {
 
   // Personal goals  !! VERIFY SOMALI: every so string below is a draft !!
   goalCardTitle: { so: 'Yoolkaaga toddobaadkan', en: 'Your goal this week' },
+  goalWelcomeTitle: {
+    so: 'Ku dhawoow. Ma samaysanaysaa yool toddobaadle?',
+    en: 'Welcome. Want to set a weekly goal?',
+  },
+  goalSkip: {
+    so: 'Ka bood, oo si caadi ah wax ugu biiri',
+    en: 'Skip, and contribute the classic way',
+  },
   goalSetCta: { so: 'Samee yool toddobaadle', en: 'Set a weekly goal' },
   goalSetHint: {
     so: 'Dooro inta jumladood ee aad qori doonto iyo inta aad hubin doonto toddobaadkiiba. Yool yar oo joogto ah ayaa gaarsiiya 100,000.',

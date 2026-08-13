@@ -221,7 +221,9 @@ export async function giveConsent(_prev: string | null, formData: FormData): Pro
     .where(eq(users.id, user.id));
 
   await audit(user.id, 'user.consented', 'user', user.id, { creditChoice });
-  redirect('/contribute');
+  // The last onboarding step is a choice, not a form: set a weekly goal
+  // or skip straight to contributing. The goal page carries the skip.
+  redirect('/goal?welcome=1');
 }
 
 // ---- Contribution ----------------------------------------------------------
@@ -1338,6 +1340,6 @@ export async function startGuestSession(
     .returning();
 
   await audit(user.id, 'user.guest_started', 'user', user.id, { dialect });
-  await createSession(user.id);
+  await createSession(user.id, { guest: true });
   redirect('/home');
 }
