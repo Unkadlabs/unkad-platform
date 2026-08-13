@@ -60,6 +60,29 @@ const dict = {
   goalPace: { so: 'jumlado 12 toddobaad gudahood, haddaad sii socoto', en: 'sentences in 12 weeks at this pace' },
   goalWeekWindow: { so: '7-dii maalmood ee u dambeeyay', en: 'last 7 days' },
 
+  // Visitor mode  !! VERIFY SOMALI: drafts !!
+  guestCta: { so: 'Isku day adigoo aan is-diiwaangelin', en: 'Try it without signing up' },
+  guestTitle: { so: 'Ku bilow marti ahaan', en: 'Start as a visitor' },
+  guestIntro: {
+    so: 'Wax kuma qorna: magac, email, ama password midna uma baahnid. Waxaad u baahan tahay oggolaansho keliya. Waxa aad qorto iyo yoolka aad samayso way kuu hadhayaan, haddii aad mar dambe biirtana way ku raacayaan.',
+    en: 'No name, no email, no password. Only consent is required. What you write and any goal you set is kept, and if you join later it all comes with you.',
+  },
+  guestConsentLabel: {
+    so: 'Waan oggolahay in qoraalkaygu ku biiro kaydka furan ee CC BY-SA 4.0',
+    en: 'I agree that my text joins the open corpus under CC BY-SA 4.0',
+  },
+  guestDialectLabel: { so: 'Lahjaddaada (ikhtiyaari)', en: 'Your dialect (optional)' },
+  guestStart: { so: 'Bilow', en: 'Start' },
+  guestNotice: {
+    so: 'Waxaad ku jirtaa qaab marti. Ku biir si aad magac iyo email ugu darsato; waxaad qortay way kuu hadhayaan.',
+    en: 'You are in visitor mode. Join to add a name and email; everything you wrote stays yours.',
+  },
+  guestJoinCta: { so: 'Ku biir oo keydso shaqadaada', en: 'Join and keep your work' },
+  guestNoEmailHint: {
+    so: 'Email ma lihid weli. Ku biir si aad u hesho warbixinta yoolkaaga.',
+    en: 'No email yet. Join to receive your goal follow-up.',
+  },
+
   // Landing
   heroTitle: { so: 'Qor Af-Soomaali', en: 'Qor Af-Soomaali — Write Somali' },
   heroSub: {

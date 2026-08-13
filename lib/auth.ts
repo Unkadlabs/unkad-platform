@@ -22,8 +22,9 @@ export const LOCKOUT_MINUTES = 15;
 
 export type CurrentUser = {
   id: string;
-  email: string;
+  email: string | null;
   handle: string;
+  isGuest: boolean;
   role: 'contributor' | 'reviewer' | 'admin';
   reputation: number;
   dialect: 'maxaa_tiri' | 'maay' | 'both' | 'other' | null;
@@ -88,6 +89,7 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
       id: users.id,
       email: users.email,
       handle: users.handle,
+      isGuest: users.isGuest,
       role: users.role,
       reputation: users.reputation,
       dialect: users.dialect,

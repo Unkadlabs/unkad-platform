@@ -58,9 +58,15 @@ export const users = pgTable(
   'users',
   {
     id: uuid('id').primaryKey().defaultRandom(),
-    email: text('email').notNull(),
+    // Nullable for visitor-mode accounts: a guest has a row (so their
+    // sentences and goal survive and can be claimed later) but no
+    // credentials until they choose to join. Postgres unique indexes
+    // treat NULLs as distinct, so guests do not collide on email.
+    email: text('email'),
     handle: text('handle').notNull(),
-    passwordHash: text('password_hash').notNull(),
+    passwordHash: text('password_hash'),
+    // Visitor mode: contributed under consent, never registered.
+    isGuest: boolean('is_guest').notNull().default(false),
     role: roleEnum('role').notNull().default('contributor'),
     reputation: integer('reputation').notNull().default(0),
 

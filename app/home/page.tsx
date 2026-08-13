@@ -46,6 +46,12 @@ export default async function HomePage() {
       </h1>
       {today > 0 && <p className="muted">{t('keepGoing')}</p>}
 
+      {user.isGuest && (
+        <p className="notice">
+          {t('guestNotice')} <Link href="/join">{t('guestJoinCta')}</Link>
+        </p>
+      )}
+
       <div className="stats">
         <div className="stat">
           <span className="n">{today}</span>

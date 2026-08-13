@@ -30,13 +30,14 @@ export default async function GoalPage() {
       <GoalForm
         initialWrite={goal?.weeklyWrite ?? 20}
         initialValidate={goal?.weeklyValidate ?? 30}
-        initialNotify={goal?.notify ?? true}
+        initialNotify={user.isGuest ? false : (goal?.notify ?? true)}
+        hasEmail={!user.isGuest && Boolean(user.email)}
         remaining={remaining}
         labels={{
           write: t('goalWriteLabel'),
           validate: t('goalValidateLabel'),
           notify: t('goalNotifyLabel'),
-          notifyHint: t('goalNotifyHint'),
+          notifyHint: user.isGuest ? t('guestNoEmailHint') : t('goalNotifyHint'),
           save: t('goalSave'),
           clearHint: t('goalClearHint'),
           shareOf: t('goalShareOf'),
