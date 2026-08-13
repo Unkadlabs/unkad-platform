@@ -366,6 +366,34 @@ export const validations = pgTable(
   ]
 );
 
+// ---- Personal goals --------------------------------------------------------
+
+// One weekly goal per user. No stored progress: the week is computed
+// from submissions and validations timestamps, the same source of
+// truth as the streak, so the goal card can never disagree with the
+// corpus. Deleting the row clears the goal; deleting the user takes
+// the goal with it.
+export const goals = pgTable(
+  'goals',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    // Sentences the user aims to write per week (0 = not targeting writes).
+    weeklyWrite: integer('weekly_write').notNull().default(0),
+    // Validations the user aims to cast per week.
+    weeklyValidate: integer('weekly_validate').notNull().default(0),
+    // Wants the weekly goal-based follow-up email (never a generic blast).
+    notify: boolean('notify').notNull().default(false),
+    // When the goal digest last mailed this user; enforces the weekly cadence.
+    lastDigestAt: timestamp('last_digest_at'),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    updatedAt: timestamp('updated_at').notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex('goals_user_unique').on(t.userId)]
+);
+
 // ---- Dataset releases ------------------------------------------------------
 
 export const releases = pgTable('releases', {
