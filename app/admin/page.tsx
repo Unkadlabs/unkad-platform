@@ -233,7 +233,7 @@ export default async function AdminPage({ searchParams }: Props) {
             key={r.id}
             id={r.id}
             handle={r.handle}
-            email={r.email}
+            email={r.email ?? ''}
             asked={r.createdAt.toISOString().slice(0, 16).replace('T', ' ')}
           />
         ))
