@@ -26,6 +26,40 @@ const dict = {
   logout: { so: 'Ka bax', en: 'Log out' },
   join: { so: 'Ku biir', en: 'Join' },
 
+  // Personal goals  !! VERIFY SOMALI: every so string below is a draft !!
+  goalCardTitle: { so: 'Yoolkaaga toddobaadkan', en: 'Your goal this week' },
+  goalSetCta: { so: 'Samee yool toddobaadle', en: 'Set a weekly goal' },
+  goalSetHint: {
+    so: 'Dooro inta jumladood ee aad qori doonto iyo inta aad hubin doonto toddobaadkiiba. Yool yar oo joogto ah ayaa gaarsiiya 100,000.',
+    en: 'Choose how many sentences you will write and how many you will validate each week. Small steady goals reach 100,000.',
+  },
+  goalWriteLabel: { so: 'Jumlado aan qori doono toddobaadkiiba', en: 'Sentences I will write per week' },
+  goalValidateLabel: { so: 'Hubin aan samayn doono toddobaadkiiba', en: 'Validations I will do per week' },
+  goalNotifyLabel: {
+    so: 'Iigu soo dir email ku saabsan yoolkayga',
+    en: 'Email me about my goal',
+  },
+  goalNotifyHint: {
+    so: 'Hal email toddobaadkiiba, oo ku saabsan yoolkaaga keliya. Ma jiro email guud.',
+    en: 'One email a week, about your goal only. No generic blasts.',
+  },
+  goalSave: { so: 'Kaydi yoolka', en: 'Save goal' },
+  goalClearHint: {
+    so: 'Labada tiro eber ka dhig si aad yoolka u tirtirto.',
+    en: 'Set both numbers to zero to clear your goal.',
+  },
+  goalWritten: { so: 'qoran', en: 'written' },
+  goalValidated: { so: 'hubiyay', en: 'validated' },
+  goalDaysMissed: { so: 'maalmood oo maqan', en: 'days missed' },
+  goalEdit: { so: 'Wax ka beddel yoolka', en: 'Edit goal' },
+  goalShareLine: {
+    so: 'Yoolkaagu waa qayb ka mid ah 100,000-ka. Waad garan kartaa saamaynta.',
+    en: 'Your goal is a slice of the 100,000. You can see your share move it.',
+  },
+  goalShareOf: { so: 'saamigaaga inta hadhay', en: 'your share of what remains' },
+  goalPace: { so: 'jumlado 12 toddobaad gudahood, haddaad sii socoto', en: 'sentences in 12 weeks at this pace' },
+  goalWeekWindow: { so: '7-dii maalmood ee u dambeeyay', en: 'last 7 days' },
+
   // Landing
   heroTitle: { so: 'Qor Af-Soomaali', en: 'Qor Af-Soomaali — Write Somali' },
   heroSub: {

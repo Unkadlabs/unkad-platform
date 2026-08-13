@@ -71,6 +71,13 @@
       "when": 1785170882980,
       "tag": "0009_naive_elektra",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1786617949309,
+      "tag": "0010_concerned_doctor_octopus",
+      "breakpoints": true
     }
   ]
 }

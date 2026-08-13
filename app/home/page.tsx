@@ -9,17 +9,19 @@ import {
   activityStreak,
   availableTaskCounts,
 } from '@/lib/stats';
+import { goalProgress } from '@/lib/goals';
 
 export default async function HomePage() {
   const user = await requireOnboarded();
   const lang = await getLang();
   const t = makeT(lang);
 
-  const [corpus, today, streak, available] = await Promise.all([
+  const [corpus, today, streak, available, goal] = await Promise.all([
     corpusStats(),
     todayCount(user.id),
     activityStreak(user.id),
     availableTaskCounts(user.id),
+    goalProgress(user.id),
   ]);
 
   const pct = Math.min(100, (corpus.accepted / CORPUS_GOAL) * 100);
@@ -58,6 +60,77 @@ export default async function HomePage() {
           <span className="label">{t('reputation')}</span>
         </div>
       </div>
+
+      {goal ? (
+        <div className="card goal-card rise">
+          <div className="progress-head">
+            <span className="eyebrow" style={{ margin: 0 }}>
+              {t('goalCardTitle')} &middot; {t('goalWeekWindow')}
+            </span>
+            <Link className="mono" style={{ fontSize: '0.75rem' }} href="/goal">
+              {t('goalEdit')}
+            </Link>
+          </div>
+
+          {goal.goal.weeklyWrite > 0 && (
+            <div className="goal-row">
+              <span className="mono tnum">
+                {goal.wroteThisWeek} / {goal.goal.weeklyWrite} {t('goalWritten')}
+              </span>
+              <div
+                className="progress-track"
+                role="progressbar"
+                aria-valuenow={goal.wroteThisWeek}
+                aria-valuemin={0}
+                aria-valuemax={goal.goal.weeklyWrite}
+              >
+                <div
+                  className="progress-fill"
+                  style={{
+                    width: `${Math.min(100, Math.max(1, (goal.wroteThisWeek / goal.goal.weeklyWrite) * 100))}%`,
+                  }}
+                />
+              </div>
+            </div>
+          )}
+
+          {goal.goal.weeklyValidate > 0 && (
+            <div className="goal-row">
+              <span className="mono tnum">
+                {goal.validatedThisWeek} / {goal.goal.weeklyValidate} {t('goalValidated')}
+              </span>
+              <div
+                className="progress-track"
+                role="progressbar"
+                aria-valuenow={goal.validatedThisWeek}
+                aria-valuemin={0}
+                aria-valuemax={goal.goal.weeklyValidate}
+              >
+                <div
+                  className="progress-fill"
+                  style={{
+                    width: `${Math.min(100, Math.max(1, (goal.validatedThisWeek / goal.goal.weeklyValidate) * 100))}%`,
+                  }}
+                />
+              </div>
+            </div>
+          )}
+
+          <p className="hint tnum">
+            {goal.daysMissed} {t('goalDaysMissed')} &middot;{' '}
+            {(goal.shareOfRemaining * 100).toFixed(3)}% {t('goalShareOf')}
+          </p>
+        </div>
+      ) : (
+        <Link className="card goal-card goal-cta rise" href="/goal">
+          <span className="eyebrow" style={{ margin: 0 }}>
+            {t('goalSetCta')}
+          </span>
+          <p className="hint" style={{ margin: '0.4rem 0 0' }}>
+            {t('goalSetHint')}
+          </p>
+        </Link>
+      )}
 
       <div className="card progress-card rise">
         <div className="progress-head">

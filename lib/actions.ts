@@ -23,6 +23,7 @@ import {
   auditLog,
   sources,
   passwordResets,
+  goals,
   passwordResetRequests,
 } from './schema';
 import { allow, clientIp } from './ratelimit';
@@ -1231,4 +1232,46 @@ export async function fulfilResetRequest(
   // anyone. The count going stale until the next page load is the cheaper
   // problem by a wide margin.
   return `OK:${row.handle}:${link}`;
+}
+
+
+// ---- Personal goals --------------------------------------------------------
+
+// Upsert the caller's weekly goal. Two numbers and a notify flag; both
+// numbers zero is treated as clearing the goal. Caps keep a typo from
+// becoming a 100,000-sentence personal week.
+export async function setGoal(_prev: string | null, formData: FormData): Promise<string | null> {
+  const user = await requireOnboarded();
+
+  const weeklyWrite = clampInt(formData.get('weeklyWrite'), 0, 500);
+  const weeklyValidate = clampInt(formData.get('weeklyValidate'), 0, 1000);
+  const notify = formData.get('notify') === 'on';
+
+  if (weeklyWrite === null || weeklyValidate === null) return 'ERR:bad numbers';
+
+  if (weeklyWrite === 0 && weeklyValidate === 0) {
+    await db.delete(goals).where(eq(goals.userId, user.id));
+    await audit(user.id, 'goal.cleared', 'user', user.id, {});
+    revalidatePath('/home');
+    redirect('/home');
+  }
+
+  await db
+    .insert(goals)
+    .values({ userId: user.id, weeklyWrite, weeklyValidate, notify })
+    .onConflictDoUpdate({
+      target: goals.userId,
+      set: { weeklyWrite, weeklyValidate, notify, updatedAt: new Date() },
+    });
+
+  await audit(user.id, 'goal.set', 'user', user.id, { weeklyWrite, weeklyValidate, notify });
+  revalidatePath('/home');
+  redirect('/home');
+}
+
+function clampInt(v: FormDataEntryValue | null, min: number, max: number): number | null {
+  const n = Number(v);
+  if (!Number.isFinite(n) || !Number.isInteger(n)) return null;
+  if (n < min || n > max) return null;
+  return n;
 }
