@@ -18,9 +18,11 @@
 //   GOAL_DIGEST_CAP per run, under the provider allowance
 //   List-Unsubscribe headers, token minted on first use
 //
-// SOMALI REVIEW LOCK: the Somali strings below are drafts and have not
-// been reviewed by the founder. --send refuses to run until
-// GOAL_COPY_APPROVED=1 is set, which should only happen after review.
+// SOMALI: reviewed and approved verbatim by Khalid Yusuf Dahir on
+// 2026-08-15. The GOAL_COPY_APPROVED=1 guard stays in place as a
+// deliberate second hand on the trigger: bulk mail should always take
+// one explicit act to send, and any future edit to these strings goes
+// back through him first.
 //
 //   node scripts/goal-digest.mjs           # dry run
 //   GOAL_COPY_APPROVED=1 node scripts/goal-digest.mjs --send
@@ -91,8 +93,8 @@ const { rows: [corpus] } = await pool.query(
   `select count(*) n from submissions where status = 'accepted'`
 );
 
-// !! VERIFY SOMALI — DRAFT, founder review required before any send !!
-// Numbers are injected; the sentences must survive his review verbatim.
+// Somali approved verbatim by the founder, 2026-08-15. Numbers are
+// injected; the sentences are his to change, nobody else's.
 function bodySo(r, unsub) {
   const wroteLine =
     r.weekly_write > 0 ? `Qoraal: ${r.wrote} / ${r.weekly_write} jumlado toddobaadkan.` : '';

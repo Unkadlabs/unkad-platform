@@ -26,10 +26,10 @@ const dict = {
   logout: { so: 'Ka bax', en: 'Log out' },
   join: { so: 'Ku biir', en: 'Join' },
 
-  // Personal goals  !! VERIFY SOMALI: every so string below is a draft !!
+  // Personal goals. Somali reviewed by Khalid Yusuf Dahir 2026-08-15.
   goalCardTitle: { so: 'Yoolkaaga toddobaadkan', en: 'Your goal this week' },
   goalWelcomeTitle: {
-    so: 'Ku dhawoow. Ma samaysanaysaa yool toddobaadle?',
+    so: 'Kusoo dhawoow. Ma samaysanaysaa yool toddobaadle?',
     en: 'Welcome. Want to set a weekly goal?',
   },
   goalSkip: {
@@ -38,7 +38,7 @@ const dict = {
   },
   goalSetCta: { so: 'Samee yool toddobaadle', en: 'Set a weekly goal' },
   goalSetHint: {
-    so: 'Dooro inta jumladood ee aad qori doonto iyo inta aad hubin doonto toddobaadkiiba. Yool yar oo joogto ah ayaa gaarsiiya 100,000.',
+    so: 'Dooro inta jumladood ee aad qori doonto iyo inta aad hubin doonto toddobaadkiiba. Yool yar oo joogto ah ayaan ku gaaraynaa 100,000 oo jumladood.',
     en: 'Choose how many sentences you will write and how many you will validate each week. Small steady goals reach 100,000.',
   },
   goalWriteLabel: { so: 'Jumlado aan qori doono toddobaadkiiba', en: 'Sentences I will write per week' },
@@ -48,7 +48,7 @@ const dict = {
     en: 'Email me about my goal',
   },
   goalNotifyHint: {
-    so: 'Hal email toddobaadkiiba, oo ku saabsan yoolkaaga keliya. Ma jiro email guud.',
+    so: 'Hal iimeyl toddobaadkiiba, oo ku saabsan yoolkaaga keliya. Ma jiro iimeylo kale.',
     en: 'One email a week, about your goal only. No generic blasts.',
   },
   goalSave: { so: 'Kaydi yoolka', en: 'Save goal' },
@@ -56,7 +56,7 @@ const dict = {
     so: 'Labada tiro eber ka dhig si aad yoolka u tirtirto.',
     en: 'Set both numbers to zero to clear your goal.',
   },
-  goalWritten: { so: 'qoran', en: 'written' },
+  goalWritten: { so: 'qorran', en: 'written' },
   goalValidated: { so: 'hubiyay', en: 'validated' },
   goalDaysMissed: { so: 'maalmood oo maqan', en: 'days missed' },
   goalEdit: { so: 'Wax ka beddel yoolka', en: 'Edit goal' },
@@ -68,11 +68,11 @@ const dict = {
   goalPace: { so: 'jumlado 12 toddobaad gudahood, haddaad sii socoto', en: 'sentences in 12 weeks at this pace' },
   goalWeekWindow: { so: '7-dii maalmood ee u dambeeyay', en: 'last 7 days' },
 
-  // Visitor mode  !! VERIFY SOMALI: drafts !!
+  // Visitor mode. Somali reviewed by Khalid Yusuf Dahir 2026-08-15.
   guestCta: { so: 'Isku day adigoo aan is-diiwaangelin', en: 'Try it without signing up' },
   guestTitle: { so: 'Ku bilow marti ahaan', en: 'Start as a visitor' },
   guestIntro: {
-    so: 'Wax kuma qorna: magac, email, ama password midna uma baahnid. Waxaad u baahan tahay oggolaansho keliya. Waxa aad qorto iyo yoolka aad samayso way kuu hadhayaan, haddii aad mar dambe biirtana way ku raacayaan.',
+    so: 'Wax kuma qorna: magac, email, ama password midna uma baahnid. Waxaad u baahan tahay oggolaansho keliya. Waxa aad qorto iyo yoolka aad samayso way kuu hadhayaan, haddii aad mar dambe ku biirtana way ku raacayaan.',
     en: 'No name, no email, no password. Only consent is required. What you write and any goal you set is kept, and if you join later it all comes with you.',
   },
   guestConsentLabel: {
