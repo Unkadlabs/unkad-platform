@@ -14,12 +14,20 @@ type Labels = {
   errors: Record<string, string>;
 };
 
-export default function GuestStartForm({ labels }: { labels: Labels }) {
+export default function GuestStartForm({
+  labels,
+  src,
+}: {
+  labels: Labels;
+  src?: string;
+}) {
   const [error, formAction, pending] = useActionState(startGuestSession, null);
 
   return (
     <form className="form" action={formAction}>
       {error && <p className="notice notice-error">{labels.errors[error] ?? error}</p>}
+
+      {src && <input type="hidden" name="src" value={src} />}
 
       {/* Honeypot, same as the signup form. */}
       <input
