@@ -259,7 +259,7 @@ AI research laboratory.
 
 Every item was written by a consenting Somali speaker, validated by at least two community
 members${SCOPE === 'accepted' ? '' : ', and signed off by a trusted linguist reviewer'}. Every item
-carries provenance: mode, register, sector, and (where shared) the contributor's dialect.
+carries provenance: mode, register, sector, and (where shared) the variety the contributor speaks.
 
 ## This release
 
@@ -321,7 +321,7 @@ Both contain the same text. Use whichever unit suits the task.
 (write/translate/transcribe) · \`register\` (conversational/narrative/instructional/formal/technical — present on
 prompted items only, ${withRegister} of ${sentences.length} sentences; free writing carries none because
 nobody assigned it a register)
-· \`sector\` · \`topic\` · \`dialect\` (maxaa_tiri/maay/both/other, if shared) · \`verified\` ·
+· \`sector\` · \`topic\` · \`dialect\` (the contributor's spoken variety, not the text's orthography; maxaa_tiri/maay/both/other, if shared) · \`verified\` ·
 \`license\` · \`created_at\`
 
 ## Consent and credit
@@ -367,8 +367,16 @@ them.
 - **It is small.** This is an early release from an ongoing collection, not a finished corpus.
 - **Contribution is concentrated.** A minority of contributors wrote a majority of the text, as
   in most volunteer language efforts. Per-item authorship is recoverable on request.
-- **Maay is absent.** Every item so far is Maxaa-tiri or unspecified. Somali is not one dialect,
-  and a corpus of one dialect should not be read as representing the language.
+- **The dialect field records the contributor, not the text.** \`dialect\` is the variety the
+  contributor themselves speaks. It is not a label for the orthography of the sentence. Every
+  item in this corpus, including those from contributors who identify as Maay speakers, is
+  written in standard Somali (Maxaa-tiri) orthography. We verified this by character set: the
+  Maay alphabet lacks \`x\` and \`c\` and adds digraphs such as \`gn\`, \`jh\` and \`th\`, and no
+  item shows those markers. The reason is not sampling: the Maay writing system is recent and
+  very few Maay speakers have been taught it, so they write in the standard orthography like
+  everyone else. **Consequence for users: this corpus supports disaggregation by speaker
+  variety, and does not support evaluating a model on written Maay.** Somali is not one
+  dialect, and a corpus in one orthography should not be read as representing the language.
 - **Sentence segmentation is automatic.** Sentences are split on terminal
   punctuation and line breaks, then filtered: scriptural quotations in Arabic,
   bracketed citations and term-equals-gloss glossary lines are excluded, since
