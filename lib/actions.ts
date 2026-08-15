@@ -1339,7 +1339,12 @@ export async function startGuestSession(
     })
     .returning();
 
-  await audit(user.id, 'user.guest_started', 'user', user.id, { dialect });
+  // Campaign attribution, sanitised and length-capped: a slug only,
+  // recorded against the start event rather than the person.
+  const rawSrc = String(formData.get('src') ?? '').trim().toLowerCase();
+  const source = /^[a-z0-9-]{1,40}$/.test(rawSrc) ? rawSrc : null;
+
+  await audit(user.id, 'user.guest_started', 'user', user.id, { dialect, source });
   await createSession(user.id, { guest: true });
   redirect('/home');
 }

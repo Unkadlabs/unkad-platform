@@ -15,10 +15,20 @@ export const metadata: Metadata = {
   robots: { index: false },
 };
 
-export default async function VisitorPage() {
+export default async function VisitorPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ src?: string }>;
+}) {
   // Someone already in (guest or member) has no use for this page.
   const current = await getCurrentUser();
   if (current) redirect('/home');
+
+  // Where this visitor came from, when a campaign says so: school
+  // sessions carry ?src=school-<name> on their QR poster. Recorded in
+  // the audit log only, so a session's yield can be measured without
+  // attaching a label to the person or their sentences.
+  const { src } = await searchParams;
 
   const lang = await getLang();
   const t = makeT(lang);
@@ -29,6 +39,7 @@ export default async function VisitorPage() {
       <p className="muted">{t('guestIntro')}</p>
 
       <GuestStartForm
+        src={src}
         labels={{
           consent: t('guestConsentLabel'),
           dialect: t('guestDialectLabel'),
