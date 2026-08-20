@@ -1,11 +1,10 @@
-// "Unug" — the model series announcement poster (Aug 2026).
+// "Unug" — the model series announcement poster, ultra-minimal (Aug 2026).
 //
-// The name reveal. One idea: the seed cell of the Unkad mark, enlarged,
-// becomes the model's identity — unug is the cell, the smallest living
-// unit, and the models grow from it: Unug-0 (the mascot), Unug-1 (in
-// training). No numbers, no curves; the deep thread follows in a later
-// post. Somali lines are drafts — !! VERIFY SOMALI !! — khalid reviews
-// before posting.
+// One idea, told with light: the full Unkad mark sits in near-darkness,
+// six cells barely visible — and only the seed cell is lit. Creation from
+// nothing. Below it, the name and a single whispered line. Nothing else.
+// Somali lines are drafts — !! VERIFY SOMALI !! — khalid reviews before
+// posting.
 //
 // Run: npx tsx scripts/poster-unug-series.tsx
 // Out: ../dhiblabs/assets/promo/fb-unug-series.png (1080x1350)
@@ -19,13 +18,11 @@ const ROOT = path.join(__dirname, '..');
 const FONTS_DIR = path.join(ROOT, 'assets', 'fonts');
 const OUT_DIR = path.join(ROOT, '..', 'dhiblabs', 'assets', 'promo');
 
-const C = {
-  bg: '#141312',
-  text: '#E8E6E1',
-  muted: '#A5A19A',
-  accent: '#4DB6A5',
-  rule: '#2E2C29',
-};
+const BG = '#0C0B0A';
+const TEXT = '#E8E6E1';
+const MUTED = '#8F8B84';
+const FAINT = '#191817'; // the unlit cells, one breath above the background
+const ACCENT = '#4DB6A5';
 
 const fonts = [
   {
@@ -42,16 +39,27 @@ const fonts = [
   },
 ];
 
-function Mark({ size }: { size: number }) {
+// The Unkad "U": seven cells. Six unlit, the seed glowing.
+function DarkMark({ size }: { size: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 100 100">
-      <rect x="38" y="70" width="24" height="24" rx="6" fill={C.accent} />
-      <rect x="6" y="70" width="24" height="24" rx="6" fill={C.text} />
-      <rect x="70" y="70" width="24" height="24" rx="6" fill={C.text} />
-      <rect x="6" y="38" width="24" height="24" rx="6" fill={C.text} />
-      <rect x="70" y="38" width="24" height="24" rx="6" fill={C.text} />
-      <rect x="6" y="6" width="24" height="24" rx="6" fill={C.text} />
-      <rect x="70" y="6" width="24" height="24" rx="6" fill={C.text} />
+      <defs>
+        <radialGradient id="glow" cx="50%" cy="50%" r="65%">
+          <stop offset="0%" stopColor={ACCENT} stopOpacity="0.32" />
+          <stop offset="100%" stopColor={ACCENT} stopOpacity="0" />
+        </radialGradient>
+      </defs>
+      {/* halo behind the seed */}
+      <circle cx="50" cy="82" r="46" fill="url(#glow)" />
+      {/* unlit cells */}
+      <rect x="6" y="70" width="24" height="24" rx="6" fill={FAINT} />
+      <rect x="70" y="70" width="24" height="24" rx="6" fill={FAINT} />
+      <rect x="6" y="38" width="24" height="24" rx="6" fill={FAINT} />
+      <rect x="70" y="38" width="24" height="24" rx="6" fill={FAINT} />
+      <rect x="6" y="6" width="24" height="24" rx="6" fill={FAINT} />
+      <rect x="70" y="6" width="24" height="24" rx="6" fill={FAINT} />
+      {/* the seed, lit */}
+      <rect x="38" y="70" width="24" height="24" rx="6" fill={ACCENT} />
     </svg>
   );
 }
@@ -64,72 +72,61 @@ function Poster() {
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
-        backgroundColor: C.bg,
-        padding: '76px 84px',
+        alignItems: 'center',
+        backgroundColor: BG,
+        backgroundImage:
+          'radial-gradient(circle at 50% 40%, rgba(77,182,165,0.05), rgba(12,11,10,0) 55%)',
+        padding: '84px 84px 72px',
         fontFamily: 'Source Serif 4',
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: 22 }}>
-        <Mark size={54} />
-        <div style={{ display: 'flex', fontSize: 34, fontWeight: 700, color: C.text }}>
-          Unkad Labs
-        </div>
-      </div>
+      <div style={{ display: 'flex', flexGrow: 1.2 }} />
 
-      <div style={{ display: 'flex', flexGrow: 1 }} />
+      <DarkMark size={340} />
 
-      {/* The seed cell, alone and large */}
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <svg width={150} height={150} viewBox="0 0 100 100">
-          <rect x="14" y="14" width="72" height="72" rx="16" fill={C.accent} />
-        </svg>
-      </div>
-
-      {/* The name */}
       <div
         style={{
           display: 'flex',
-          justifyContent: 'center',
-          marginTop: 44,
-          fontSize: 130,
+          marginTop: 84,
+          fontSize: 148,
           fontWeight: 700,
-          color: C.text,
+          color: TEXT,
           letterSpacing: '-0.02em',
+          lineHeight: 1,
         }}
       >
         Unug
       </div>
 
-      {/* What it is — !! VERIFY SOMALI !! */}
+      {/* Eyebrow — !! VERIFY SOMALI !! */}
       <div
         style={{
           display: 'flex',
-          justifyContent: 'center',
-          marginTop: 16,
-          fontSize: 30,
-          color: C.accent,
-          letterSpacing: '0.14em',
+          marginTop: 34,
+          fontSize: 25,
+          color: MUTED,
+          letterSpacing: '0.32em',
         }}
       >
-        MOODELADA AF-SOOMAALIGA EE UNKAD LABS
+        MOODELADA AF-SOOMAALIGA
       </div>
 
       <div style={{ display: 'flex', flexGrow: 1 }} />
 
-      {/* The line — !! VERIFY SOMALI !! */}
+      {/* One whispered line — !! VERIFY SOMALI !! */}
       <div
         style={{
           display: 'flex',
-          justifyContent: 'center',
           textAlign: 'center',
-          fontSize: 32,
-          color: C.muted,
-          lineHeight: 1.55,
+          fontSize: 30,
+          fontStyle: 'italic',
+          color: MUTED,
+          lineHeight: 1.6,
+          maxWidth: 760,
         }}
         lang="so"
       >
-        Unug waa qaybta ugu yar ee nolosha. Halkaas ayaan ka bilaabaynaa:
-        moodel yar oo Soomaali ku baranaya jumladaha aad qortaan.
+        Wax walba waxay ka bilowdaan unug.
       </div>
 
       <div style={{ display: 'flex', flexGrow: 1 }} />
@@ -137,18 +134,15 @@ function Poster() {
       <div
         style={{
           display: 'flex',
-          alignItems: 'baseline',
-          justifyContent: 'space-between',
-          borderTop: `1px solid ${C.rule}`,
-          paddingTop: 30,
+          alignItems: 'center',
+          gap: 18,
+          fontSize: 24,
+          color: MUTED,
         }}
       >
-        <div style={{ display: 'flex', fontSize: 34, fontWeight: 700, color: C.accent }}>
-          qor.unkad.com
-        </div>
-        <div style={{ display: 'flex', fontSize: 22, color: C.muted }}>
-          Unkad — creation from nothing
-        </div>
+        <div style={{ display: 'flex', fontWeight: 700, color: ACCENT }}>Unkad Labs</div>
+        <div style={{ display: 'flex', width: 4, height: 4, borderRadius: 2, backgroundColor: MUTED }} />
+        <div style={{ display: 'flex' }}>qor.unkad.com</div>
       </div>
     </div>
   );
