@@ -1,8 +1,8 @@
 // "Unug" — the model series announcement poster, ultra-minimal (Aug 2026).
 //
-// One idea, told with light: the full Unkad mark sits in near-darkness,
-// six cells barely visible — and only the seed cell is lit. Creation from
-// nothing. Below it, the name and a single whispered line. Nothing else.
+// One idea on white paper: the full Unkad mark rendered almost invisibly,
+// six cells a breath below the paper tone — and only the seed cell carries
+// ink. Creation from nothing. The name, one whispered line, nothing else.
 // Somali lines are drafts — !! VERIFY SOMALI !! — khalid reviews before
 // posting.
 //
@@ -18,11 +18,11 @@ const ROOT = path.join(__dirname, '..');
 const FONTS_DIR = path.join(ROOT, 'assets', 'fonts');
 const OUT_DIR = path.join(ROOT, '..', 'dhiblabs', 'assets', 'promo');
 
-const BG = '#0C0B0A';
-const TEXT = '#E8E6E1';
-const MUTED = '#8F8B84';
-const FAINT = '#191817'; // the unlit cells, one breath above the background
-const ACCENT = '#4DB6A5';
+const BG = '#FCFBF8';
+const TEXT = '#171715';
+const MUTED = '#8A867E';
+const FAINT = '#EFECE6'; // the unlit cells, one breath below the paper
+const ACCENT = '#0F6B5C';
 
 const fonts = [
   {
@@ -39,18 +39,10 @@ const fonts = [
   },
 ];
 
-// The Unkad "U": seven cells. Six unlit, the seed glowing.
+// The Unkad "U": seven cells. Six a breath below the paper, the seed inked.
 function DarkMark({ size }: { size: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 100 100">
-      <defs>
-        <radialGradient id="glow" cx="50%" cy="50%" r="65%">
-          <stop offset="0%" stopColor={ACCENT} stopOpacity="0.32" />
-          <stop offset="100%" stopColor={ACCENT} stopOpacity="0" />
-        </radialGradient>
-      </defs>
-      {/* halo behind the seed */}
-      <circle cx="50" cy="82" r="46" fill="url(#glow)" />
       {/* unlit cells */}
       <rect x="6" y="70" width="24" height="24" rx="6" fill={FAINT} />
       <rect x="70" y="70" width="24" height="24" rx="6" fill={FAINT} />
@@ -74,8 +66,6 @@ function Poster() {
         flexDirection: 'column',
         alignItems: 'center',
         backgroundColor: BG,
-        backgroundImage:
-          'radial-gradient(circle at 50% 40%, rgba(77,182,165,0.05), rgba(12,11,10,0) 55%)',
         padding: '84px 84px 72px',
         fontFamily: 'Source Serif 4',
       }}
