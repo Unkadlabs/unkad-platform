@@ -1,0 +1,210 @@
+// "Unug's first answer" — the chat poster (Aug 20, 2026).
+//
+// Unug (873K params, wiki-pretrained, Qor-finetuned, instruction-tuned on
+// 413 verified community pairs) answered its first question today. The
+// poster shows the real exchange as a chat: asked to translate "Where is
+// the market?", it opens with what looks like the right translation, then
+// dissolves into babble. Output is raw and unretouched; that honesty IS the
+// poster. All Somali copy is draft — !! VERIFY SOMALI !! — khalid reviews
+// before posting. The model output itself is machine text, shown as such.
+//
+// Run: npx tsx scripts/poster-unug-chat.tsx
+// Out: ../dhiblabs/assets/promo/fb-unug-chat.png (1080x1350)
+
+import React from 'react';
+import fs from 'fs';
+import path from 'path';
+import { ImageResponse } from 'next/og';
+
+const ROOT = path.join(__dirname, '..');
+const FONTS_DIR = path.join(ROOT, 'assets', 'fonts');
+const OUT_DIR = path.join(ROOT, '..', 'dhiblabs', 'assets', 'promo');
+
+const C = {
+  bg: '#141312',
+  text: '#E8E6E1',
+  muted: '#A5A19A',
+  accent: '#4DB6A5',
+  rule: '#2E2C29',
+  bubble: '#211F1D',
+};
+
+const fonts = [
+  {
+    name: 'Source Serif 4',
+    data: fs.readFileSync(path.join(FONTS_DIR, 'SourceSerif4-Regular.otf')),
+    weight: 400 as const,
+    style: 'normal' as const,
+  },
+  {
+    name: 'Source Serif 4',
+    data: fs.readFileSync(path.join(FONTS_DIR, 'SourceSerif4-Bold.otf')),
+    weight: 700 as const,
+    style: 'normal' as const,
+  },
+];
+
+function Mark({ size }: { size: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 100 100">
+      <rect x="38" y="70" width="24" height="24" rx="6" fill={C.accent} />
+      <rect x="6" y="70" width="24" height="24" rx="6" fill={C.text} />
+      <rect x="70" y="70" width="24" height="24" rx="6" fill={C.text} />
+      <rect x="6" y="38" width="24" height="24" rx="6" fill={C.text} />
+      <rect x="70" y="38" width="24" height="24" rx="6" fill={C.text} />
+      <rect x="6" y="6" width="24" height="24" rx="6" fill={C.text} />
+      <rect x="70" y="6" width="24" height="24" rx="6" fill={C.text} />
+    </svg>
+  );
+}
+
+// Real exchange from scripts/chat_demo.py, unretouched (seed 11, temp 0.7).
+const QUESTION =
+  'Turjun jumladan Ingiriisiga ah una beddel Af-Soomaali. “Where is the market?”';
+const ANSWER_HIT = 'Waa xaggee suuqa';
+const ANSWER_REST =
+  ' ugu horeyn farfaha ayaa ka wadaagta cusub. Waa aan kaa qorin kooban oo ku saabsan mudo ku wareeg tayo aragtiyo';
+
+function Poster() {
+  return (
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        backgroundColor: C.bg,
+        padding: '76px 84px',
+        fontFamily: 'Source Serif 4',
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', gap: 22 }}>
+        <Mark size={54} />
+        <div style={{ display: 'flex', fontSize: 34, fontWeight: 700, color: C.text }}>
+          Unkad Labs
+        </div>
+      </div>
+
+      {/* Eyebrow */}
+      <div
+        style={{
+          display: 'flex',
+          marginTop: 56,
+          fontSize: 24,
+          color: C.accent,
+          letterSpacing: '0.22em',
+        }}
+      >
+        UNUG · AI YAR OO SOOMAALI BARANAYA
+      </div>
+
+      {/* Headline — !! VERIFY SOMALI !! */}
+      <div
+        style={{
+          display: 'flex',
+          marginTop: 18,
+          fontSize: 58,
+          fontWeight: 700,
+          lineHeight: 1.18,
+          color: C.text,
+          letterSpacing: '-0.01em',
+        }}
+      >
+        Maanta ayuu Unug su&rsquo;aashii ugu horreysay ka jawaabay.
+      </div>
+
+      <div style={{ display: 'flex', flexGrow: 1 }} />
+
+      {/* Chat: question bubble, right-aligned */}
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <div
+          style={{
+            display: 'flex',
+            maxWidth: 780,
+            backgroundColor: C.accent,
+            color: C.bg,
+            fontSize: 30,
+            lineHeight: 1.45,
+            padding: '26px 32px',
+            borderRadius: 26,
+            borderBottomRightRadius: 6,
+          }}
+          lang="so"
+        >
+          {QUESTION}
+        </div>
+      </div>
+
+      {/* Chat: Unug bubble, left-aligned */}
+      <div style={{ display: 'flex', marginTop: 30 }}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            maxWidth: 820,
+            backgroundColor: C.bubble,
+            padding: '26px 32px',
+            borderRadius: 26,
+            borderBottomLeftRadius: 6,
+          }}
+        >
+          <div style={{ display: 'flex', fontSize: 22, color: C.muted, marginBottom: 10 }}>
+            Unug · 873,728 parameters
+          </div>
+          <div
+            style={{ display: 'flex', flexWrap: 'wrap', fontSize: 30, lineHeight: 1.5, color: C.muted }}
+            lang="so"
+          >
+            <span style={{ color: C.accent, fontWeight: 700 }}>{ANSWER_HIT}</span>
+            <span>{ANSWER_REST}&hellip;</span>
+          </div>
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', flexGrow: 1 }} />
+
+      {/* The honest read — !! VERIFY SOMALI !! */}
+      <div
+        style={{
+          display: 'flex',
+          fontSize: 28,
+          color: C.muted,
+          lineHeight: 1.5,
+        }}
+      >
+        Bilowga jawaabta wuu saxan yahay, inta kalena waa qaylo. Unug wuxuu wax ka
+        bartay Wikipedia Soomaaliga iyo jumladihii aad ku qorteen qor.unkad.com.
+        Jumlad kasta oo cusub waxay ka dhigaysaa jawaabaha kuwo dhab ah.
+      </div>
+
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'baseline',
+          justifyContent: 'space-between',
+          marginTop: 40,
+          borderTop: `1px solid ${C.rule}`,
+          paddingTop: 30,
+        }}
+      >
+        <div style={{ display: 'flex', fontSize: 34, fontWeight: 700, color: C.accent }}>
+          qor.unkad.com
+        </div>
+        <div style={{ display: 'flex', fontSize: 22, color: C.muted }}>
+          Raw output · unretouched · Unkad Labs
+        </div>
+      </div>
+    </div>
+  );
+}
+
+async function main() {
+  const resp = new ImageResponse(<Poster />, { width: 1080, height: 1350, fonts });
+  const buf = Buffer.from(await resp.arrayBuffer());
+  fs.mkdirSync(OUT_DIR, { recursive: true });
+  const file = path.join(OUT_DIR, 'fb-unug-chat.png');
+  fs.writeFileSync(file, buf);
+  console.log(`${file}  1080x1350  ${(buf.length / 1024).toFixed(1)}kB`);
+}
+
+main();
