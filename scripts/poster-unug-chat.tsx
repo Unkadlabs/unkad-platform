@@ -172,9 +172,10 @@ function Poster() {
           lineHeight: 1.5,
         }}
       >
-        Bilowga jawaabta wuu saxan yahay, inta kalena waa qaylo. Unug wuxuu wax ka
-        bartay Wikipedia Soomaaliga iyo jumladihii aad ku qorteen qor.unkad.com.
-        Jumlad kasta oo cusub waxay ka dhigaysaa jawaabaha kuwo dhab ah.
+        Bilowga waa xusuusasho: su&rsquo;aalo suuqa la mid ah ayuu tababarka ku arkay,
+        wuuna xusuustay. Inta kale waa qaylo. Wuxuu wax ka bartay Wikipedia
+        Soomaaliga iyo jumladihii aad ku qorteen qor.unkad.com. Jumlad kasta oo
+        cusub waxay jawaabaha ka dhigaysaa kuwo dhab ah.
       </div>
 
       <div
