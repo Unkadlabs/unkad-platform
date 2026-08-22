@@ -9,7 +9,7 @@
 // before posting. The model output itself is machine text, shown as such.
 //
 // Run: npx tsx scripts/poster-unug-chat.tsx
-// Out: ../dhiblabs/assets/promo/fb-unug-chat.png (1080x1350)
+// Out: ../dhiblabs/assets/promo/fb-unug-chat-light.png (1080x1350)
 
 import React from 'react';
 import fs from 'fs';
@@ -20,13 +20,18 @@ const ROOT = path.join(__dirname, '..');
 const FONTS_DIR = path.join(ROOT, 'assets', 'fonts');
 const OUT_DIR = path.join(ROOT, '..', 'dhiblabs', 'assets', 'promo');
 
+// Light variant. Tokens taken from the site's :root light palette so the
+// poster matches unkad.com rather than inventing a second paper colour.
+// The accent darkens from #4DB6A5 to #0F6B5C: the light teal is legible on
+// near-black but fails contrast on paper, and the question bubble uses it as
+// a fill with text on top.
 const C = {
-  bg: '#141312',
-  text: '#E8E6E1',
-  muted: '#A5A19A',
-  accent: '#4DB6A5',
-  rule: '#2E2C29',
-  bubble: '#211F1D',
+  bg: '#FCFBF8',
+  text: '#1A1917',
+  muted: '#6B6862',
+  accent: '#0F6B5C',
+  rule: '#E5E2DA',
+  bubble: '#F1EFE9',
 };
 
 const fonts = [
@@ -122,7 +127,7 @@ function Poster() {
             display: 'flex',
             maxWidth: 780,
             backgroundColor: C.accent,
-            color: C.bg,
+            color: '#FFFFFF',
             fontSize: 30,
             lineHeight: 1.45,
             padding: '26px 32px',
@@ -204,7 +209,7 @@ async function main() {
   const resp = new ImageResponse(<Poster />, { width: 1080, height: 1350, fonts });
   const buf = Buffer.from(await resp.arrayBuffer());
   fs.mkdirSync(OUT_DIR, { recursive: true });
-  const file = path.join(OUT_DIR, 'fb-unug-chat.png');
+  const file = path.join(OUT_DIR, 'fb-unug-chat-light.png');
   fs.writeFileSync(file, buf);
   console.log(`${file}  1080x1350  ${(buf.length / 1024).toFixed(1)}kB`);
 }
