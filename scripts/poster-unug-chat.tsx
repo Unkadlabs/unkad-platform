@@ -95,7 +95,7 @@ function Poster() {
           letterSpacing: '0.22em',
         }}
       >
-        UNUG · AI YAR OO SOOMAALI BARANAYA
+        UNUG · AI YAR OO SOOMAALIGA BARANAYA
       </div>
 
       {/* Headline — !! VERIFY SOMALI !! */}
@@ -175,7 +175,8 @@ function Poster() {
         Bilowga waa xusuusasho: su&rsquo;aalo suuqa la mid ah ayuu tababarka ku arkay,
         wuuna xusuustay. Inta kale waa qaylo. Wuxuu wax ka bartay Wikipedia
         Soomaaliga iyo jumladihii aad ku qorteen qor.unkad.com. Jumlad kasta oo
-        cusub waxay jawaabaha ka dhigaysaa kuwo dhab ah.
+        cusub waxay saxaysaa jawaabaha nooca oo kale ah. aad oo arkayso inaysan
+        saxneen
       </div>
 
       <div
@@ -192,7 +193,7 @@ function Poster() {
           qor.unkad.com
         </div>
         <div style={{ display: 'flex', fontSize: 22, color: C.muted }}>
-          Raw output · unretouched · Unkad Labs
+          Sida uu u soo saaray oo aan wax laga bedelin
         </div>
       </div>
     </div>
