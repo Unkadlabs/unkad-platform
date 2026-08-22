@@ -438,3 +438,66 @@ export const auditLog = pgTable(
   },
   (t) => [index('audit_actor_idx').on(t.actorId), index('audit_action_idx').on(t.action)]
 );
+
+// ---- Seed set (invited authors) --------------------------------------------
+
+// A small number of trusted people writing instruction pairs by hand: both
+// sides of the exchange, the question and the answer a good assistant should
+// give. This is a different artifact from the corpus above, which is community
+// sentences validated by peers, so it lives in its own tables and never mixes
+// into the submission counts.
+//
+// Access is a single unguessable token in the URL and nothing else. There is
+// no account to create, because asking a volunteer to register before they can
+// help is how volunteers stop helping. The token is the credential, so it is
+// generated with 32 random bytes, never logged, and the route carrying it is
+// noindex and disallowed in robots.
+export const seedInvites = pgTable(
+  'seed_invites',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    token: text('token').notNull().unique(),
+    // Optional label for Khalid's own tracking. The writer types their own
+    // name on the consent screen, so a link can be minted and handed out
+    // before anyone knows who will take it.
+    name: text('name'),
+    // Which sectors they were asked to cover, comma separated.
+    sectors: text('sectors').notNull(),
+    perSector: integer('per_sector').notNull().default(43),
+    // Nobody's writing enters a dataset without them agreeing first, on the
+    // same terms the platform already promises contributors.
+    consentAt: timestamp('consent_at'),
+    creditName: text('credit_name'),
+    active: boolean('active').notNull().default(true),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    lastSeenAt: timestamp('last_seen_at'),
+  },
+  (t) => [uniqueIndex('seed_invites_token_idx').on(t.token)]
+);
+
+export const seedItems = pgTable(
+  'seed_items',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    inviteId: uuid('invite_id')
+      .notNull()
+      .references(() => seedInvites.id, { onDelete: 'cascade' }),
+    // Stable per-invite reference (s0001) so a message about one item still
+    // points at it after deletions.
+    ref: text('ref').notNull(),
+    // task | refusal | control. Text rather than an enum because the seed set
+    // defines its own vocabulary and should not drag the corpus schema along.
+    type: text('type').notNull().default('task'),
+    sector: text('sector').notNull(),
+    instruction: text('instruction').notNull(),
+    response: text('response').notNull(),
+    note: text('note'),
+    license: text('license').notNull().default('CC-BY-SA-4.0'),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    updatedAt: timestamp('updated_at').notNull().defaultNow(),
+  },
+  (t) => [
+    index('seed_items_invite_idx').on(t.inviteId),
+    uniqueIndex('seed_items_ref_idx').on(t.inviteId, t.ref),
+  ]
+);

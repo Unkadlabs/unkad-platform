@@ -1,0 +1,1 @@
+ALTER TABLE "seed_invites" ALTER COLUMN "name" DROP NOT NULL;

@@ -85,6 +85,20 @@
       "when": 1786618698101,
       "tag": "0011_calm_ma_gnuci",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1787048474973,
+      "tag": "0012_wide_moondragon",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1787049786647,
+      "tag": "0013_legal_slipstream",
+      "breakpoints": true
     }
   ]
 }

@@ -12,6 +12,9 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "export": "tsx scripts/export.ts",
+    "seed:list": "node scripts/seed-invite.mjs --list --prod",
+    "seed:new": "node scripts/seed-invite.mjs --prod",
+    "seed:links": "node scripts/seed-invite.mjs --links --prod",
     "maahmaahyo:build": "tsx scripts/maahmaahyo-build.ts",
     "maahmaahyo:cards": "tsx scripts/maahmaahyo-cards.tsx"
   },
