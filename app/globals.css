@@ -1503,3 +1503,123 @@ a.chip:hover {
   background: var(--accent-soft);
   color: var(--accent);
 }
+
+/* ---- Seed set: invited authors -------------------------------------------- */
+/* Someone writes here for an hour at a stretch, so the page is built around the
+   two boxes and everything else gets out of the way. Uses the same tokens as
+   the rest of the platform, which means light and dark come for free. */
+
+.seed-page { max-width: 44rem; margin: 0 auto; padding: 1.5rem 1.25rem 5rem; }
+.seed-lang { display: flex; justify-content: flex-end; margin-bottom: 1.5rem; }
+.seed-wrap { width: 100%; }
+
+.seed-h1 { font-size: 1.7rem; line-height: 1.25; margin: 0 0 0.7rem; letter-spacing: -0.01em; }
+.seed-h2 { font-size: 0.75rem; font-family: var(--mono); letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--muted); margin: 2rem 0 0.7rem; font-weight: 500; }
+.seed-lede { color: var(--muted); line-height: 1.7; margin: 0; font-size: 1.02rem; }
+.seed-terms { margin: 0; padding-left: 1.1rem; color: var(--muted); line-height: 1.75; }
+.seed-terms li { margin-bottom: 0.45rem; }
+
+/* Header: who it is and how far along, nothing else competing. */
+.seed-top { display: flex; justify-content: space-between; align-items: baseline;
+  gap: 1rem; flex-wrap: wrap; padding-bottom: 0.9rem; border-bottom: 1px solid var(--rule); }
+.seed-who { font-size: 1.15rem; font-weight: 500; }
+.seed-count { font-family: var(--mono); font-size: 0.85rem; color: var(--muted); }
+.seed-count b { color: var(--text); font-size: 1.05rem; }
+
+/* One card per sector, each carrying its own progress. This is the only place
+   the writer needs to look to know what is left. */
+.seed-sectors { display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem; margin: 1rem 0 1.6rem; }
+.seed-sector { display: flex; flex-direction: column; gap: 0.35rem; text-align: left;
+  background: var(--card); border: 1px solid var(--rule); border-radius: var(--radius);
+  padding: 0.7rem 0.8rem; cursor: pointer; color: var(--muted); font: inherit; }
+.seed-sector:hover { border-color: var(--muted); }
+.seed-sector.on { border-color: var(--accent); background: var(--accent-soft); color: var(--text); }
+.seed-sector .nm { font-size: 0.92rem; }
+.seed-sector .fr { font-family: var(--mono); font-size: 0.72rem; opacity: 0.75; }
+.seed-sector .tr { display: block; height: 3px; background: var(--rule); border-radius: 2px; }
+.seed-sector .tr i { display: block; height: 100%; background: var(--accent); border-radius: 2px; }
+.seed-sector.done { opacity: 0.55; }
+.seed-sector.done .tr i { background: var(--muted); }
+
+.seed-how { margin-bottom: 1.6rem; }
+.seed-how summary { cursor: pointer; font-family: var(--mono); font-size: 0.72rem;
+  letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+.seed-how p { color: var(--muted); line-height: 1.7; margin: 0.7rem 0 0;
+  border-left: 2px solid var(--rule); padding-left: 0.9rem; }
+
+.seed-field { display: block; margin-bottom: 1.3rem; }
+.seed-label { display: block; font-family: var(--mono); font-size: 0.68rem;
+  letter-spacing: 0.1em; color: var(--muted); margin-bottom: 0.4rem; }
+.seed-label i { font-style: normal; opacity: 0.7; letter-spacing: 0.04em;
+  text-transform: none; font-family: var(--serif); font-size: 0.8rem; }
+.seed-input, .seed-ta { width: 100%; background: var(--card); color: var(--text);
+  border: 1px solid var(--rule); border-radius: var(--radius); padding: 0.75rem 0.85rem;
+  font-family: var(--serif); font-size: 1.05rem; line-height: 1.65; }
+.seed-ta { resize: vertical; }
+.seed-ta.a { font-size: 1.08rem; }
+.seed-ta.n { font-family: var(--mono); font-size: 0.85rem; }
+.seed-input:focus, .seed-ta:focus { outline: none; border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft); }
+
+.seed-note { margin-bottom: 1.2rem; }
+.seed-note summary { cursor: pointer; font-family: var(--mono); font-size: 0.7rem;
+  color: var(--muted); margin-bottom: 0.45rem; }
+
+.seed-hints { margin: 0 0 1.1rem; display: grid; gap: 0.45rem; }
+.seed-hints > div { display: flex; gap: 0.5rem; align-items: baseline; flex-wrap: wrap;
+  font-size: 0.88rem; line-height: 1.6; color: var(--muted);
+  border-left: 2px solid var(--rule); padding-left: 0.8rem; }
+
+.seed-agree { display: flex; gap: 0.6rem; align-items: flex-start;
+  margin: 1.2rem 0; line-height: 1.6; color: var(--muted); }
+.seed-agree input { margin-top: 0.3rem; flex-shrink: 0; }
+
+.seed-actions { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+.seed-btn { background: var(--accent); color: var(--bg); border: none;
+  border-radius: var(--radius); padding: 0.7rem 1.4rem; font: inherit;
+  font-size: 0.98rem; font-weight: 500; cursor: pointer; }
+.seed-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.seed-plain { background: none; border: none; color: var(--muted); font: inherit;
+  font-size: 0.88rem; cursor: pointer; text-decoration: underline; }
+.seed-mini { background: none; border: 1px solid var(--rule); color: var(--muted);
+  font-family: var(--mono); font-size: 0.68rem; border-radius: 5px;
+  padding: 0.12rem 0.5rem; cursor: pointer; }
+.seed-mini:hover { color: var(--accent); border-color: var(--accent); }
+.seed-mini.danger:hover { color: var(--danger); border-color: var(--danger); }
+
+.seed-error { color: var(--danger); font-size: 0.9rem; margin: 0.8rem 0; }
+.seed-done { color: var(--accent); font-size: 1.1rem; margin: 2rem 0; }
+
+.seed-panel { margin-top: 1.8rem; border-top: 1px solid var(--rule); padding-top: 1rem; }
+.seed-panel summary { cursor: pointer; font-family: var(--mono); font-size: 0.72rem;
+  letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
+.seed-panel ul { margin: 0.9rem 0; padding-left: 1.1rem; color: var(--muted); line-height: 1.85; }
+.seed-hintline { color: var(--muted); font-size: 0.88rem; line-height: 1.65; opacity: 0.85; }
+
+.seed-row { border-bottom: 1px solid var(--rule); padding: 0.7rem 0; }
+.seed-row .txt { line-height: 1.55; }
+.seed-row .meta { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;
+  font-family: var(--mono); font-size: 0.7rem; color: var(--muted); margin-top: 0.35rem; }
+
+.seed-editbar { position: sticky; bottom: 0; margin-top: 1.5rem;
+  background: var(--accent-soft); border: 1px solid var(--accent);
+  border-radius: var(--radius); padding: 0.6rem 0.9rem;
+  font-family: var(--mono); font-size: 0.72rem; color: var(--muted); }
+.seed-editbar b { color: var(--accent); }
+
+@media (max-width: 560px) {
+  .seed-sectors { grid-template-columns: 1fr; }
+  .seed-page { padding: 1rem 1rem 4rem; }
+  .seed-h1 { font-size: 1.45rem; }
+}
+
+/* The invited writer is not a platform user. Leaderboard, Log in and Join are
+   noise to them, and the header already carries a language toggle that would
+   sit beside the page's own. Hidden rather than restructured into a route
+   group, which would mean moving every existing route. If :has() is missing
+   the nav simply reappears, which is untidy but harmless. */
+body:has(.seed-page) .site-header,
+body:has(.seed-page) .site-footer { display: none; }
+body:has(.seed-page) #main { padding-top: 0; }

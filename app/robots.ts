@@ -35,6 +35,8 @@ export default function robots(): MetadataRoute.Robots {
         '/forgot',
         '/reset/',
         '/unsubscribe/',
+        '/seed',
+        '/seed/',
       ],
     },
     sitemap: 'https://qor.unkad.com/sitemap.xml',
