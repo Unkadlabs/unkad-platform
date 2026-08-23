@@ -254,8 +254,8 @@ size_categories:
 # Qor Af-Soomaali — the Unkad Somali Corpus (${VERSION})
 
 Community-contributed, peer-validated${SCOPE === 'accepted' ? '' : ', linguist-verified'} Somali text,
-built on [qor.unkad.com](https://qor.unkad.com) by [Unkad Labs](https://unkad.com) — a non-profit
-AI research laboratory.
+built on [qor.unkad.com](https://qor.unkad.com) by [Unkad Labs](https://unkad.com), an independent
+Somali AI research lab.
 
 Every item was written by a consenting Somali speaker, validated by at least two community
 members${SCOPE === 'accepted' ? '' : ', and signed off by a trusted linguist reviewer'}. Every item
