@@ -509,6 +509,37 @@ const dict = {
     en: 'The answer starts with a small letter.',
   },
   seedHintDup: { so: 'Horey ayaad u qortay tan', en: 'You already wrote this one' },
+
+  // "Unug mise Qof?" game — !! VERIFY SOMALI !!
+  unugGameTitle: { so: 'Unug mise Qof?', en: 'Unug or Human?' },
+  unugGameIntro: {
+    so: 'Unug waa AI aad u yar oo Unkad Labs tababartay. Jumlad kasta hoos ka akhri, kadibna sheeg: ma Unug ayaa qoray mise qof dhab ah? Jumladaha dadku waxay ka yimaadeen kaydka la sii daayay; kuwa Unug waa wax-soo-saarkiisa oo aan waxba laga beddelin.',
+    en: 'Unug is a tiny AI trained by Unkad Labs. Read each sentence and guess: written by Unug, or by a real person? Human sentences come from the released corpus; Unug lines are raw, unretouched model output.',
+  },
+  unugGameQuestion: { so: 'Yaa qoray jumladan?', en: 'Who wrote this sentence?' },
+  unugGameBtnUnug: { so: 'Unug (AI)', en: 'Unug (AI)' },
+  unugGameBtnHuman: { so: 'Qof', en: 'A human' },
+  unugGameCorrect: { so: 'Sax!', en: 'Correct!' },
+  unugGameWrong: { so: 'Khalad!', en: 'Wrong!' },
+  unugGameWasUnug: { so: 'Tan waxaa qoray Unug.', en: 'This one was Unug.' },
+  unugGameWasHuman: { so: 'Tan waxaa qoray qof.', en: 'This one was a human.' },
+  unugGameNext: { so: 'Kan xiga', en: 'Next' },
+  unugGameScoreTitle: { so: 'Natiijadaada', en: 'Your score' },
+  unugGameScoreLine: { so: '{score} / {total}', en: '{score} / {total}' },
+  unugGamePerfect: {
+    so: 'Dhammaan waad garatay. Unug wali ma ku khiyaanayn karo.',
+    en: 'You caught them all. Unug cannot fool you yet.',
+  },
+  unugGameFooled: {
+    so: 'Unug wuxuu ku khiyaaneeyay {n} jeer. AI-gu wuu soo koraya.',
+    en: 'Unug fooled you {n} times. The AI is growing.',
+  },
+  unugGamePlayAgain: { so: 'Mar kale ciyaar', en: 'Play again' },
+  unugGameCta: {
+    so: 'Jumlad kasta oo aad qortaa waxay Unug ka dhigaysaa mid Soomaali si fiican u yaqaan.',
+    en: 'Every sentence you write teaches Unug better Somali.',
+  },
+  unugGameCtaBtn: { so: 'Ku biir oo qor', en: 'Join and write' },
 } as const;
 
 export type TKey = keyof typeof dict;
