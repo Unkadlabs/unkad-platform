@@ -468,6 +468,13 @@ Contact: research@unkad.com · Platform: https://qor.unkad.com
     console.log(`Dataset repo ${REPO} exists — uploading new version.`);
   }
 
+  // The upload is the long, silent part of a release: roughly 1.5MB over a
+  // connection that has been unreliable before. Without a line here the run
+  // looks stalled and gets killed at exactly the wrong moment.
+  const bytes = jsonl.length + sentenceJsonl.length + multiRefJsonl.length + card.length + credits.length;
+  console.log(`Uploading ${(bytes / 1024 / 1024).toFixed(2)}MB — this is the slow step, leave it running.`);
+  const upStart = Date.now();
+
   await uploadFiles({
     repo,
     accessToken: HF_TOKEN,
@@ -483,7 +490,7 @@ Contact: research@unkad.com · Platform: https://qor.unkad.com
     ],
   });
   const hfUrl = `https://huggingface.co/datasets/${REPO}`;
-  console.log(`Pushed to ${hfUrl}`);
+  console.log(`Pushed to ${hfUrl} in ${((Date.now() - upStart) / 1000).toFixed(1)}s`);
 
   // ---- 6. Record the release and stamp items -----------------------------------
   const [release] = await db
