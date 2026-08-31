@@ -524,10 +524,28 @@ Contact: research@unkad.com · Platform: https://qor.unkad.com
   console.log(`Pushed to ${hfUrl} in ${((Date.now() - upStart) / 1000).toFixed(1)}s`);
 
   // ---- 6. Record the release and stamp items -----------------------------------
-  const [release] = await db
-    .insert(releases)
-    .values({ version: VERSION, itemCount: records.length, hfUrl, notes: `scope: ${SCOPE}` })
-    .returning();
+  // A republish corrects a version that already exists, so it updates that row
+  // rather than adding a second one. Inserting blindly left two v0.3.0 rows the
+  // first time a card was corrected, which inflates the release count and makes
+  // the history table depend on de-duplication to read correctly.
+  const [existing] = await db
+    .select({ id: releases.id })
+    .from(releases)
+    .where(eq(releases.version, VERSION))
+    .orderBy(desc(releases.createdAt))
+    .limit(1);
+
+  const [release] = existing
+    ? await db
+        .update(releases)
+        .set({ itemCount: records.length, hfUrl, notes: `scope: ${SCOPE}` })
+        .where(eq(releases.id, existing.id))
+        .returning()
+    : await db
+        .insert(releases)
+        .values({ version: VERSION, itemCount: records.length, hfUrl, notes: `scope: ${SCOPE}` })
+        .returning();
+  console.log(existing ? `Updated the existing ${VERSION} row.` : `Recorded a new ${VERSION} row.`);
 
   for (const r of fresh) {
     await db
