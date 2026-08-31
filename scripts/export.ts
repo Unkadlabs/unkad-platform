@@ -18,10 +18,36 @@
 import fs from 'fs';
 import path from 'path';
 import { and, eq, isNull, sql } from 'drizzle-orm';
-import { db } from '../lib/db';
 import { submissions, prompts, users, releases } from '../lib/schema';
 import { normalizeForRelease, needsNormalizing } from '../lib/normalize';
 import { splitSentences, isUsableSentence } from '../lib/sentences';
+
+// --prod selects the live database, matching the convention the other scripts
+// use. Without it the run stays local.
+//
+// This has to happen before lib/db is loaded, because that module reads
+// DATABASE_URL once at import time. Static imports are evaluated before any
+// top-level code, so db is pulled in dynamically below instead — otherwise
+// every run silently pointed at localhost, which is how v0.3.0 came to look
+// like it had been published when nothing had left the laptop.
+const PROD = process.argv.includes('--prod');
+if (PROD) {
+  const live = process.env.DATABASE_URL_UNPOOLED ?? process.env.POSTGRES_URL_NON_POOLING;
+  if (!live) {
+    console.error('--prod given but no DATABASE_URL_UNPOOLED / POSTGRES_URL_NON_POOLING found.');
+    console.error('Run through the env file:  npm run export:prod');
+    process.exit(1);
+  }
+  process.env.DATABASE_URL = live;
+}
+
+const TARGET = process.env.DATABASE_URL ?? 'postgres://localhost:5432/unkad_platform';
+const LOCAL_DB = /localhost|127\.0\.0\.1/.test(TARGET);
+
+// Loaded inside main() rather than at the top: tsx compiles this file to CJS,
+// which has no top-level await, and a static import would evaluate lib/db
+// before the block above can point it anywhere.
+let db: (typeof import('../lib/db'))['db'];
 
 const HF_ORG = process.env.HF_ORG ?? 'unkadlabs';
 const HF_DATASET = process.env.HF_DATASET ?? 'qor-af-soomaali';
@@ -37,7 +63,22 @@ const HF_TOKEN = process.env.HF_TOKEN;
 
 const REPO = `${HF_ORG}/${HF_DATASET}`;
 
+// Say out loud what is about to be read and where it would go. A release that
+// quietly read the wrong database is worse than one that refuses to start.
+console.log(`database  ${LOCAL_DB ? 'LOCAL' : 'LIVE '}  ${TARGET.replace(/:[^:@/]*@/, ':***@')}`);
+console.log(`release   ${VERSION}  scope ${SCOPE}`);
+console.log(`target    ${HF_TOKEN ? `https://huggingface.co/datasets/${REPO}` : 'dry run — no HF_TOKEN'}`);
+
+// Publishing the development database to the Hub is unrecoverable in the way
+// that matters: it is public the moment it lands.
+if (HF_TOKEN && LOCAL_DB) {
+  console.error('\nRefusing to publish from a local database. Add --prod.');
+  process.exit(1);
+}
+
 async function main() {
+  ({ db } = await import('../lib/db'));
+
   // ---- 1. Collect the release rows -----------------------------------------
   const where =
     SCOPE === 'monolingual'
