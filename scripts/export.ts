@@ -502,4 +502,14 @@ Contact: research@unkad.com · Platform: https://qor.unkad.com
   );
 }
 
-main().then(() => process.exit(0));
+// An unhandled rejection here would print a stack with no context, or on some
+// paths look like the run simply stopped. A release that fails has to say so.
+main().then(
+  () => process.exit(0),
+  (err) => {
+    console.error('\nExport failed — nothing was published.');
+    console.error(err instanceof Error ? `${err.name}: ${err.message}` : err);
+    if (err instanceof Error && err.stack) console.error(err.stack.split('\n').slice(1, 4).join('\n'));
+    process.exit(1);
+  }
+);
