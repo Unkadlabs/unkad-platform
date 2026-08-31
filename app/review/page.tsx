@@ -5,7 +5,7 @@
 import { and, desc, eq, sql } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import { submissions, users } from '@/lib/schema';
-import { requireRole } from '@/lib/auth';
+import { requireRole, isAdmin } from '@/lib/auth';
 import { getLang } from '@/lib/lang';
 import { makeT, dialectLabel, sectorLabel } from '@/lib/i18n';
 import { verifyBatch, overturnSubmission } from '@/lib/actions';
@@ -14,8 +14,19 @@ import SelectAll from '@/components/SelectAll';
 
 type Props = { searchParams: Promise<{ verified?: string }> };
 
+// Same strip as the validate screen: the queue's age is the thing a reviewer
+// is judging, and a bare date makes them do the arithmetic.
+function when(d: Date | string | null | undefined): string {
+  if (!d) return '—';
+  const t = new Date(d);
+  const days = Math.floor((Date.now() - t.getTime()) / 86400000);
+  const ago = days <= 0 ? 'today' : days === 1 ? 'yesterday' : `${days}d ago`;
+  return `${t.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })} · ${ago}`;
+}
+
 export default async function ReviewPage({ searchParams }: Props) {
-  await requireRole('reviewer');
+  const me = await requireRole('reviewer');
+  const admin = isAdmin(me);
   const { verified } = await searchParams;
 
   const lang = await getLang();
@@ -119,6 +130,7 @@ export default async function ReviewPage({ searchParams }: Props) {
                       <p className="row-user mono muted" style={{ margin: '0.6rem 0 0', fontSize: '0.72rem' }}>
                         <UnugAvatar seed={author.id} size={18} />
                         {author.handle}
+                        {admin && <> · wrote {when(submission.createdAt)}</>}
                       </p>
                     </div>
                   </label>
