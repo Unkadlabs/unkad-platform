@@ -144,3 +144,7 @@ export async function requireRole(minimum: 'reviewer' | 'admin'): Promise<Curren
 export function isReviewer(user: CurrentUser): boolean {
   return ROLE_RANK[user.role] >= ROLE_RANK.reviewer;
 }
+
+export function isAdmin(user: CurrentUser): boolean {
+  return ROLE_RANK[user.role] >= ROLE_RANK.admin;
+}

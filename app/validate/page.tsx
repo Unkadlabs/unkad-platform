@@ -1,15 +1,27 @@
 import Link from 'next/link';
-import { requireOnboarded, isReviewer } from '@/lib/auth';
+import { requireOnboarded, isReviewer, isAdmin } from '@/lib/auth';
 import { getLang } from '@/lib/lang';
 import { makeT, dialectLabel, sectorLabel } from '@/lib/i18n';
 import { nextSubmissionToValidate, castValidation, reviseSubmission } from '@/lib/actions';
+
+// Times for the admin strip. Absolute so it can be quoted, relative so the
+// age of the queue is readable without arithmetic.
+function when(d: Date | string | null | undefined): string {
+  if (!d) return '—';
+  const t = new Date(d);
+  const days = Math.floor((Date.now() - t.getTime()) / 86400000);
+  const ago = days <= 0 ? 'today' : days === 1 ? 'yesterday' : `${days}d ago`;
+  return `${t.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })} ${t
+    .toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })} · ${ago}`;
+}
 
 export default async function ValidatePage() {
   const user = await requireOnboarded();
   const lang = await getLang();
   const t = makeT(lang);
   const reviewer = isReviewer(user);
-  const item = await nextSubmissionToValidate(user.id, reviewer);
+  const admin = isAdmin(user);
+  const item = await nextSubmissionToValidate(user.id, reviewer, admin);
 
   const isProverb = item?.submission.mode === 'proverb';
 
@@ -153,6 +165,38 @@ export default async function ValidatePage() {
                 </form>
               </details>
             </>
+          )}
+
+          {/* Admin-only timeline. Answers two questions the tally cannot:
+              how old is this queue, and has anybody already looked at this
+              one. Withheld from ordinary validators for the same reason the
+              tally is — naming the earlier voter anchors the deciding vote. */}
+          {admin && (
+            <div
+              className="mono muted"
+              style={{
+                marginTop: '0.8rem',
+                fontSize: '0.72rem',
+                lineHeight: 1.7,
+                paddingLeft: '0.7rem',
+                borderLeft: '2px solid var(--rule, #2E2C29)',
+              }}
+            >
+              <div>written {when(item.submission.createdAt)}</div>
+              {item.history.length === 0 ? (
+                <div>no votes yet</div>
+              ) : (
+                item.history.map((h, i) => (
+                  <div key={i}>
+                    {h.verdict === 'approve' ? 'correct' : 'has problems'} · {h.handle}
+                    {h.reviewerVote ? ' (reviewer)' : ''} · {when(h.at)}
+                  </div>
+                ))
+              )}
+              {item.revisions.map((rev, i) => (
+                <div key={`r${i}`}>edited · {rev.editor} · {when(rev.at)}</div>
+              ))}
+            </div>
           )}
 
           <p style={{ marginTop: '1rem' }}>

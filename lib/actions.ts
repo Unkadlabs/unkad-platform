@@ -413,7 +413,11 @@ export async function nextPromptFor(
 
 // ---- Validation ------------------------------------------------------------
 
-export async function nextSubmissionToValidate(userId: string, reviewer: boolean) {
+export async function nextSubmissionToValidate(
+  userId: string,
+  reviewer: boolean,
+  admin = false
+) {
   const voted = db
     .select({ id: validations.submissionId })
     .from(validations)
@@ -464,7 +468,31 @@ export async function nextSubmissionToValidate(userId: string, reviewer: boolean
   const approve = Number(votes.find((v) => v.verdict === 'approve')?.n ?? 0);
   const reject = Number(votes.find((v) => v.verdict === 'reject')?.n ?? 0);
 
-  return { ...picked, votes: { approve, reject, total: approve + reject }, revisions };
+  // Admins additionally get the times: when the sentence was written, and who
+  // judged it when. It answers 'is this queue old or fresh, and did anyone
+  // already look at this' without opening a database session. Kept to admins
+  // because naming the earlier voter to a peer is exactly the anchoring the
+  // tally is already withheld to avoid.
+  const history = admin
+    ? await db
+        .select({
+          at: validations.createdAt,
+          verdict: validations.verdict,
+          reviewerVote: validations.isReviewerVote,
+          handle: users.handle,
+        })
+        .from(validations)
+        .innerJoin(users, eq(validations.userId, users.id))
+        .where(eq(validations.submissionId, picked.submission.id))
+        .orderBy(validations.createdAt)
+    : [];
+
+  return {
+    ...picked,
+    votes: { approve, reject, total: approve + reject },
+    revisions,
+    history,
+  };
 }
 
 export async function castValidation(formData: FormData): Promise<void> {
