@@ -17,7 +17,7 @@
 
 import fs from 'fs';
 import path from 'path';
-import { and, eq, isNull, sql } from 'drizzle-orm';
+import { and, desc, eq, isNull, sql } from 'drizzle-orm';
 import { submissions, prompts, users, releases } from '../lib/schema';
 import { normalizeForRelease, needsNormalizing } from '../lib/normalize';
 import { splitSentences, isUsableSentence } from '../lib/sentences';
@@ -277,6 +277,24 @@ async function main() {
   const sectors = [...new Set(records.map((r) => r.sector))].sort();
   const parallel = records.filter((r) => r.text_en).length;
 
+  // Release history. A reader landing on the card cannot otherwise tell whether
+  // this is a first drop or the sixth, or how fast it is growing — and the row
+  // for the version being published does not exist in the table yet.
+  const priorReleases = await db
+    .select({ version: releases.version, itemCount: releases.itemCount, createdAt: releases.createdAt })
+    .from(releases)
+    .orderBy(desc(releases.createdAt));
+  // The version being published is filtered out and re-added at the top: on a
+  // republish it is already in the table and would otherwise appear twice.
+  // No 'new items' column here — that number is only knowable for the current
+  // run, and it already has a row in the table above.
+  const historyRows = [
+    `| **${VERSION}** | ${new Date().toISOString().slice(0, 10)} | ${records.length} |`,
+    ...priorReleases
+      .filter((r) => r.version !== VERSION)
+      .map((r) => `| ${r.version} | ${r.createdAt.toISOString().slice(0, 10)} | ${r.itemCount} |`),
+  ].join('\n');
+
   const card = `---
 license: cc-by-sa-4.0
 language:
@@ -315,6 +333,16 @@ carries provenance: mode, register, sector, and (where shared) the variety the c
 | Quality tier | ${SCOPE === 'accepted' ? 'community-accepted' : 'linguist-verified'} |
 | Content | ${SCOPE === 'monolingual' ? 'monolingual Somali (English-paired items held back for a future evaluation set)' : 'Somali, with English source where the item was a translation'} |
 | License | CC BY-SA 4.0 |
+
+## Versions
+
+Each release republishes the whole corpus as it stands, so \`data/train.jsonl\`
+is always complete rather than incremental. Earlier versions stay reachable
+through the Hub's own git history.
+
+| version | date | documents |
+|---|---|---|
+${historyRows}
 
 ## Coverage by domain
 
@@ -393,8 +421,11 @@ That claim is enforced rather than asserted. During collection, one contributor'
 were found to be forwarded messages copied from a Telegram channel; all of them were removed,
 twice, at a cost of roughly 150 sentences and a public milestone. Another contributor who pasted
 long passages was investigated, gave permission for his own writing directly, and the judgement
-was recorded against his account with the reviewer's name and the date. Where text could not be
-licensed, it was rejected, however good the Somali was.
+was recorded against his account with the reviewer's name and the date. Before this version was
+published, a scan of the export removed a republished news article, which was journalism rather
+than the contributor's own writing and carried a licence that was not ours to grant, and stripped
+an author's signature out of a glossary so that a real person's name would not sit inside training
+text. Where text could not be licensed, it was rejected, however good the Somali was.
 
 The corpus also holds knowledge that has no English source to translate from: how frankincense
 is tapped, how a nomadic house is folded onto a camel at dawn, which cup of camel milk goes to
