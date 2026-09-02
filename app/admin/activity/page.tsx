@@ -425,7 +425,7 @@ export default async function AdminActivityPage({ searchParams }: Props) {
               <span className="chip chip-plain">{submission.status}</span>
               {submission.verifiedAt && <span className="chip">verified</span>}
             </div>
-            <p lang="so" style={{ margin: 0 }}>
+            <p lang="so" className="submission-text">
               {submission.textSo}
             </p>
             {submission.textEn && (

@@ -308,6 +308,11 @@ main {
   line-height: 1.45;
   text-wrap: pretty;
   margin: 0.4rem 0 0;
+  /* Contributors paste from their notes, and 36% of submissions carry line
+     breaks. Without this HTML folds every one of them into a single space, so
+     a piece written in paragraphs is read, validated and reviewed as one
+     block. The structure was always in the database; only the reader lost it. */
+  white-space: pre-wrap;
 }
 
 .mode-grid {
@@ -1321,6 +1326,13 @@ a.chip:hover {
 }
 
 .editor-source .task-text {
+  margin: 0;
+}
+
+/* Submission text wherever it is read: the queue rows, the admin activity
+   feed, a contributor's own page. Same reason as .task-text above. */
+.submission-text {
+  white-space: pre-wrap;
   margin: 0;
 }
 

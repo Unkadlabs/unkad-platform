@@ -111,7 +111,7 @@ export default async function DashboardPage() {
         <div>
           {mine.map((s) => (
             <div key={s.id} className="card" style={{ padding: '0.9rem 1.1rem' }}>
-              <p style={{ margin: 0 }} lang="so">
+              <p className="submission-text" lang="so">
                 {s.textSo.length > 140 ? s.textSo.slice(0, 140) + '…' : s.textSo}
               </p>
               <p style={{ margin: '0.45rem 0 0' }}>

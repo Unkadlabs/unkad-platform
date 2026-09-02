@@ -114,7 +114,7 @@ export default async function ReviewPage({ searchParams }: Props) {
                           </span>
                         )}
                       </div>
-                      <p lang="so" style={{ margin: 0 }}>
+                      <p lang="so" className="submission-text">
                         {submission.textSo}
                       </p>
                       {submission.textEn && group.items.length === 1 && (
