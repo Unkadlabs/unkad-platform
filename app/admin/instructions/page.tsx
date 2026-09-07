@@ -1,29 +1,21 @@
-// The instruction dataset workbench (English-only internal tool).
+// The instruction dataset dashboard (English-only internal tool).
 //
-// One job: get the instruction set to 1,000 pairs without anyone having to be
-// told how. The page is written so that whoever opens it — khalid, a reviewer,
-// a volunteer who has never seen this project — can read the state, see which
-// sector is starving, and write the prompt that fixes it, in that order,
-// without asking anyone.
-//
-// A pair is a prompt plus its accepted answer, so writing prompts IS building
-// the dataset. The page leads with yield because that is the non-obvious part:
-// a write prompt has been worth many times a translate prompt.
+// The seed set is written by invited authors through /seed/[token]. None of it
+// was visible anywhere: four invites were out, two people had never opened
+// their link, one had written three items, and the only way to know any of
+// that was to run a script. This page is the surface, written so that whoever
+// opens it can see the state and know what to do without asking anyone.
 
 import Link from 'next/link';
 import { requireRole } from '@/lib/auth';
-import { addPrompts } from '@/lib/actions';
-import { instructionState, SECTORS } from '@/lib/instructions';
+import { instructionState, SECTORS, TASK_TYPES } from '@/lib/instructions';
 
-type Props = { searchParams: Promise<{ added?: string }> };
-
-export default async function InstructionsPage({ searchParams }: Props) {
+export default async function InstructionsPage() {
   await requireRole('admin');
-  const { added } = await searchParams;
   const s = await instructionState();
-
-  const starving = s.bySector.slice(0, 3).map((r) => r.sector);
   const pct = Math.min(100, s.pct);
+
+  const stalled = s.authors.filter((a) => a.active && (!a.consented || a.written === 0));
 
   return (
     <div className="container">
@@ -33,23 +25,18 @@ export default async function InstructionsPage({ searchParams }: Props) {
 
       <h1>Instruction dataset</h1>
       <p className="muted">
-        The target is {s.goal.toLocaleString()} instruction pairs to finetune Unug. A pair is one
-        prompt plus one accepted Somali answer, so <strong>writing prompts is how the dataset gets
-        built</strong>. This page shows what exists, what is missing, and lets you add prompts.
+        {s.goal.toLocaleString()} hand-written instruction pairs to finetune Unug. Each item is an
+        instruction, an optional input it acts on, and a response &mdash; written in English first,
+        then built in Somali. Authors write through their own <span className="mono">/seed</span>{' '}
+        link; this page is where the work is tracked.
       </p>
 
-      {added && (
-        <p className="hint" style={{ color: 'var(--accent)' }}>
-          Added {added} prompt{added === '1' ? '' : 's'}. They are live for contributors now.
-        </p>
-      )}
-
-      {/* ---- Where we stand ---- */}
+      {/* ---- Progress ---- */}
       <h2>Where we stand</h2>
       <p style={{ fontSize: '2.2rem', fontWeight: 700, margin: '0.2rem 0' }}>
         {s.total.toLocaleString()}{' '}
         <span className="muted" style={{ fontSize: '1rem', fontWeight: 400 }}>
-          of {s.goal.toLocaleString()} pairs &middot; {s.remaining.toLocaleString()} to go
+          of {s.goal.toLocaleString()} &middot; {s.remaining.toLocaleString()} to go
         </span>
       </p>
       <div
@@ -58,161 +45,126 @@ export default async function InstructionsPage({ searchParams }: Props) {
           overflow: 'hidden', maxWidth: '34rem', marginBottom: '0.5rem',
         }}
       >
-        <div style={{ width: `${pct}%`, height: '100%', background: 'var(--accent)' }} />
+        <div style={{ width: `${Math.max(pct, 0.4)}%`, height: '100%', background: 'var(--accent)' }} />
       </div>
       <p className="hint">
-        {pct.toFixed(1)}% complete. Counted as accepted submissions that came from a prompt.
+        {pct.toFixed(1)}% written. Invites currently out cover {s.quotaTotal.toLocaleString()} items
+        of the target.
       </p>
 
-      {/* ---- The one number that decides what to do ---- */}
-      <h2>Which prompt is worth writing</h2>
-      <table>
-        <thead>
-          <tr><th>Prompt type</th><th>Pairs produced per prompt</th><th>What it means</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>write</strong> (a question in Somali)</td>
-            <td className="mono">{s.writeYield?.toFixed(1) ?? '—'}</td>
-            <td className="muted">
-              One prompt keeps producing. Many people can answer the same question differently, and
-              each answer is a valid pair.
-            </td>
-          </tr>
-          <tr>
-            <td><strong>translate</strong> (an English sentence)</td>
-            <td className="mono">{s.translateYield?.toFixed(1) ?? '—'}</td>
-            <td className="muted">
-              Roughly one answer per prompt. Good for coverage, weak for volume.
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      {s.writeYield && s.translateYield && s.writeYield > s.translateYield && (
-        <p className="hint">
-          <strong>So: write prompts are currently worth about {(s.writeYield / s.translateYield).toFixed(0)}x
-          a translate prompt.</strong> If you only have time for one thing, add write prompts.
-        </p>
+      {/* ---- The blocker, stated plainly ---- */}
+      {stalled.length > 0 && (
+        <div className="card" style={{ borderLeft: '3px solid var(--accent)' }}>
+          <h3>What is blocking this right now</h3>
+          <ul>
+            {stalled.map((a) => (
+              <li key={a.id}>
+                <strong>{a.name ?? 'unnamed invite'}</strong> ({a.sectors}) &mdash;{' '}
+                {!a.consented
+                  ? 'has never opened their link or agreed to the terms. Nothing can be written until they do.'
+                  : 'agreed but has written nothing yet.'}
+              </li>
+            ))}
+          </ul>
+          <p className="hint">
+            Mint or re-send a link with{' '}
+            <span className="mono">npm run seed:new -- --sectors law,religion --label &quot;name&quot;</span>
+          </p>
+        </div>
       )}
 
-      {/* ---- Coverage ---- */}
-      <h2>Coverage by sector</h2>
-      <p className="muted">
-        The model should work across Somali life, not just the sectors people happen to enjoy
-        writing about. Thinnest first, so the top rows are where to aim.
-      </p>
+      {/* ---- Authors ---- */}
+      <h2>Authors</h2>
       <table>
         <thead>
           <tr>
-            <th>Sector</th><th>Pairs</th><th>Write prompts</th>
-            <th>Translate prompts</th><th>Unanswered</th>
+            <th>Invite</th><th>Sectors</th><th>Written</th><th>Quota</th>
+            <th>Consented</th><th>Last seen</th>
           </tr>
         </thead>
         <tbody>
-          {s.bySector.map((r) => (
-            <tr key={r.sector}>
-              <td>
-                {r.sector}
-                {starving.includes(r.sector) && (
-                  <span className="mono" style={{ color: 'var(--accent)', fontSize: '0.75rem' }}>
-                    {' '}needs work
-                  </span>
-                )}
-              </td>
-              <td className="mono">{r.pairs}</td>
-              <td className="mono">{r.writePrompts}</td>
-              <td className="mono">{r.translatePrompts}</td>
-              <td className="mono">{r.unanswered}</td>
+          {s.authors.map((a) => (
+            <tr key={a.id}>
+              <td>{a.creditName ?? a.name ?? '—'}</td>
+              <td className="muted">{a.sectors}</td>
+              <td className="mono">{a.written}</td>
+              <td className="mono">{a.quota}</td>
+              <td>{a.consented ? 'yes' : <span style={{ color: 'var(--danger)' }}>no</span>}</td>
+              <td className="muted">{a.lastSeen ? a.lastSeen.toISOString().slice(0, 10) : 'never'}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {/* ---- Task coverage ---- */}
+      <h2>Task coverage</h2>
+      <p className="muted">
+        A finetune learns whatever shape it is shown. An instruction set that is all one task type
+        teaches one trick, so the mix matters as much as the count.
+      </p>
+      <table>
+        <thead><tr><th>Type</th><th>Written</th><th>What it is</th></tr></thead>
+        <tbody>
+          {TASK_TYPES.map((t) => (
+            <tr key={t.key}>
+              <td><strong>{t.label}</strong></td>
+              <td className="mono">{s.byType.find((b) => b.type === t.key)?.n ?? 0}</td>
+              <td className="muted">{t.hint}</td>
             </tr>
           ))}
         </tbody>
       </table>
       <p className="hint">
-        <strong>{s.unansweredTotal} prompts have never been answered.</strong> Those are already
-        paid for: pointing contributors at them costs nothing and produces pairs immediately.
+        <strong>Refusal and control items are not optional.</strong> Finetuning on tasks alone can
+        strip whatever refusal behaviour the base model had, and we publish SomaliBench &mdash; we
+        would be shipping the exact failure we measure in others.
       </p>
 
-      {/* ---- Add prompts ---- */}
-      <h2>Add prompts</h2>
-      <p className="muted">
-        One prompt per line, in the form <span className="mono">Somali || English</span>. The Somali
-        is what contributors see; the English is for our own records and becomes the instruction
-        text in the exported dataset.
-      </p>
-      <div className="card">
-        <h3>What makes a good instruction prompt</h3>
-        <ul>
-          <li>
-            <strong>If ChatGPT can already answer it well, throw it away.</strong> The value of this
-            dataset is knowledge that is not already in the models.
-          </li>
-          <li>
-            <strong>Ask for something only a Somali speaker could answer</strong> — lived
-            experience, local practice, how a thing is actually done or said here.
-          </li>
-          <li>
-            <strong>Open, not yes-or-no.</strong> &ldquo;Sharax sida...&rdquo; (explain how),
-            &ldquo;Ka sheekee...&rdquo; (tell about), &ldquo;Maxaa...&rdquo; (what).
-          </li>
-          <li>
-            <strong>Answerable in a few sentences</strong> by an ordinary person, without research.
-          </li>
-          <li>
-            <strong>Tag the sector honestly.</strong> Coverage is the point; putting everything in
-            &ldquo;general&rdquo; hides the gap.
-          </li>
-        </ul>
-      </div>
+      {/* ---- Sector coverage ---- */}
+      <h2>Sector coverage</h2>
+      <table>
+        <thead><tr><th>Sector</th><th>Written</th></tr></thead>
+        <tbody>
+          {SECTORS.map((sec) => {
+            const n = s.bySector.find((b) => b.sector === sec)?.n ?? 0;
+            return (
+              <tr key={sec}>
+                <td>{sec}{n === 0 && <span className="mono" style={{ color: 'var(--accent)' }}> nothing yet</span>}</td>
+                <td className="mono">{n}</td>
+              </tr>
+            );
+          })}
+          {s.bySector
+            .filter((b) => !SECTORS.includes(b.sector as (typeof SECTORS)[number]))
+            .map((b) => (
+              <tr key={b.sector}>
+                <td>
+                  {b.sector}{' '}
+                  <span className="mono" style={{ color: 'var(--danger)' }}>
+                    not a corpus sector
+                  </span>
+                </td>
+                <td className="mono">{b.n}</td>
+              </tr>
+            ))}
+        </tbody>
+      </table>
 
-      <form action={addPrompts} className="stack" style={{ marginTop: '1rem' }}>
-        <input type="hidden" name="mode" value="write" />
-
-        <label>
-          Sector
-          <select name="sector" defaultValue={s.bySector[0]?.sector ?? 'general'} required>
-            {SECTORS.map((sec) => {
-              const row = s.bySector.find((r) => r.sector === sec);
-              return (
-                <option key={sec} value={sec}>
-                  {sec} ({row?.pairs ?? 0} pairs)
-                </option>
-              );
-            })}
-          </select>
-        </label>
-
-        <label>
-          Register
-          <select name="register" defaultValue="conversational" required>
-            <option value="conversational">conversational (everyday speech)</option>
-            <option value="narrative">narrative (telling a story)</option>
-            <option value="instructional">instructional (how to do a thing)</option>
-            <option value="formal">formal (official, written)</option>
-            <option value="technical">technical (specialist)</option>
-          </select>
-        </label>
-
-        <label>
-          Topic
-          <input name="topic" placeholder="e.g. beeraha, caafimaadka carruurta" required />
-        </label>
-
-        <label>
-          Prompts, one per line
-          <textarea
-            name="batch"
-            rows={8}
-            required
-            placeholder={'Sharax sida loo beero galleyda. || Explain how maize is planted.\nKa sheekee suuqa magaaladaada. || Describe the market in your town.'}
-          />
-        </label>
-
-        <button className="btn" type="submit">Add prompts</button>
-      </form>
-
-      <p className="hint" style={{ marginTop: '1.5rem' }}>
-        Every prompt added here is live for contributors immediately at qor.unkad.com. Somali text
-        is published as written, so check it before adding.
+      {/* ---- Pipeline ---- */}
+      <h2>Pipeline</h2>
+      <table>
+        <thead><tr><th>Stage</th><th>Items</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td>draft_en</td><td className="mono">{s.draftEn}</td><td className="muted">English written, Somali not started</td></tr>
+          <tr><td>needs_somali</td><td className="mono">{s.needsSomali}</td><td className="muted">English approved, waiting for the Somali version</td></tr>
+          <tr><td>needs_review</td><td className="mono">{s.needsReview}</td><td className="muted">Somali written, waiting for a verifier</td></tr>
+          <tr><td>approved</td><td className="mono">{s.approved}</td><td className="muted">verified, exportable</td></tr>
+        </tbody>
+      </table>
+      <p className="hint">
+        {s.withEnglishBase} of {s.total} items carry an English base; {s.withInput} use the input
+        field. Items written before the English-first design have neither, which is expected and
+        fine &mdash; they are still valid Somali pairs.
       </p>
     </div>
   );

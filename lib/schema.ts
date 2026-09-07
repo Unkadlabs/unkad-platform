@@ -489,8 +489,28 @@ export const seedItems = pgTable(
     // defines its own vocabulary and should not drag the corpus schema along.
     type: text('type').notNull().default('task'),
     sector: text('sector').notNull(),
+    // The Somali pair. `instruction` and `response` stay the primary columns
+    // so every item already written keeps working unchanged.
     instruction: text('instruction').notNull(),
     response: text('response').notNull(),
+    // Llama/Alpaca schema is a triple, not a pair: the optional `input` is the
+    // text the instruction operates on (a paragraph to summarise, a sentence
+    // to correct). It was missing entirely, which quietly ruled out every task
+    // type that needs source material.
+    input: text('input'),
+    // The English base. The founder's design writes the pair in English first,
+    // where task coverage is easier to plan and judge, then builds the Somali
+    // version from it. Nullable because the three items already written went
+    // straight to Somali.
+    instructionEn: text('instruction_en'),
+    inputEn: text('input_en'),
+    responseEn: text('response_en'),
+    // draft_en -> needs_somali -> needs_review -> approved. Text rather than an
+    // enum for the same reason `type` is: the seed set defines its own
+    // vocabulary and should not drag the corpus schema along.
+    status: text('status').notNull().default('needs_review'),
+    verifiedBy: text('verified_by'),
+    verifiedAt: timestamp('verified_at'),
     note: text('note'),
     license: text('license').notNull().default('CC-BY-SA-4.0'),
     createdAt: timestamp('created_at').notNull().defaultNow(),
