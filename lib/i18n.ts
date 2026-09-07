@@ -470,6 +470,29 @@ const dict = {
   // page to two blank boxes with no idea what "good" looks like, which is the
   // fastest way to get a thin first item or none at all.
   // !! VERIFY SOMALI !! — the example pair below is a draft.
+  // The literal training format. Writers asked to see the schema itself, not
+  // only prose about it, so the JSON an item becomes is shown verbatim.
+  seedSchemaTitle: { so: 'QAABKA XOGTA', en: 'THE SCHEMA' },
+  seedSchemaFields: {
+    so: 'instruction = su\u2019aasha · input = qoraalka su\u2019aashu ka shaqayso (badanaa madhan) · output = jawaabta.',
+    en: 'instruction = the question · input = text the question works on (usually empty) · output = the answer.',
+  },
+  // The quality rules, from the LIMA result: 1,000 carefully written examples
+  // outperformed far larger instruction sets. Diversity in the questions,
+  // consistency in the answers, and every single item checked by hand.
+  seedQualityTitle: { so: 'TAYADA KA HOR TIRADA', en: 'QUALITY BEFORE QUANTITY' },
+  seedQuality1: {
+    so: 'Su\u2019aaluhu ha kala duwanaadaan. Ha noqon laba su\u2019aalood oo isku eg oo ereyo kala duwan lagu qoray.',
+    en: 'Vary the questions. Two questions that differ only in wording are one question.',
+  },
+  seedQuality2: {
+    so: 'Jawaabuhu ha isku qaab ahaadaan: mid walba u qor sidii caawiye xirfad leh, cod isku mid ah.',
+    en: 'Keep the answers consistent: write every one in the same steady, helpful voice.',
+  },
+  seedQuality3: {
+    so: 'Hal jawaab oo fiican ayaa ka roon toban oo degdeg ah. Kun tusaale oo la hubiyay way ka shaqo badan yihiin boqol kun oo la ururiyay.',
+    en: 'One good answer beats ten rushed ones. A thousand checked examples outperform a hundred thousand scraped ones.',
+  },
   seedExampleTitle: { so: 'TUSAALE', en: 'AN EXAMPLE' },
   seedExampleQ: {
     so: 'Waa maxay farqiga u dhexeeya dugsiga hoose iyo dugsiga dhexe ee Soomaaliya, imisa sanona mid waliba qaataa?',

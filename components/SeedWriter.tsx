@@ -264,7 +264,29 @@ export default function SeedWriter({
               </div>
               <p className="seed-example-why">{labels.exampleWhy}</p>
               <p className="seed-example-why">{labels.exampleBad}</p>
+            </div>
+
+            {/* The schema itself, verbatim. Prose about the format was not
+                enough: the writer wants to see the row their work becomes. */}
+            <div className="seed-example">
+              <div className="seed-example-h">{labels.schemaTitle}</div>
+              <pre className="seed-schema"><code>{`{
+  "instruction": "${labels.exampleQ}",
+  "input": "",
+  "output": "${labels.exampleA.slice(0, 60)}..."
+}`}</code></pre>
+              <p className="seed-example-schema">{labels.schemaFields}</p>
               <p className="seed-example-schema">{labels.schemaNote}</p>
+            </div>
+
+            {/* Why 1,000 is the target at all. */}
+            <div className="seed-example">
+              <div className="seed-example-h">{labels.qualityTitle}</div>
+              <ul className="seed-quality">
+                <li>{labels.quality1}</li>
+                <li>{labels.quality2}</li>
+                <li>{labels.quality3}</li>
+              </ul>
             </div>
           </details>
 
