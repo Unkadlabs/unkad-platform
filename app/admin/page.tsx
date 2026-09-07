@@ -55,6 +55,8 @@ export default async function AdminPage({ searchParams }: Props) {
       <h1>Admin</h1>
       <p className="mono">
         <Link href="/admin/activity">Activity monitor →</Link>
+        {' · '}
+        <Link href="/admin/instructions">Instruction dataset →</Link>
       </p>
 
       {added && <p className="notice">Added {added} prompts.</p>}
