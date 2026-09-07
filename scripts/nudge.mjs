@@ -193,7 +193,10 @@ for (const r of good) {
     process.exit(1);
   }
 
-  const res = await fetch('https://api.resend.com/emails', {
+  // A transient network fault must not end the run. A dropped IPv6 route took
+  // out a whole send once, on the first address, leaving the day unmailed.
+  // Two attempts, then give up on this one address and carry on to the next.
+  const post = async () => fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { Authorization: `Bearer ${KEY}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -211,6 +214,22 @@ for (const r of good) {
     }),
     signal: AbortSignal.timeout(10000),
   });
+
+  let res;
+  try {
+    res = await post();
+  } catch (err) {
+    console.error(`  net retry for ${r.email}: ${err.message}`);
+    await new Promise((s) => setTimeout(s, 2000));
+    try {
+      res = await post();
+    } catch (err2) {
+      failed++;
+      console.error(`  SKIP  ${r.email}  network: ${err2.message}`);
+      await new Promise((s) => setTimeout(s, 400));
+      continue;
+    }
+  }
 
   if (res.ok) {
     await q(
