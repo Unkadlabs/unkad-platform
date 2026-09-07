@@ -466,6 +466,31 @@ const dict = {
     so: 'Weydii su\u2019aal qof Soomaali ah dhab ahaan weydiin lahaa, mid jawaabteedu u baahan tahay aqoon ama garasho. Kadib qor jawaabta aad jeclaan lahayd inuu bixiyo caawiye: sax, dabiici ah, oo dherer ahaan u dhiganta su\u2019aasha. Haddii ChatGPT uu horeba u jawaabi karo si fiican, waxba nama tarayso, marka weydii wax qofka halkan jooga oo keliya yaqaan.',
     en: 'Ask a question a Somali speaker would really ask, one whose answer needs knowledge or judgement. Then write the answer you would want an assistant to give: correct, natural, and as long as the question deserves. If ChatGPT could already answer it well it teaches us nothing, so ask something only someone here would know.',
   },
+  // A worked example, shown above the empty fields. Writers were opening the
+  // page to two blank boxes with no idea what "good" looks like, which is the
+  // fastest way to get a thin first item or none at all.
+  // !! VERIFY SOMALI !! — the example pair below is a draft.
+  seedExampleTitle: { so: 'TUSAALE', en: 'AN EXAMPLE' },
+  seedExampleQ: {
+    so: 'Waa maxay farqiga u dhexeeya dugsiga hoose iyo dugsiga dhexe ee Soomaaliya, imisa sanona mid waliba qaataa?',
+    en: 'What is the difference between primary and intermediate school in Somalia, and how many years is each?',
+  },
+  seedExampleA: {
+    so: 'Dugsiga hoose wuxuu qaataa afar sano, fasalka koowaad ilaa afaraad, waxaana lagu barannaa akhriska, qorista iyo xisaabta aasaasiga ah. Dugsiga dhexe wuxuu qaataa afar sano oo kale, fasalka shanaad ilaa siddeedaad, maadooyinkuna way sii ballaadhaan: saynis, taariikh, juqraafi iyo Ingiriisi. Kadib waxaa yimaada dugsiga sare oo afar sano ah.',
+    en: 'Primary school takes four years, grades one to four, covering reading, writing and basic arithmetic. Intermediate school takes another four years, grades five to eight, where subjects widen into science, history, geography and English. Secondary school, another four years, follows after that.',
+  },
+  seedExampleWhy: {
+    so: 'Tan waa tusaale wanaagsan: waa su\u2019aal dad dhab ah weydiiyaan, jawaabtuna waxay u baahan tahay aqoon deegaanka ah, mana aha mid haa ama maya lagu jawaabi karo.',
+    en: 'This works because it is a question real people ask, the answer needs local knowledge, and it cannot be answered with a yes or a no.',
+  },
+  seedExampleBad: {
+    so: 'Tusaale liita: \u201cWaa maxay waxbarashadu?\u201d — guud ahaan, jawaab kasta way ku habboon tahay, ChatGPT-na si fiican ayuu ugu jawaabaa.',
+    en: 'A weak example: “What is education?” — too general, any answer fits, and ChatGPT already answers it well.',
+  },
+  seedSchemaNote: {
+    so: 'Su\u2019aashu waxay noqotaa instruction, jawaabtuna response, oo ah qaabka tababarka moodelka.',
+    en: 'The question becomes the instruction and the answer becomes the response: that pair is the training format.',
+  },
   seedQuestion: { so: 'SU\u2019AASHA', en: 'THE QUESTION' },
   seedQuestionHint: { so: 'waxa qofku weydiinayo', en: 'what the person asks' },
   seedAnswer: { so: 'JAWAABTA', en: 'THE ANSWER' },

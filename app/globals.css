@@ -1561,6 +1561,27 @@ a.chip:hover {
 .seed-how p { color: var(--muted); line-height: 1.7; margin: 0.7rem 0 0;
   border-left: 2px solid var(--rule); padding-left: 0.9rem; }
 
+/* The worked example inside "how to write these". Laid out in the same order
+   as the fields below it, so the shape of a good pair is visible before the
+   writer types anything. */
+.seed-example { margin: 1.1rem 0 0; padding: 0.9rem 1rem; background: var(--card);
+  border: 1px solid var(--rule); border-radius: 4px; }
+.seed-example-h { font-family: var(--mono); font-size: 0.66rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--accent); margin-bottom: 0.7rem; }
+.seed-example-row { display: grid; grid-template-columns: 5.5rem 1fr; gap: 0.7rem;
+  margin-bottom: 0.6rem; align-items: start; }
+.seed-example-k { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.08em;
+  color: var(--muted); padding-top: 0.15rem; }
+.seed-example-v { line-height: 1.6; }
+.seed-example-why { border-left: none !important; padding-left: 0 !important;
+  font-size: 0.85rem; margin: 0.5rem 0 0 !important; }
+.seed-example-schema { border-left: none !important; padding-left: 0 !important;
+  font-family: var(--mono); font-size: 0.7rem; line-height: 1.6;
+  margin: 0.7rem 0 0 !important; opacity: 0.75; }
+@media (max-width: 34rem) {
+  .seed-example-row { grid-template-columns: 1fr; gap: 0.2rem; }
+}
+
 .seed-field { display: block; margin-bottom: 1.3rem; }
 .seed-label { display: block; font-family: var(--mono); font-size: 0.68rem;
   letter-spacing: 0.1em; color: var(--muted); margin-bottom: 0.4rem; }
