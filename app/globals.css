@@ -1573,6 +1573,12 @@ a.chip:hover {
 .seed-example-k { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.08em;
   color: var(--muted); padding-top: 0.15rem; }
 .seed-example-v { line-height: 1.6; }
+.seed-schema { background: var(--bg); border: 1px solid var(--rule); border-radius: 3px;
+  padding: 0.7rem 0.8rem; margin: 0 0 0.6rem; overflow-x: auto;
+  font-family: var(--mono); font-size: 0.68rem; line-height: 1.7; color: var(--text); }
+.seed-schema code { font-family: inherit; white-space: pre; }
+.seed-quality { margin: 0; padding-left: 1.1rem; color: var(--muted); }
+.seed-quality li { margin-bottom: 0.45rem; line-height: 1.6; font-size: 0.88rem; }
 .seed-example-why { border-left: none !important; padding-left: 0 !important;
   font-size: 0.85rem; margin: 0.5rem 0 0 !important; }
 .seed-example-schema { border-left: none !important; padding-left: 0 !important;
