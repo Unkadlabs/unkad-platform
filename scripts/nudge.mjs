@@ -72,7 +72,31 @@ const KEY = env.UNKAD_BULK_TOKEN;
 const FROM = env.EMAIL_FROM_BULK ?? 'Unkad <no-reply@unkad.com>';
 
 const local = /localhost|127\.0\.0\.1/.test(cs);
-const pool = new Pool({ connectionString: cs, ssl: local ? undefined : { rejectUnauthorized: false } });
+// keepAlive matters here: the send loop spends most of its time inside fetch
+// and a 400ms pause, so the connection is idle far more than it is busy, and
+// Neon closes idle connections. Without this the run died partway through and
+// exited non-zero, leaving the rest of the day's queue unmailed.
+const pool = new Pool({
+  connectionString: cs,
+  ssl: local ? undefined : { rejectUnauthorized: false },
+  keepAlive: true,
+  idleTimeoutMillis: 0,
+});
+
+// A dropped idle client must not take the process down mid-send. Losing one
+// connection is recoverable; losing the run means nobody else gets mailed.
+pool.on('error', (err) => console.error(`  pool error (recovering): ${err.message}`));
+
+// Retry a query once on a dropped connection. The pool hands back a fresh
+// client on the next call, so a single retry is enough for the idle-close case.
+async function q(text, params) {
+  try {
+    return await pool.query(text, params);
+  } catch (err) {
+    console.error(`  query retry after: ${err.message}`);
+    return await pool.query(text, params);
+  }
+}
 
 // The founder's own words, verbatim, 28 Jul. One message for everyone: the
 // two-variant draft was retired because his single text covers both asks,
@@ -150,7 +174,7 @@ for (const r of good) {
   let token = null;
   if (SEND) {
     const t = crypto.randomBytes(32).toString('hex');
-    const { rows: [u] } = await pool.query(
+    const { rows: [u] } = await q(
       `update users set unsub_token = coalesce(unsub_token, $2), updated_at = now()
         where id = $1 returning unsub_token`,
       [r.id, t]
@@ -189,7 +213,7 @@ for (const r of good) {
   });
 
   if (res.ok) {
-    await pool.query(
+    await q(
       `update users set last_nudge_at = now(), nudge_count = coalesce(nudge_count,0) + 1,
                         updated_at = now() where id = $1`,
       [r.id]
@@ -203,7 +227,7 @@ for (const r of good) {
     // Only a refusal of the address itself is permanent. Rate limits and
     // outages are the provider's problem and must not retire a good address.
     if (res.status === 422) {
-      await pool.query(`update users set email_bounced_at = now() where id = $1`, [r.id]);
+      await q(`update users set email_bounced_at = now() where id = $1`, [r.id]);
     }
   }
 
