@@ -1,35 +1,49 @@
-// The 1,000-pair instruction dataset: where it stands and where the holes are.
+// The 1,000-pair instruction dataset: where it stands, and where the holes are.
 //
-// An instruction pair is not a separate thing we collect. It is what a prompt
-// and its accepted answer already are: prompt text becomes the instruction,
-// the contributor's Somali becomes the response. So "how many pairs do we
-// have" is a question about accepted, prompt-linked submissions, and "how do
-// we get more" is a question about which prompts exist and which get answered.
+// The dataset is written by hand by invited authors through /seed/[token], in
+// Llama/Alpaca shape: an instruction, an optional input the instruction acts
+// on, and the response. The founder's design writes each item in English
+// first, where task coverage is easier to plan and judge, then builds the
+// Somali version from it.
 //
-// The read model exists because the answer was not visible anywhere: the
-// prompt bank had grown to 444 translate prompts against 10 write prompts,
-// while write prompts were producing roughly 24x more pairs each. Nobody could
-// see that, so nobody could act on it.
+// This read model exists because none of that was visible anywhere. Four
+// invites were out, two people had never consented, one person had written
+// three items, and the only way to know was to run a script. Work that nobody
+// can see is work that quietly stops.
 
-import { and, count, eq, isNotNull, sql } from 'drizzle-orm';
+import { desc, eq, sql } from 'drizzle-orm';
 import { db } from './db';
-import { prompts, submissions } from './schema';
+import { seedInvites, seedItems } from './schema';
 
 export const PAIR_GOAL = 1000;
 
+// The corpus sectors, so the seed set joins cleanly to everything else.
 export const SECTORS = [
   'health', 'education', 'agriculture', 'law', 'media',
   'religion', 'culture', 'technology', 'general',
 ] as const;
 
-export type Sector = (typeof SECTORS)[number];
+// What a usable instruction set has to cover. Without this spread a finetune
+// learns one trick: the harvested Qor pairs were almost entirely "translate
+// this" and "write about this", which teaches translation and free writing
+// and nothing else.
+export const TASK_TYPES = [
+  { key: 'task', label: 'Task', hint: 'question answering, explanation, how-to' },
+  { key: 'refusal', label: 'Refusal', hint: 'a harmful request and a proper Somali refusal' },
+  { key: 'control', label: 'Control', hint: 'a benign lookalike that must NOT be refused' },
+] as const;
 
-export type SectorRow = {
-  sector: string;
-  pairs: number;
-  writePrompts: number;
-  translatePrompts: number;
-  unanswered: number;
+export type AuthorRow = {
+  id: string;
+  name: string | null;
+  creditName: string | null;
+  sectors: string;
+  perSector: number;
+  quota: number;
+  consented: boolean;
+  active: boolean;
+  written: number;
+  lastSeen: Date | null;
 };
 
 export type InstructionState = {
@@ -37,80 +51,78 @@ export type InstructionState = {
   goal: number;
   remaining: number;
   pct: number;
-  byMode: { mode: string; pairs: number }[];
-  bySector: SectorRow[];
-  writeYield: number | null;
-  translateYield: number | null;
-  unansweredTotal: number;
+  approved: number;
+  needsReview: number;
+  needsSomali: number;
+  draftEn: number;
+  withEnglishBase: number;
+  withInput: number;
+  byType: { type: string; n: number }[];
+  bySector: { sector: string; n: number }[];
+  missingSectors: string[];
+  authors: AuthorRow[];
+  quotaTotal: number;
 };
 
 export async function instructionState(): Promise<InstructionState> {
-  // A pair = an accepted submission that came from a prompt. Free writes with
-  // only a topic are harvestable too, but they need a templated instruction,
-  // so they are deliberately not counted here as the firm number.
-  const pairRows = await db
-    .select({ mode: submissions.mode, sector: submissions.sector, n: count() })
-    .from(submissions)
-    .where(and(eq(submissions.status, 'accepted'), isNotNull(submissions.promptId)))
-    .groupBy(submissions.mode, submissions.sector);
+  const [items, invites] = await Promise.all([
+    db
+      .select({
+        id: seedItems.id,
+        type: seedItems.type,
+        sector: seedItems.sector,
+        status: seedItems.status,
+        inviteId: seedItems.inviteId,
+        hasEn: sql<boolean>`(${seedItems.instructionEn} is not null and ${seedItems.instructionEn} <> '')`,
+        hasInput: sql<boolean>`(${seedItems.input} is not null and ${seedItems.input} <> '')`,
+      })
+      .from(seedItems),
+    db.select().from(seedInvites).orderBy(desc(seedInvites.createdAt)),
+  ]);
 
-  const promptRows = await db
-    .select({ mode: prompts.mode, sector: prompts.sector, n: count() })
-    .from(prompts)
-    .where(eq(prompts.active, true))
-    .groupBy(prompts.mode, prompts.sector);
+  const total = items.length;
+  const count = (f: (i: (typeof items)[number]) => boolean) => items.filter(f).length;
 
-  // Prompts nobody has answered yet: live supply that is already paid for.
-  const unansweredRows = await db
-    .select({ sector: prompts.sector, n: count() })
-    .from(prompts)
-    .where(
-      and(
-        eq(prompts.active, true),
-        sql`not exists (select 1 from submissions s where s.prompt_id = ${prompts.id})`
-      )
-    )
-    .groupBy(prompts.sector);
+  const tally = <T extends string>(pick: (i: (typeof items)[number]) => T) => {
+    const m = new Map<T, number>();
+    for (const i of items) m.set(pick(i), (m.get(pick(i)) ?? 0) + 1);
+    return m;
+  };
 
-  const total = pairRows.reduce((s, r) => s + Number(r.n), 0);
+  const sectorMap = tally((i) => i.sector);
+  const typeMap = tally((i) => i.type);
 
-  const modeMap = new Map<string, number>();
-  for (const r of pairRows) modeMap.set(r.mode, (modeMap.get(r.mode) ?? 0) + Number(r.n));
-
-  const bySector: SectorRow[] = SECTORS.map((sector) => {
-    const pairs = pairRows.filter((r) => r.sector === sector).reduce((s, r) => s + Number(r.n), 0);
-    const writePrompts = promptRows
-      .filter((r) => r.sector === sector && r.mode === 'write')
-      .reduce((s, r) => s + Number(r.n), 0);
-    const translatePrompts = promptRows
-      .filter((r) => r.sector === sector && r.mode === 'translate')
-      .reduce((s, r) => s + Number(r.n), 0);
-    const unanswered = unansweredRows
-      .filter((r) => r.sector === sector)
-      .reduce((s, r) => s + Number(r.n), 0);
-    return { sector, pairs, writePrompts, translatePrompts, unanswered };
-  }).sort((a, b) => a.pairs - b.pairs);
-
-  // Pairs produced per prompt, by mode. This is the number that says where to
-  // spend an hour of prompt writing.
-  const writePairs = modeMap.get('write') ?? 0;
-  const translatePairs = modeMap.get('translate') ?? 0;
-  const writePromptTotal = promptRows
-    .filter((r) => r.mode === 'write')
-    .reduce((s, r) => s + Number(r.n), 0);
-  const translatePromptTotal = promptRows
-    .filter((r) => r.mode === 'translate')
-    .reduce((s, r) => s + Number(r.n), 0);
+  const authors: AuthorRow[] = invites.map((v) => {
+    const sectorCount = v.sectors.split(',').filter((s) => s.trim()).length;
+    return {
+      id: v.id,
+      name: v.name,
+      creditName: v.creditName,
+      sectors: v.sectors,
+      perSector: v.perSector,
+      quota: sectorCount * v.perSector,
+      consented: Boolean(v.consentAt),
+      active: v.active,
+      written: items.filter((i) => i.inviteId === v.id).length,
+      lastSeen: v.lastSeenAt,
+    };
+  });
 
   return {
     total,
     goal: PAIR_GOAL,
     remaining: Math.max(0, PAIR_GOAL - total),
     pct: (total / PAIR_GOAL) * 100,
-    byMode: [...modeMap.entries()].map(([mode, pairs]) => ({ mode, pairs })).sort((a, b) => b.pairs - a.pairs),
-    bySector,
-    writeYield: writePromptTotal ? writePairs / writePromptTotal : null,
-    translateYield: translatePromptTotal ? translatePairs / translatePromptTotal : null,
-    unansweredTotal: unansweredRows.reduce((s, r) => s + Number(r.n), 0),
+    approved: count((i) => i.status === 'approved'),
+    needsReview: count((i) => i.status === 'needs_review'),
+    needsSomali: count((i) => i.status === 'needs_somali'),
+    draftEn: count((i) => i.status === 'draft_en'),
+    withEnglishBase: count((i) => i.hasEn),
+    withInput: count((i) => i.hasInput),
+    byType: [...typeMap.entries()].map(([type, n]) => ({ type, n })).sort((a, b) => b.n - a.n),
+    bySector: [...sectorMap.entries()].map(([sector, n]) => ({ sector, n })).sort((a, b) => b.n - a.n),
+    missingSectors: SECTORS.filter((s) => !sectorMap.has(s)),
+    authors,
+    quotaTotal: authors.filter((a) => a.active).reduce((s, a) => s + a.quota, 0),
   };
 }
