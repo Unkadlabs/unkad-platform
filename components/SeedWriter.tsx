@@ -248,6 +248,24 @@ export default function SeedWriter({
           <details className="seed-how" open={items.length < 3}>
             <summary>{labels.howTitle}</summary>
             <p>{labels.how}</p>
+
+            {/* The worked example. Two empty boxes and a paragraph of advice
+                was not enough to show what "good" looks like, so the shape of
+                a real pair is laid out here in the same order as the fields. */}
+            <div className="seed-example">
+              <div className="seed-example-h">{labels.exampleTitle}</div>
+              <div className="seed-example-row">
+                <span className="seed-example-k">{labels.question}</span>
+                <span lang="so" className="seed-example-v">{labels.exampleQ}</span>
+              </div>
+              <div className="seed-example-row">
+                <span className="seed-example-k">{labels.answer}</span>
+                <span lang="so" className="seed-example-v">{labels.exampleA}</span>
+              </div>
+              <p className="seed-example-why">{labels.exampleWhy}</p>
+              <p className="seed-example-why">{labels.exampleBad}</p>
+              <p className="seed-example-schema">{labels.schemaNote}</p>
+            </div>
           </details>
 
           <label className="seed-field">

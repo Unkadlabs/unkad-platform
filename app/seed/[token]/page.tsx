@@ -67,6 +67,9 @@ export default async function SeedPage({ params }: { params: Promise<{ token: st
       }))}
       labels={{
         thanks: t('seedThanks'), howTitle: t('seedHowTitle'), how: t('seedHow'),
+        exampleTitle: t('seedExampleTitle'), exampleQ: t('seedExampleQ'),
+        exampleA: t('seedExampleA'), exampleWhy: t('seedExampleWhy'),
+        exampleBad: t('seedExampleBad'), schemaNote: t('seedSchemaNote'),
         question: t('seedQuestion'), questionHint: t('seedQuestionHint'),
         answer: t('seedAnswer'), answerHint: t('seedAnswerHint'),
         note: t('seedNote'), save: t('seedSave'), saving: t('seedSaving'),
