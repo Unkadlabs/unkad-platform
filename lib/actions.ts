@@ -25,8 +25,11 @@ import {
   passwordResets,
   goals,
   passwordResetRequests,
+  hubiAiRuns,
 } from './schema';
 import { allow, clientIp } from './ratelimit';
+import { getLang } from './lang';
+import { HUBI_ITEMS, HUBI_PROFILE, scoreHubi } from './hubi-ai';
 import { sendEmail, emailConfigured } from './email';
 import {
   createSession,
@@ -1376,3 +1379,38 @@ export async function startGuestSession(
   await createSession(user.id, { guest: true });
   redirect('/home');
 }
+
+// ---- Hubi AI-ga -------------------------------------------------------------
+
+// One completed run of the public AI-literacy check. No account needed; the
+// score is recomputed here from the deck, never taken from the client. Rate
+// limited per address so one person cannot flood the baseline.
+export async function submitHubiAi(formData: FormData): Promise<void> {
+  const ip = await clientIp();
+  if (!(await allow(`hubi:${ip}`, 30, 3600))) redirect('/hubi-ai');
+
+  const said: Record<string, 'sax' | 'khalad'> = {};
+  for (const it of HUBI_ITEMS) {
+    const v = String(formData.get(`a_${it.id}`) ?? '');
+    if (v !== 'sax' && v !== 'khalad') redirect('/hubi-ai');
+    said[it.id] = v;
+  }
+  const pick = (name: keyof typeof HUBI_PROFILE) => {
+    const v = String(formData.get(name) ?? '');
+    return (HUBI_PROFILE[name] as readonly string[]).includes(v) ? v : null;
+  };
+  const profile = { use: pick('use'), trained: pick('trained'), fluent: pick('fluent') };
+  if (!profile.use || !profile.trained || !profile.fluent) redirect('/hubi-ai');
+
+  const { answers, score } = scoreHubi(said);
+  const user = await getCurrentUser();
+  const lang = await getLang();
+
+  const [run] = await db
+    .insert(hubiAiRuns)
+    .values({ userId: user?.id ?? null, lang, answers, score, total: HUBI_ITEMS.length, profile })
+    .returning({ id: hubiAiRuns.id });
+
+  redirect(`/hubi-ai/${run.id}`);
+}
+

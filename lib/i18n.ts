@@ -489,6 +489,10 @@ const dict = {
     so: 'Jawaabuhu ha isku qaab ahaadaan: mid walba u qor sidii caawiye xirfad leh, cod isku mid ah.',
     en: 'Keep the answers consistent: write every one in the same steady, helpful voice.',
   },
+  seedQualityStructure: {
+    so: 'Jawaab kastaa ha lahaato qaab: jumlad furitaan ah oo si toos ah uga jawaabta, kadib tallaabooyin ama qodobo haddii su\u2019aashu taas u baahan tahay, kadibna gunaanad gaaban. Qaabku waa waxa moodelku ugu horreyn barto.',
+    en: 'Give every answer a shape: an opening line that answers directly, then steps or ordered points if the question needs them, then a short closing. The shape is the first thing the model learns.',
+  },
   seedQuality3: {
     so: 'Hal jawaab oo fiican ayaa ka roon toban oo degdeg ah. Kun tusaale oo la hubiyay way ka shaqo badan yihiin boqol kun oo la ururiyay.',
     en: 'One good answer beats ten rushed ones. A thousand checked examples outperform a hundred thousand scraped ones.',
@@ -499,12 +503,12 @@ const dict = {
     en: 'What is the difference between primary and intermediate school in Somalia, and how many years is each?',
   },
   seedExampleA: {
-    so: 'Dugsiga hoose wuxuu qaataa afar sano, fasalka koowaad ilaa afaraad, waxaana lagu barannaa akhriska, qorista iyo xisaabta aasaasiga ah. Dugsiga dhexe wuxuu qaataa afar sano oo kale, fasalka shanaad ilaa siddeedaad, maadooyinkuna way sii ballaadhaan: saynis, taariikh, juqraafi iyo Ingiriisi. Kadib waxaa yimaada dugsiga sare oo afar sano ah.',
-    en: 'Primary school takes four years, grades one to four, covering reading, writing and basic arithmetic. Intermediate school takes another four years, grades five to eight, where subjects widen into science, history, geography and English. Secondary school, another four years, follows after that.',
+    so: 'Nidaamka waxbarashada Soomaaliya wuxuu u kala baxaa saddex heer.\n\n1. Dugsiga hoose: afar sano, fasalka 1aad ilaa 4aad. Waxaa lagu barannaa akhris, qoris iyo xisaab aasaasi ah.\n2. Dugsiga dhexe: afar sano, fasalka 5aad ilaa 8aad. Maadooyinku way ballaadhaan: saynis, taariikh, juqraafi iyo Ingiriisi.\n3. Dugsiga sare: afar sano, fasalka 9aad ilaa 12aad, waxaana ku dhammaada imtixaanka shahaadiga.\n\nSidaas darteed, ardaygu wuxuu qaataa laba iyo toban sano ka hor jaamacadda.',
+    en: 'Somali schooling runs in three stages.\n\n1. Primary: four years, grades 1 to 4. Reading, writing and basic arithmetic.\n2. Intermediate: four years, grades 5 to 8. Subjects widen into science, history, geography and English.\n3. Secondary: four years, grades 9 to 12, ending in the national certificate exam.\n\nSo a student spends twelve years before university.',
   },
   seedExampleWhy: {
-    so: 'Tan waa tusaale wanaagsan: waa su\u2019aal dad dhab ah weydiiyaan, jawaabtuna waxay u baahan tahay aqoon deegaanka ah, mana aha mid haa ama maya lagu jawaabi karo.',
-    en: 'This works because it is a question real people ask, the answer needs local knowledge, and it cannot be answered with a yes or a no.',
+    so: 'Tan waa tusaale wanaagsan: waa su\u2019aal dad dhab ah weydiiyaan, jawaabtuna waxay u baahan tahay aqoon deegaanka ah. Fiiri qaabka jawaabta: jumlad furitaan ah, kadib qodobo tartiiban, kadibna gunaanad. Moodelku qaabkaas ayuu wax ka bartaa, ee ma aha macnaha oo kaliya.',
+    en: 'This works because it is a question real people ask and the answer needs local knowledge. Look at the shape of the answer: an opening line, then ordered points, then a closing sentence. The model learns that shape, not only the meaning.',
   },
   seedExampleBad: {
     so: 'Tusaale liita: \u201cWaa maxay waxbarashadu?\u201d — guud ahaan, jawaab kasta way ku habboon tahay, ChatGPT-na si fiican ayuu ugu jawaabaa.',
@@ -588,6 +592,54 @@ const dict = {
     en: 'Every sentence you write teaches Unug better Somali.',
   },
   unugGameCtaBtn: { so: 'Ku biir oo qor', en: 'Join and write' },
+
+  // ---- Hubi AI-ga (AI-literacy check) --- !! VERIFY SOMALI !! ------------
+  hubiTitle: { so: 'Hubi AI-ga', en: 'Check the AI' },
+  hubiIntro: {
+    so: 'Lix jawaab oo AI dhab ah bixiyay, Af-Soomaali. Qaar waa sax, qaar waa khalad. Ma kala garan kartaa?',
+    en: 'Six real answers from AI, in Somali. Some are right, some are wrong. Can you tell which?',
+  },
+  hubiSaidBy: { so: 'Waxaa yiri: {model}', en: 'Said by: {model}' },
+  hubiQuestion: { so: 'Jawaabtan ma sax baa mise khalad?', en: 'Is this answer right or wrong?' },
+  hubiBtnRight: { so: 'Sax', en: 'Right' },
+  hubiBtnWrong: { so: 'Khalad', en: 'Wrong' },
+  hubiCorrect: { so: 'Waad saxday!', en: 'You got it!' },
+  hubiWrong: { so: 'Waad khaldantay.', en: 'You missed it.' },
+  hubiNext: { so: 'Kan xiga', en: 'Next' },
+  hubiProfileTitle: { so: 'Saddex su\u2019aalood oo kooban', en: 'Three short questions' },
+  hubiProfileIntro: {
+    so: 'Kuwani natiijadaada ma beddelaan. Waxay na caawinayaan inaan fahanno sida dadku AI u isticmaalaan.',
+    en: 'These do not change your score. They help us understand how people use AI.',
+  },
+  hubiQUse: { so: 'Immisa jeer ayaad AI (sida ChatGPT) isticmaashaa?', en: 'How often do you use AI (like ChatGPT)?' },
+  hubiUseNever: { so: 'Weligay ma isticmaalin', en: 'Never' },
+  hubiUseSometimes: { so: 'Mararka qaar', en: 'Sometimes' },
+  hubiUseDaily: { so: 'Maalin kasta', en: 'Every day' },
+  hubiQTrained: { so: 'AI-gu xaggee ka bartaa waxa uu yaqaan?', en: 'Where does AI learn what it knows?' },
+  hubiTrainedInternet: { so: 'Qoraallo internetka ku jira', en: 'Text from the internet' },
+  hubiTrainedTaught: { so: 'Dad si toos ah u bara', en: 'People teach it directly' },
+  hubiTrainedThinks: { so: 'Isagaa iskii u fekera', en: 'It thinks for itself' },
+  hubiTrainedUnsure: { so: 'Ma garanayo', en: 'I do not know' },
+  hubiQFluent: {
+    so: 'Haddii AI-gu Af-Soomaali fasiix ku hadlo, ma micnaheedu waa in jawaabtiisu sax tahay?',
+    en: 'If AI speaks fluent Somali, does that mean its answer is right?',
+  },
+  hubiFluentYes: { so: 'Haa', en: 'Yes' },
+  hubiFluentNo: { so: 'Maya', en: 'No' },
+  hubiFluentUnsure: { so: 'Ma hubo', en: 'Not sure' },
+  hubiSubmit: { so: 'Natiijada i tus', en: 'Show my result' },
+  hubiResultTitle: { so: 'Natiijadaada', en: 'Your result' },
+  hubiAvgLine: { so: 'Celceliska dadka: {avg} / {total} ({n} qof)', en: 'Average so far: {avg} / {total} ({n} people)' },
+  hubiAgain: { so: 'Mar kale', en: 'Again' },
+  hubiShareText: {
+    so: 'Waxaan helay {score}/{total} imtixaanka Hubi AI-ga. Adigu ma kala garan kartaa marka AI-gu Af-Soomaali ku khaldamo?',
+    en: 'I scored {score}/{total} on Hubi AI. Can you tell when AI gets Somali wrong?',
+  },
+  hubiCta: {
+    so: 'AI-gu Af-Soomaali si fiican uma yaqaan, maxaa yeelay xog Soomaali ah oo la hubiyay ma jirto. Taas ayaan dhisaynaa.',
+    en: 'AI is weak in Somali because verified Somali data barely exists. That is what we are building.',
+  },
+  hubiCtaBtn: { so: 'Ku biir oo qor', en: 'Join and write' },
 } as const;
 
 export type TKey = keyof typeof dict;
