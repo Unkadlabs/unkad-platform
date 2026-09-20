@@ -260,6 +260,11 @@ async function main() {
       }))
   );
   const sentenceJsonl = sentences.map((s) => JSON.stringify(s)).join('\n') + '\n';
+  // Lines the segmenter split off but the filter rejected (Arabic quotations,
+  // citations, glossary lines). Counted rather than typed into the card: the
+  // number was hardcoded once and quietly went stale a release later.
+  const removedLines =
+    records.reduce((n, r) => n + splitSentences(r.text_so).length, 0) - sentences.length;
   const words = records.reduce((a, r) => a + r.text_so.split(/\s+/).filter(Boolean).length, 0);
   console.log(`Wrote ${sentences.length} sentences to sentences.jsonl`);
 
@@ -452,7 +457,7 @@ them.
 - **Sentence segmentation is automatic.** Sentences are split on terminal
   punctuation and line breaks, then filtered: scriptural quotations in Arabic,
   bracketed citations and term-equals-gloss glossary lines are excluded, since
-  none is a sentence of Somali. 96 such lines were removed from this version.
+  none is a sentence of Somali. ${removedLines} such lines were removed from this version.
   Speaker-labelled dialogue turns are kept.
 - **Verification granularity varies.** Items were signed off by a reviewer, but longer passages
   were judged as passages rather than sentence by sentence. Sentence-level review is planned.
