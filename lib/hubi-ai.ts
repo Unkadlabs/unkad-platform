@@ -1,0 +1,113 @@
+// "Hubi AI-ga": can you tell when AI is wrong in Somali?
+//
+// The deck is real model output, collected 2026-09-20 through OpenRouter at
+// temperature 0, shown verbatim (whitespace collapsed, one answer trimmed to
+// its first sentences). Nothing is invented: every `answer` is what the named
+// model actually said to the named question. What IS ours is the verdict on
+// each answer and the one-line explanation, and those are drafts until the
+// founder confirms them: !! VERIFY SOMALI !! applies to `why`, and the
+// `right` flag itself needs a native check.
+//
+// Three literacy questions follow the deck. Their coded values are what the
+// analysis stores; the wording lives in lib/i18n.ts.
+
+export type HubiItem = {
+  id: string;
+  question: string;
+  answer: string;
+  model: string;
+  right: boolean;
+  why: { so: string; en: string };
+};
+
+export const HUBI_ITEMS: HubiItem[] = [
+  {
+    id: 'xornimo',
+    question: 'Goorma ayay Soomaaliya xornimada qaadatay?',
+    answer:
+      'Soomaaliya waxay xornimada qaadatay 26kii Juun 1960-kii (waqooyiga) iyo 1dii Luulyo 1960-kii (koonfurta), markaas oo la midoobay Jamhuuriyadda Soomaaliya.',
+    model: 'GPT-5.6',
+    right: true,
+    why: {
+      so: 'Sax. Labada taariikhood iyo midowgu waa sax.',
+      en: 'Right. Both dates and the union are correct.',
+    },
+  },
+  {
+    id: 'dardaaran',
+    question: 'Yaa qoray gabayga Dardaaran?',
+    answer:
+      'Dardaaran waa magac gabay oo loogu yeero gabayga ugu wayn ee Soomaalida. Waxaa loo yaqaanaa "Dardaaran" sababtoo ah wuxuu ka kooban yahay sadex gabay oo isku xig xig, kuwaas oo kala ah: "Gabay Xadiis", "Gabay Dhiirane", iyo "Gabay Jiifto".',
+    model: 'Llama 3.3 70B',
+    right: false,
+    why: {
+      so: 'Khalad. Saddexdaas gabay ma jiraan. AI-gu wuu been-abuuray, isagoo si fasiix ah u hadlaya.',
+      en: 'Wrong. Those three poems do not exist. The AI invented them, fluently.',
+    },
+  },
+  {
+    id: 'caano',
+    question: "Maxay tahay faa'iidada caanaha geela ee caafimaadka?",
+    answer:
+      'Caanaha geelu waxay hodan ku yihiin borotiin, kalsiyam, fiitamiino iyo macdano, kuwaas oo taageera lafaha, murqaha iyo difaaca jirka. Waxa kale oo ay leeyihiin dufan iyo laktoos ka yar caanaha lo’da.',
+    model: 'GPT-5.6',
+    right: true,
+    why: {
+      so: 'Sax. Waxa la yiri waa run guud ahaan.',
+      en: 'Right. What it says is broadly true.',
+    },
+  },
+  {
+    id: 'duumo',
+    question: 'Sidee loo daweeyaa duumada guriga?',
+    answer:
+      'Duumada guriga waxaa loo daweeyaa marka loo sameeyo caano geel, waxaa loo daweeyaa marka loo sameeyo hilib, waxaa loo daweeyaa marka loo sameeyo suugo, waxaa loo daweeyaa marka loo sameeyo muufo, waxaa loo daweeyaa marka loo sameeyo canjeero.',
+    model: 'Llama 3.3 70B',
+    right: false,
+    why: {
+      so: 'Khalad, waana khatar. Duumada canjeero laguma daweeyo. Qofka duumada qaba waa in xarun caafimaad la geeyaa.',
+      en: 'Wrong, and dangerous. Malaria is not cured by food. A person with malaria needs a clinic.',
+    },
+  },
+  {
+    id: 'maahmaah',
+    question: 'Maxay ka dhigan tahay maahmaahda: Nin aan dhul lahayn dhulkiisa ha la joogo?',
+    answer: 'Waxaan dhahaa: Ha la joogo.',
+    model: 'Llama 3.3 70B',
+    right: false,
+    why: {
+      so: 'Khalad. Jawaab ma aha; ereyada su’aasha ayuu dib u soo celiyay.',
+      en: 'Wrong. It is not an answer; it repeated words from the question.',
+    },
+  },
+  {
+    id: 'maay',
+    question: 'Maxaa ka duwan Af-Maxaa-tiri iyo Af-Maay?',
+    answer:
+      'Af-Maxaa-tiri waa lahjadda Soomaaliga ee inta badan laga isticmaalo waqooyi, bartamaha iyo qaybo badan oo koonfurta ah, waana saldhigga Af-Soomaaliga rasmiga ah. Af-Maayse waxaa inta badan ku hadla beelaha Digil iyo Mirifle ee koonfur-galbeed, wuxuuna leeyahay erayo, dhawaaqyo iyo naxwe ka duwan Af-Maxaa-tiriga.',
+    model: 'GPT-5.6',
+    right: true,
+    why: {
+      so: 'Sax. Sharraxaad sax ah oo kooban.',
+      en: 'Right. A correct, compact explanation.',
+    },
+  },
+];
+
+// Literacy questions: coded values only. Wording is in lib/i18n.ts.
+export const HUBI_PROFILE = {
+  use: ['never', 'sometimes', 'daily'],
+  trained: ['internet', 'taught', 'thinks', 'unsure'],
+  fluent: ['yes', 'no', 'unsure'],
+} as const;
+
+export type HubiAnswer = { id: string; said: 'sax' | 'khalad'; correct: boolean };
+
+export function scoreHubi(said: Record<string, 'sax' | 'khalad'>): { answers: HubiAnswer[]; score: number } {
+  const answers = HUBI_ITEMS.map((it) => {
+    const s = said[it.id];
+    const correct = (s === 'sax') === it.right;
+    return { id: it.id, said: s, correct };
+  });
+  return { answers, score: answers.filter((a) => a.correct).length };
+}

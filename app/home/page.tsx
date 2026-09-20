@@ -37,6 +37,9 @@ export default async function HomePage() {
     { href: '/contribute/transcribe', so: so('modeTranscribe'), en: 'Transcribe', n: available.transcribe },
     { href: '/contribute/proverb', so: so('modeProverb'), en: 'Proverb', n: null },
     { href: '/validate', so: so('modeValidate'), en: 'Validate', n: available.validate },
+    // The public AI-literacy check. Not a contribution mode, but the home
+    // grid is where people look for things to do. !! VERIFY SOMALI !!
+    { href: '/hubi-ai', so: so('hubiTitle'), en: 'Check the AI', n: null },
   ];
 
   return (

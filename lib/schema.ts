@@ -521,3 +521,28 @@ export const seedItems = pgTable(
     uniqueIndex('seed_items_ref_idx').on(t.inviteId, t.ref),
   ]
 );
+
+// ---- Hubi AI: the AI-literacy check -------------------------------------
+//
+// One row per completed run of the public "Hubi AI-ga" quiz: which real AI
+// answers the person judged right or wrong, how they scored, and three short
+// questions about how they use and trust AI. No account needed. The point is
+// a measured baseline of AI literacy among Somali speakers, so the row keeps
+// only what that analysis needs and nothing that identifies a visitor.
+export const hubiAiRuns = pgTable(
+  'hubi_ai_runs',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id').references(() => users.id, { onDelete: 'set null' }),
+    lang: text('lang').notNull().default('so'),
+    // [{ id, said: 'sax' | 'khalad', correct: boolean }]
+    answers: jsonb('answers').notNull(),
+    score: integer('score').notNull(),
+    total: integer('total').notNull(),
+    // { use, trained, fluent }: the literacy questions, coded values only.
+    profile: jsonb('profile').notNull(),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  },
+  (t) => [index('hubi_ai_runs_created_idx').on(t.createdAt)]
+);
+
