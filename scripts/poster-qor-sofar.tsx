@@ -59,19 +59,20 @@ type Copy = {
 const COPY: Copy[] = [
   {
     lang: 'so',
-    // !! VERIFY SOMALI !!
+    // sub, 'qof ayaa ku biiray' and the Hugging Face label: founder-verified 21 Sep 2026.
+    // Other labels still !! VERIFY SOMALI !!
     eyebrow: '19 Luulyo ilaa 21 Sebtembar 2026',
     headline: '64 maalmood',
-    sub: 'jumladood oo Af-Soomaali ah oo la hubiyay, oo qoreen dad Soomaali ah',
+    sub: 'jumladood oo af-soomali ah oo la hubiyay',
     stats: [
-      ['585', 'qof oo ku biiray'],
+      ['585', 'qof ayaa ku biiray'],
       ['178', 'qof oo qoray'],
       ['152', 'qof oo hubiyay'],
       ['1,740', 'codadka hubinta'],
       ['8', 'kaydad la daabacay'],
-      ['3,629', 'jumladood Hugging Face ku yaalla'],
+      ['3,629', 'jumladood oo hugging face yaala'],
     ],
-    foot: 'Bilow kasta waa yar. Tani waa bilowgeenna.',
+    foot: '',
   },
   {
     lang: 'en',
@@ -86,7 +87,7 @@ const COPY: Copy[] = [
       ['8', 'corpus releases'],
       ['3,629', 'sentences on Hugging Face'],
     ],
-    foot: 'Every beginning is small. This is ours.',
+    foot: '',
   },
 ];
 
