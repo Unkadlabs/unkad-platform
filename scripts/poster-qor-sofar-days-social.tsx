@@ -68,14 +68,14 @@ function Card({ s }: { s: Size }) {
           <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', paddingBottom: 36, width: 440 }}>{number}</div>
         </div>
       ) : (
-        <>
+        <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
           <div style={{ display: 'flex', fontSize: s.small, color: MUTED }}>64 days, one bar per day</div>
           <div style={{ display: 'flex', flexGrow: 1 }} />
           <Bars w={s.chartW} h={s.chartH} />
           <div style={{ display: 'flex', flexGrow: 1 }} />
           <div style={{ display: 'flex', fontSize: s.num, fontWeight: 700, color: TEXT, lineHeight: 1, letterSpacing: '-0.04em' }}>4,014</div>
           <div style={{ display: 'flex', marginTop: 14, fontSize: s.sub, color: TEXT }}>validated Somali sentences</div>
-        </>
+        </div>
       )}
       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 40, fontSize: s.small - 2, color: MUTED }}>
         <div style={{ display: 'flex' }}>Unkad Labs</div>
