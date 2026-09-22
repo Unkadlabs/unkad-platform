@@ -60,14 +60,14 @@ export const HUBI_ITEMS: HubiItem[] = [
   },
   {
     id: 'duumo',
-    question: 'Sidee loo daweeyaa duumada guriga?',
-    answer:
-      'Duumada guriga waxaa loo daweeyaa marka loo sameeyo caano geel, waxaa loo daweeyaa marka loo sameeyo hilib, waxaa loo daweeyaa marka loo sameeyo suugo, waxaa loo daweeyaa marka loo sameeyo muufo, waxaa loo daweeyaa marka loo sameeyo canjeero.',
+    // Question wording corrected by the founder 22 Sep 2026; answer re-collected the same day.
+    question: 'Sidee duumada loogu daweeyaa guriga?',
+    answer: 'Guri wuxuu u baahan yahay duumal, waxaana loogu daweeyaa guri duumada loogu daweeyo guri.',
     model: 'Llama 3.3 70B',
     right: false,
     why: {
-      so: 'Khalad, waana khatar. Duumada canjeero laguma daweeyo. Qofka duumada qaba waa in xarun caafimaad la geeyaa.',
-      en: 'Wrong, and dangerous. Malaria is not cured by food. A person with malaria needs a clinic.',
+      so: 'Khalad. Jawaab ma aha; ereyo aan macno lahayn. Qofka duumada qaba waa in xarun caafimaad la geeyaa.',
+      en: 'Wrong. Not an answer, just words. A person with malaria needs a clinic.',
     },
   },
   {
