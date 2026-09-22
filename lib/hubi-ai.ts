@@ -22,18 +22,6 @@ export type HubiItem = {
 
 export const HUBI_ITEMS: HubiItem[] = [
   {
-    id: 'xornimo',
-    question: 'Goorma ayay Soomaaliya xornimada qaadatay?',
-    answer:
-      'Soomaaliya waxay xornimada qaadatay 26kii Juun 1960-kii (waqooyiga) iyo 1dii Luulyo 1960-kii (koonfurta), markaas oo la midoobay Jamhuuriyadda Soomaaliya.',
-    model: 'GPT-5.6',
-    right: true,
-    why: {
-      so: 'Sax. Labada taariikhood iyo midowgu waa sax.',
-      en: 'Right. Both dates and the union are correct.',
-    },
-  },
-  {
     id: 'dardaaran',
     question: 'Yaa qoray gabayga Dardaaran?',
     answer:
@@ -78,18 +66,6 @@ export const HUBI_ITEMS: HubiItem[] = [
     why: {
       so: 'Khalad. Jawaab ma aha; ereyada su’aasha ayuu dib u soo celiyay.',
       en: 'Wrong. It is not an answer; it repeated words from the question.',
-    },
-  },
-  {
-    id: 'maay',
-    question: 'Maxaa ka duwan Af-Maxaa-tiri iyo Af-Maay?',
-    answer:
-      'Af-Maxaa-tiri waa lahjadda Soomaaliga ee inta badan laga isticmaalo waqooyi, bartamaha iyo qaybo badan oo koonfurta ah, waana saldhigga Af-Soomaaliga rasmiga ah. Af-Maayse waxaa inta badan ku hadla beelaha Digil iyo Mirifle ee koonfur-galbeed, wuxuuna leeyahay erayo, dhawaaqyo iyo naxwe ka duwan Af-Maxaa-tiriga.',
-    model: 'GPT-5.6',
-    right: true,
-    why: {
-      so: 'Sax. Sharraxaad sax ah oo kooban.',
-      en: 'Right. A correct, compact explanation.',
     },
   },
 ];
