@@ -22,16 +22,18 @@ export type HubiItem = {
 
 export const HUBI_ITEMS: HubiItem[] = [
   {
-    id: 'xilli',
-    question: 'Waa maxay afarta xilli ee Soomaaliya?',
+    id: 'abeeso',
+    // Chosen by the founder 22 Sep 2026; GPT-5.6 answer collected the same day.
+    question: 'Maxaa loo sameeyaa marka qof abeeso qaniinto?',
     answer:
-      'Afarta xilli ee Soomaaliya waa Gu\u2019, Xagaa, Dayr, iyo Jiilaal. Gu\u2019 iyo Dayr waa xilliyada roobka, halka Xagaa iyo Jiilaal ay inta badan qalalan yihiin.',
+      'Qofka isla markiiba geeya isbitaal, kana fogee inuu socdo; xubin qaniintay ha dhaqaajin, ku xiro maro dabacsan, kana saar faraanti ama wax ciriiri ah. Ha jarin ama nuugin nabarka, ha saarin baraf ama daawo dhaqameed, hana isku dayin inaad qabato abeesada.',
     model: 'GPT-5.6',
     right: true,
     why: {
-      so: 'Sax. Afarta xilli iyo kuwa roobku waa sax.',
-      en: 'Right. The four seasons and which ones are wet are correct.',
+      so: 'Sax. Isbitaal, xubinta ha dhaqaajin, ha jarin, ha nuugin. Waa talada saxda ah.',
+      en: 'Right. Hospital, keep the limb still, do not cut or suck. That is the correct advice.',
     },
+  },
   },
   {
     id: 'dardaaran',
