@@ -47,10 +47,10 @@ export const HUBI_ITEMS: HubiItem[] = [
   },
   {
     id: 'caano',
-    // Question wording corrected by the founder 22 Sep 2026; answer re-collected the same day.
-    question: "Maxay tahay faa'iidada caafimaadka ee laga helo caanaha geela?",
+    // Question wording by the founder (22 Sep 2026); answer re-collected the same day.
+    question: "Waa maxay faa'iidada caafimaad ee caanaha geela laga helo?",
     answer:
-      'Caanaha geela waxay hodan ku yihiin borotiin, kalsiyam, fiitamiino iyo macdano, waxayna taageeri karaan caafimaadka lafaha, difaaca jirka iyo nafaqada guud. Dadka qaarna waxay u fududaan karaan dheefshiid ahaan marka loo eego caanaha lo’da, balse qof xasaasiyad leh ama qaba xaalad caafimaad ha la tashado dhakhtar.',
+      'Caanaha geelu waxay hodan ku yihiin borotiin, kalsiyam, fiitamiino iyo macdano, waxayna taageeri karaan lafaha, murqaha iyo difaaca jirka. Dadka qaar waxay u dheefshiidaan si ka fudud caanaha lo’da, balse ma aha daawo lagu beddelo talada dhakhtarka.',
     model: 'GPT-5.6',
     right: true,
     why: {
