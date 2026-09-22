@@ -30,8 +30,8 @@ const Q = 'Sidee loo daweeyaa duumada guriga?';
 const A = 'Duumada guriga waxaa loo daweeyaa marka loo sameeyo caano geel, waxaa loo daweeyaa marka loo sameeyo hilib, waxaa loo daweeyaa marka loo sameeyo suugo, waxaa loo daweeyaa marka loo sameeyo muufo, waxaa loo daweeyaa marka loo sameeyo canjeero.';
 
 const COPY = [
-  { lang: 'so' as const, asked: 'Waxaa AI la weydiiyay:', said: 'AI-gu wuxuu yiri:', q: 'Sax mise khalad?', cta: 'Afar jawaab. Laba daqiiqo. Natiijadaada iyo celceliska dadka.', url: 'qor.unkad.com/hubi-ai' },
-  { lang: 'en' as const, asked: 'AI was asked:', said: 'AI said:', q: 'Right or wrong?', cta: 'Four answers. Two minutes. Your score and everyone else’s.', url: 'qor.unkad.com/hubi-ai' },
+  { lang: 'so' as const, asked: 'Waxaa AI la weydiiyay:', said: 'AI-gu wuxuu yiri:', q: 'Sax mise khalad?', cta: 'Lix jawaab. Laba daqiiqo. Natiijadaada iyo celceliska dadka.', url: 'qor.unkad.com/hubi-ai' },
+  { lang: 'en' as const, asked: 'AI was asked:', said: 'AI said:', q: 'Right or wrong?', cta: 'Six answers. Two minutes. Your score and everyone else’s.', url: 'qor.unkad.com/hubi-ai' },
 ];
 
 function Poster({ c }: { c: (typeof COPY)[number] }) {

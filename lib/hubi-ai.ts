@@ -1,7 +1,7 @@
 // "Hubi AI-ga": can you tell when AI is wrong in Somali?
 //
 // The deck is real model output, collected 2026-09-20 through OpenRouter at
-// temperature 0, shown verbatim (whitespace collapsed, one answer trimmed to
+// temperature 0 (two more added 22 Sep), shown verbatim (whitespace collapsed, one answer trimmed to
 // its first sentences). Nothing is invented: every `answer` is what the named
 // model actually said to the named question. What IS ours is the verdict on
 // each answer and the one-line explanation, and those are drafts until the
@@ -21,6 +21,18 @@ export type HubiItem = {
 };
 
 export const HUBI_ITEMS: HubiItem[] = [
+  {
+    id: 'xilli',
+    question: 'Waa maxay afarta xilli ee Soomaaliya?',
+    answer:
+      'Afarta xilli ee Soomaaliya waa Gu\u2019, Xagaa, Dayr, iyo Jiilaal. Gu\u2019 iyo Dayr waa xilliyada roobka, halka Xagaa iyo Jiilaal ay inta badan qalalan yihiin.',
+    model: 'GPT-5.6',
+    right: true,
+    why: {
+      so: 'Sax. Afarta xilli iyo kuwa roobku waa sax.',
+      en: 'Right. The four seasons and which ones are wet are correct.',
+    },
+  },
   {
     id: 'dardaaran',
     question: 'Yaa qoray gabayga Dardaaran?',
@@ -55,6 +67,18 @@ export const HUBI_ITEMS: HubiItem[] = [
     why: {
       so: 'Khalad, waana khatar. Duumada canjeero laguma daweeyo. Qofka duumada qaba waa in xarun caafimaad la geeyaa.',
       en: 'Wrong, and dangerous. Malaria is not cured by food. A person with malaria needs a clinic.',
+    },
+  },
+  {
+    id: 'ors',
+    question: 'Maxay tahay ORS, goormaana la isticmaalaa?',
+    answer:
+      'ORS waa dareere cusbo iyo sonkor isku dheellitiran leh oo lagu beddelo biyaha iyo macdanta jirku lumiyo. Waxaa la isticmaalaa marka shuban, matag, ama kulayl badan ay keenaan fuuqbax.',
+    model: 'GPT-5.6',
+    right: true,
+    why: {
+      so: 'Sax. Sidaas ayaa ORS loo isticmaalaa.',
+      en: 'Right. That is what ORS is for.',
     },
   },
   {

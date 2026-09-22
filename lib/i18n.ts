@@ -596,8 +596,8 @@ const dict = {
   // ---- Hubi AI-ga (AI-literacy check) --- !! VERIFY SOMALI !! ------------
   hubiTitle: { so: 'Hubi AI-ga', en: 'Check the AI' },
   hubiIntro: {
-    so: 'Afar jawaab oo AI dhab ah bixiyay, Af-Soomaali. Qaar waa sax, qaar waa khalad. Ma kala garan kartaa?',
-    en: 'Four real answers from AI, in Somali. Some are right, some are wrong. Can you tell which?',
+    so: 'Lix jawaab oo AI dhab ah bixiyay, Af-Soomaali. Qaar waa sax, qaar waa khalad. Ma kala garan kartaa?',
+    en: 'Six real answers from AI, in Somali. Some are right, some are wrong. Can you tell which?',
   },
   hubiSaidBy: { so: 'Waxaa yiri: {model}', en: 'Said by: {model}' },
   hubiQuestion: { so: 'Jawaabtan ma sax baa mise khalad?', en: 'Is this answer right or wrong?' },

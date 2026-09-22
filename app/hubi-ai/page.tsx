@@ -1,5 +1,5 @@
 // "Hubi AI-ga": can you tell when AI is wrong in Somali? Public, no account
-// needed. Four real AI answers to judge, three questions about how the
+// needed. Six real AI answers to judge, three questions about how the
 // visitor uses AI, one row stored. The deck lives in lib/hubi-ai.ts.
 
 import Link from 'next/link';
@@ -12,7 +12,7 @@ import HubiAi from '@/components/HubiAi';
 
 export const metadata: Metadata = {
   title: 'Hubi AI-ga — Unkad',
-  description: 'Four real AI answers in Somali. Can you tell which ones are wrong?',
+  description: 'Six real AI answers in Somali. Can you tell which ones are wrong?',
 };
 
 export default async function HubiAiPage() {
