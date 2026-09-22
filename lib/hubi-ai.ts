@@ -34,7 +34,6 @@ export const HUBI_ITEMS: HubiItem[] = [
       en: 'Right. Hospital, keep the limb still, do not cut or suck. That is the correct advice.',
     },
   },
-  },
   {
     id: 'dardaaran',
     question: 'Yaa qoray gabayga Dardaaran?',
