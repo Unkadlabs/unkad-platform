@@ -26,8 +26,8 @@ const fonts = [
 ];
 
 // Verbatim from lib/hubi-ai.ts (Llama 3.3 70B, temperature 0, 20 Sep 2026).
-const Q = 'Sidee loo daweeyaa duumada guriga?';
-const A = 'Duumada guriga waxaa loo daweeyaa marka loo sameeyo caano geel, waxaa loo daweeyaa marka loo sameeyo hilib, waxaa loo daweeyaa marka loo sameeyo suugo, waxaa loo daweeyaa marka loo sameeyo muufo, waxaa loo daweeyaa marka loo sameeyo canjeero.';
+const Q = 'Yaa qoray gabayga Dardaaran?';
+const A = 'Dardaaran waa magac gabay oo loogu yeero gabayga ugu wayn ee Soomaalida. Waxaa loo yaqaanaa "Dardaaran" sababtoo ah wuxuu ka kooban yahay sadex gabay oo isku xig xig, kuwaas oo kala ah: "Gabay Xadiis", "Gabay Dhiirane", iyo "Gabay Jiifto".';
 
 const COPY = [
   { lang: 'so' as const, asked: 'Waxaa AI la weydiiyay:', said: 'AI-gu wuxuu yiri:', q: 'Sax mise khalad?', cta: 'Lix jawaab. Laba daqiiqo. Natiijadaada iyo celceliska dadka.', url: 'qor.unkad.com/hubi-ai' },
