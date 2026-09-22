@@ -593,7 +593,9 @@ const dict = {
   },
   unugGameCtaBtn: { so: 'Ku biir oo qor', en: 'Join and write' },
 
-  // ---- Hubi AI-ga (AI-literacy check) --- !! VERIFY SOMALI !! ------------
+  // ---- Hubi AI-ga (AI-literacy check) ---
+  // Survey block (title, intro, three questions, options, button): founder-verified 22 Sep 2026.
+  // Quiz-flow strings (intro, buttons, verdicts, share, cta): !! VERIFY SOMALI !!
   hubiTitle: { so: 'Hubi AI-ga', en: 'Check the AI' },
   hubiIntro: {
     so: 'Lix jawaab oo AI dhab ah bixiyay, Af-Soomaali. Qaar waa sax, qaar waa khalad. Ma kala garan kartaa?',
@@ -608,20 +610,20 @@ const dict = {
   hubiNext: { so: 'Kan xiga', en: 'Next' },
   hubiProfileTitle: { so: 'Saddex su\u2019aalood oo kooban', en: 'Three short questions' },
   hubiProfileIntro: {
-    so: 'Kuwani natiijadaada ma beddelaan. Waxay na caawinayaan inaan fahanno sida dadku AI u isticmaalaan.',
+    so: 'Kuwani natiijadaada ma beddeleyaan. Waxay naga caawinayaan inaan fahanno sida dadku AI u isticmaalaan.',
     en: 'These do not change your score. They help us understand how people use AI.',
   },
   hubiQUse: { so: 'Immisa jeer ayaad AI (sida ChatGPT) isticmaashaa?', en: 'How often do you use AI (like ChatGPT)?' },
   hubiUseNever: { so: 'Weligay ma isticmaalin', en: 'Never' },
   hubiUseSometimes: { so: 'Mararka qaar', en: 'Sometimes' },
   hubiUseDaily: { so: 'Maalin kasta', en: 'Every day' },
-  hubiQTrained: { so: 'AI-gu xaggee ka bartaa waxa uu yaqaan?', en: 'Where does AI learn what it knows?' },
+  hubiQTrained: { so: 'AI-gu xaggee ayuu ka bartaa waxa uu yaqaan?', en: 'Where does AI learn what it knows?' },
   hubiTrainedInternet: { so: 'Qoraallo internetka ku jira', en: 'Text from the internet' },
   hubiTrainedTaught: { so: 'Dad si toos ah u bara', en: 'People teach it directly' },
   hubiTrainedThinks: { so: 'Isagaa iskii u fekera', en: 'It thinks for itself' },
   hubiTrainedUnsure: { so: 'Ma garanayo', en: 'I do not know' },
   hubiQFluent: {
-    so: 'Haddii AI-gu Af-Soomaali fasiix ku hadlo, ma micnaheedu waa in jawaabtiisu sax tahay?',
+    so: 'Haddii AI-gu Af-Soomaali fasiixa ku hadlo, jawaabtiisu inay saxantahay miyaa micnaheedu?',
     en: 'If AI speaks fluent Somali, does that mean its answer is right?',
   },
   hubiFluentYes: { so: 'Haa', en: 'Yes' },
