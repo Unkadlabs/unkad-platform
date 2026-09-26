@@ -260,7 +260,7 @@ export default function SeedWriter({
               </div>
               <div className="seed-example-row">
                 <span className="seed-example-k">{labels.answer}</span>
-                <span lang="so" className="seed-example-v">{labels.exampleA}</span>
+                <span lang="so" className="seed-example-v seed-example-pre">{labels.exampleA}</span>
               </div>
               <p className="seed-example-why">{labels.exampleWhy}</p>
               <p className="seed-example-why">{labels.exampleBad}</p>
@@ -273,7 +273,7 @@ export default function SeedWriter({
               <pre className="seed-schema"><code>{`{
   "instruction": "${labels.exampleQ}",
   "input": "",
-  "output": "${labels.exampleA.slice(0, 60)}..."
+  "output": "${labels.exampleA.split('\n')[0]}\\n\\n1. ..."
 }`}</code></pre>
               <p className="seed-example-schema">{labels.schemaFields}</p>
               <p className="seed-example-schema">{labels.schemaNote}</p>
@@ -283,6 +283,7 @@ export default function SeedWriter({
             <div className="seed-example">
               <div className="seed-example-h">{labels.qualityTitle}</div>
               <ul className="seed-quality">
+                <li>{labels.qualityStructure}</li>
                 <li>{labels.quality1}</li>
                 <li>{labels.quality2}</li>
                 <li>{labels.quality3}</li>

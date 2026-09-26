@@ -49,7 +49,7 @@ function Poster() {
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: 48, fontSize: 22, color: MUTED }}>
-        <div style={{ display: 'flex', color: TEXT, fontStyle: 'italic' }} lang="so">Khaldadka noocan ah waaku aad usoo muuqday waayahan AI-gu sii xoogeeystay. Weli ma aanan helin mid la adeegsaday.</div>
+        <div style={{ display: 'flex', color: TEXT, fontStyle: 'italic' }} lang="so">Khaldadka noocan ah waakuwo aad usoo muuqday waayahan AI-gu sii xoogeeystay. Weli ma aanan helin mid la adeegsaday.</div>
         <div style={{ display: 'flex' }}>unkad.com</div>
       </div>
     </div>

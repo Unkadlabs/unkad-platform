@@ -73,6 +73,7 @@ export default async function SeedPage({ params }: { params: Promise<{ token: st
         schemaTitle: t('seedSchemaTitle'), schemaFields: t('seedSchemaFields'),
         qualityTitle: t('seedQualityTitle'), quality1: t('seedQuality1'),
         quality2: t('seedQuality2'), quality3: t('seedQuality3'),
+        qualityStructure: t('seedQualityStructure'),
         question: t('seedQuestion'), questionHint: t('seedQuestionHint'),
         answer: t('seedAnswer'), answerHint: t('seedAnswerHint'),
         note: t('seedNote'), save: t('seedSave'), saving: t('seedSaving'),
