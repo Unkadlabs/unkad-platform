@@ -1,7 +1,8 @@
 // Somali Facebook poster for the Invisible Rules Survey (26 Sep 2026), framed
 // for the October AI-safety campaign: hidden instructions a person cannot see
 // but an AI agent can read. The example stays in English because it is code;
-// the labels around it are Somali. Pure white. !! VERIFY SOMALI !!
+// the labels around it are Somali. Pure white. Headline, number line and closing line founder-verified 26 Sep 2026;
+// the two box labels are still !! VERIFY SOMALI !!
 //
 // Run: npx tsx scripts/poster-invisible-rules-so.tsx
 // Out: ../dhiblabs/assets/promo/fb-invisible-rules-so.png (1080x1350)
@@ -25,7 +26,7 @@ function Poster() {
     <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', backgroundColor: BG, padding: '100px 84px 80px', fontFamily: 'Literata' }}>
       <div style={{ display: 'flex', fontSize: 24, color: MUTED }} lang="so">Unkad Labs · Badqabka AI</div>
       <div style={{ display: 'flex', marginTop: 18, fontSize: 48, fontWeight: 700, color: TEXT, lineHeight: 1.2 }} lang="so">
-        Amarro qarsoon oo AI-gu akhriyo, adiguna aadan arki karin.
+        Amarro qarsoon oo AI-gu akhriyo, dadkuna badi aysan arkhrin.
       </div>
 
       <div style={{ display: 'flex', flexGrow: 1 }} />
@@ -44,11 +45,11 @@ function Poster() {
         <div style={{ display: 'flex', fontSize: 64, fontWeight: 700, color: MUTED }}>/ 28,796</div>
       </div>
       <div style={{ display: 'flex', marginTop: 18, fontSize: 30, color: TEXT, lineHeight: 1.35 }} lang="so">
-        faylal xeerar AI ah oo dadweyne ah ayaan baarnay. Midna kuma jirin amar qarsoon.
+        faylal loo adeegsado in lagu qoro xeerarka AI-ga oo si furan loo booqan karo ayaan baarnay. Midna kuma jirin amar qarsoon.
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: 48, fontSize: 22, color: MUTED }}>
-        <div style={{ display: 'flex', color: TEXT, fontStyle: 'italic' }} lang="so">Weerarku waa la yaqaan. Weli ma aanan helin mid la adeegsaday.</div>
+        <div style={{ display: 'flex', color: TEXT, fontStyle: 'italic' }} lang="so">Khaldadka noocan ah waaku aad usoo muuqday waayahan AI-gu sii xoogeeystay. Weli ma aanan helin mid la adeegsaday.</div>
         <div style={{ display: 'flex' }}>unkad.com</div>
       </div>
     </div>
