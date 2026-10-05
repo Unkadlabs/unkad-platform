@@ -546,3 +546,24 @@ export const hubiAiRuns = pgTable(
   (t) => [index('hubi_ai_runs_created_idx').on(t.createdAt)]
 );
 
+// Progress events for the same quiz, so drop-offs are counted too. `session`
+// is a random id the browser makes per visit; it is not tied to any person,
+// and no IP, user agent, or user id is stored. `correct` is computed on the
+// server from the deck, never taken from the client.
+//   kind 'start'  : first item shown
+//   kind 'answer' : one Sax/Khalad click (item_id, said, correct)
+//   kind 'finish' : the run was submitted
+export const hubiAiEvents = pgTable(
+  'hubi_ai_events',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    session: uuid('session').notNull(),
+    kind: text('kind').notNull(),
+    itemId: text('item_id'),
+    said: text('said'),
+    correct: boolean('correct'),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  },
+  (t) => [index('hubi_ai_events_created_idx').on(t.createdAt)]
+);
+

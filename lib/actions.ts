@@ -26,6 +26,7 @@ import {
   goals,
   passwordResetRequests,
   hubiAiRuns,
+  hubiAiEvents,
 } from './schema';
 import { allow, clientIp } from './ratelimit';
 import { getLang } from './lang';
@@ -1395,12 +1396,16 @@ export async function submitHubiAi(formData: FormData): Promise<void> {
     if (v !== 'sax' && v !== 'khalad') redirect('/hubi-ai');
     said[it.id] = v;
   }
+  // The skip button submits with no survey answers, whatever was ticked.
+  const skipped = formData.get('skip') !== null;
   const pick = (name: keyof typeof HUBI_PROFILE) => {
+    if (skipped) return null;
     const v = String(formData.get(name) ?? '');
     return (HUBI_PROFILE[name] as readonly string[]).includes(v) ? v : null;
   };
+  // The three survey questions are optional: a missing or unknown value is
+  // stored as null, a provided one must be one of the coded values.
   const profile = { use: pick('use'), trained: pick('trained'), fluent: pick('fluent') };
-  if (!profile.use || !profile.trained || !profile.fluent) redirect('/hubi-ai');
 
   const { answers, score } = scoreHubi(said);
   const user = await getCurrentUser();
@@ -1411,6 +1416,49 @@ export async function submitHubiAi(formData: FormData): Promise<void> {
     .values({ userId: user?.id ?? null, lang, answers, score, total: HUBI_ITEMS.length, profile })
     .returning({ id: hubiAiRuns.id });
 
+  // Close the funnel for this visit. Never let it block the result page.
+  const session = String(formData.get('session') ?? '');
+  if (UUID_RE.test(session)) {
+    try {
+      await db.insert(hubiAiEvents).values({ session, kind: 'finish' });
+    } catch {
+      // the run row is what matters; a lost finish event is acceptable
+    }
+  }
+
   redirect(`/hubi-ai/${run.id}`);
+}
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+// Progress events, so a visitor who leaves halfway still counts. Called
+// fire-and-forget from the client. Stores no IP, user agent, or user id:
+// only the random per-visit session id, what was clicked, and whether it
+// was correct, which is computed here from the deck. Invalid input is
+// dropped silently; this never throws to the caller.
+export async function recordHubiEvent(
+  session: string,
+  kind: string,
+  itemId?: string | null,
+  said?: string | null
+): Promise<void> {
+  try {
+    if (typeof session !== 'string' || !UUID_RE.test(session)) return;
+    let row: { session: string; kind: string; itemId?: string; said?: string; correct?: boolean };
+    if (kind === 'start') {
+      row = { session, kind };
+    } else if (kind === 'answer') {
+      const item = HUBI_ITEMS.find((it) => it.id === itemId);
+      if (!item || (said !== 'sax' && said !== 'khalad')) return;
+      row = { session, kind, itemId: item.id, said, correct: (said === 'sax') === item.right };
+    } else {
+      return;
+    }
+    const ip = await clientIp();
+    if (!(await allow(`hubi-ev:${ip}`, 120, 3600))) return;
+    await db.insert(hubiAiEvents).values(row);
+  } catch {
+    // recording progress must never break the quiz
+  }
 }
 

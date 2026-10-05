@@ -4,9 +4,14 @@
 // wrong, sees the verdict, moves on. After the deck, three short questions
 // about how they use AI. Then one form post carries everything to the
 // server, which scores it again (the client is never trusted for the score)
-// and redirects to the result page.
+// and redirects to the result page. The survey is optional and can be skipped.
+//
+// Progress is recorded as it happens ('start' when the first item shows, one
+// 'answer' per click) under a random per-visit session id, so a visitor who
+// leaves halfway still counts. Those calls are fire-and-forget: a failure to
+// record never touches the quiz.
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export type QuizItem = { id: string; question: string; answer: string; model: string; right: boolean; why: string };
 
@@ -26,6 +31,7 @@ type Labels = {
   qFluent: string;
   fluentOpts: [string, string, string];
   submit: string;
+  skip: string;
   saidBy: string; // contains {model}
 };
 
@@ -33,15 +39,52 @@ const USE = ['never', 'sometimes', 'daily'] as const;
 const TRAINED = ['internet', 'taught', 'thinks', 'unsure'] as const;
 const FLUENT = ['yes', 'no', 'unsure'] as const;
 
+// A random id for this visit only. Not stored in the browser, not tied to
+// any person; a reload starts a new session.
+function newSessionId(): string {
+  try {
+    if (typeof crypto.randomUUID === 'function') return crypto.randomUUID();
+    const b = crypto.getRandomValues(new Uint8Array(16));
+    b[6] = (b[6] & 0x0f) | 0x40;
+    b[8] = (b[8] & 0x3f) | 0x80;
+    const h = Array.from(b, (x) => x.toString(16).padStart(2, '0')).join('');
+    return `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20)}`;
+  } catch {
+    return '';
+  }
+}
+
 export default function HubiAi({
   items,
   labels,
   action,
+  record,
 }: {
   items: QuizItem[];
   labels: Labels;
   action: (formData: FormData) => Promise<void>;
+  record: (session: string, kind: string, itemId?: string | null, said?: string | null) => Promise<void>;
 }) {
+  const session = useRef('');
+  const [sessionId, setSessionId] = useState('');
+
+  function track(kind: string, itemId?: string, v?: string) {
+    if (!session.current) return;
+    try {
+      record(session.current, kind, itemId ?? null, v ?? null).catch(() => {});
+    } catch {
+      // never let tracking break the quiz
+    }
+  }
+
+  // First item is on screen once mounted: start the session.
+  useEffect(() => {
+    if (session.current) return;
+    session.current = newSessionId();
+    setSessionId(session.current);
+    track('start');
+  }, []);
+
   const [idx, setIdx] = useState(0);
   const [said, setSaid] = useState<Record<string, 'sax' | 'khalad'>>({});
   const [picked, setPicked] = useState<'sax' | 'khalad' | null>(null);
@@ -56,6 +99,7 @@ export default function HubiAi({
     if (picked !== null) return;
     setPicked(v);
     setSaid((s) => ({ ...s, [item.id]: v }));
+    track('answer', item.id, v);
   }
 
   function next() {
@@ -108,7 +152,6 @@ export default function HubiAi({
     );
   }
 
-  const ready = use && trained && fluent;
   return (
     <form action={action} className="card">
       <h3>{labels.profileTitle}</h3>
@@ -116,14 +159,18 @@ export default function HubiAi({
       {items.map((it) => (
         <input key={it.id} type="hidden" name={`a_${it.id}`} value={said[it.id] ?? ''} />
       ))}
+      <input type="hidden" name="session" value={sessionId} />
 
       <Choice name="use" legend={labels.qUse} values={USE} opts={labels.useOpts} value={use} onChange={setUse} />
       <Choice name="trained" legend={labels.qTrained} values={TRAINED} opts={labels.trainedOpts} value={trained} onChange={setTrained} />
       <Choice name="fluent" legend={labels.qFluent} values={FLUENT} opts={labels.fluentOpts} value={fluent} onChange={setFluent} />
 
       <div className="btn-row">
-        <button className="btn" type="submit" disabled={!ready}>
+        <button className="btn" type="submit">
           {labels.submit}
+        </button>
+        <button className="btn" type="submit" name="skip" value="1">
+          {labels.skip}
         </button>
       </div>
     </form>
@@ -156,7 +203,6 @@ function Choice({
             value={v}
             checked={value === v}
             onChange={() => onChange(v)}
-            required
             style={{ marginRight: '0.5rem' }}
           />
           {opts[i]}
