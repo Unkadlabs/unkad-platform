@@ -630,6 +630,7 @@ const dict = {
   hubiFluentNo: { so: 'Maya', en: 'No' },
   hubiFluentUnsure: { so: 'Ma hubo', en: 'Not sure' },
   hubiSubmit: { so: 'Natiijada i tus', en: 'Show my result' },
+  hubiSkip: { so: 'Ka gudub', en: 'Skip' }, // !! VERIFY SOMALI !!
   hubiResultTitle: { so: 'Natiijadaada', en: 'Your result' },
   hubiAvgLine: { so: 'Celceliska dadka: {avg} / {total} ({n} qof)', en: 'Average so far: {avg} / {total} ({n} people)' },
   hubiAgain: { so: 'Mar kale', en: 'Again' },

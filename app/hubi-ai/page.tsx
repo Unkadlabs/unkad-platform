@@ -1,13 +1,13 @@
 // "Hubi AI-ga": can you tell when AI is wrong in Somali? Public, no account
-// needed. Six real AI answers to judge, three questions about how the
-// visitor uses AI, one row stored. The deck lives in lib/hubi-ai.ts.
+// needed. Six real AI answers to judge, three optional questions about how
+// the visitor uses AI, one row stored, plus progress events along the way. The deck lives in lib/hubi-ai.ts.
 
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { getLang } from '@/lib/lang';
 import { makeT } from '@/lib/i18n';
 import { HUBI_ITEMS } from '@/lib/hubi-ai';
-import { submitHubiAi } from '@/lib/actions';
+import { recordHubiEvent, submitHubiAi } from '@/lib/actions';
 import HubiAi from '@/components/HubiAi';
 
 export const metadata: Metadata = {
@@ -41,6 +41,7 @@ export default async function HubiAiPage() {
       <HubiAi
         items={items}
         action={submitHubiAi}
+        record={recordHubiEvent}
         labels={{
           question: t('hubiQuestion'),
           btnRight: t('hubiBtnRight'),
@@ -58,6 +59,7 @@ export default async function HubiAiPage() {
           qFluent: t('hubiQFluent'),
           fluentOpts: [t('hubiFluentYes'), t('hubiFluentNo'), t('hubiFluentUnsure')],
           submit: t('hubiSubmit'),
+          skip: t('hubiSkip'),
         }}
       />
     </div>
