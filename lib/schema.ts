@@ -567,3 +567,33 @@ export const hubiAiEvents = pgTable(
   (t) => [index('hubi_ai_events_created_idx').on(t.createdAt)]
 );
 
+
+// ---- Event registrations ----------------------------------------------------
+//
+// Sign-ups for public events (/kulan). No account needed. The event itself is
+// config in lib/events.ts, keyed by `event_slug`, so a second event needs no
+// migration. One row per address per event: registering again is not an
+// error, it shows the thank-you page again. The address is stored trimmed and
+// lowercased and is used only for this event's mail (confirmation and two
+// reminders); it is never joined to contributor accounts.
+//   confirmed_at       the confirmation email was sent
+//   reminded_day_at    the day-before reminder was sent
+//   reminded_hour_at   the hour-before reminder was sent
+//   unsubscribed_at    the person stopped this event's mail
+export const eventRegistrations = pgTable(
+  'event_registrations',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    eventSlug: text('event_slug').notNull(),
+    name: text('name').notNull(),
+    email: text('email').notNull(),
+    question: text('question'),
+    lang: text('lang').notNull().default('so'),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    confirmedAt: timestamp('confirmed_at'),
+    remindedDayAt: timestamp('reminded_day_at'),
+    remindedHourAt: timestamp('reminded_hour_at'),
+    unsubscribedAt: timestamp('unsubscribed_at'),
+  },
+  (t) => [uniqueIndex('event_registrations_event_email_idx').on(t.eventSlug, t.email)]
+);

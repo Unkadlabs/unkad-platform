@@ -643,6 +643,63 @@ const dict = {
     en: 'AI is weak in Somali because verified Somali data barely exists. That is what we are building.',
   },
   hubiCtaBtn: { so: 'Ku biir oo qor', en: 'Join and write' },
+  // Events (/kulan). New 2026-10-10.
+  kulanEyebrow: { so: 'Kulan onlayn ah', en: 'Online event' }, // !! VERIFY SOMALI !!
+  kulanWhen: { so: 'Goorma', en: 'When' }, // !! VERIFY SOMALI !!
+  kulanWhere: { so: 'Halkee', en: 'Where' }, // !! VERIFY SOMALI !!
+  kulanHosts: { so: 'Hadlayaasha', en: 'Speakers' }, // !! VERIFY SOMALI !!
+  kulanFormTitle: { so: 'Is diiwaangeli', en: 'Register' }, // !! VERIFY SOMALI !!
+  kulanName: { so: 'Magacaaga', en: 'Your name' }, // !! VERIFY SOMALI !!
+  kulanEmail: { so: 'Iimaylkaaga', en: 'Your email' }, // !! VERIFY SOMALI !!
+  kulanQuestion: {
+    so: 'Su’aal aad u qabto hadlayaasha (ikhtiyaari)', // !! VERIFY SOMALI !!
+    en: 'A question for the speakers (optional)',
+  },
+  kulanSubmit: { so: 'Is diiwaangeli', en: 'Register' }, // !! VERIFY SOMALI !!
+  kulanPrivacy: {
+    so: 'Iimayl kaliya ayaan kaaga soo diraynaa kulankan: xaqiijin iyo laba xusuusin.', // !! VERIFY SOMALI !!
+    en: 'We only email you about this event: a confirmation and two reminders.',
+  },
+  kulanErrName: { so: 'Fadlan qor magacaaga.', en: 'Please enter your name.' }, // !! VERIFY SOMALI !!
+  kulanErrEmail: {
+    so: 'Fadlan qor iimayl sax ah.', // !! VERIFY SOMALI !!
+    en: 'Please enter a valid email address.',
+  },
+  kulanErrQuestion: {
+    so: 'Su’aashu waa inay ka gaabato 500 xaraf.', // !! VERIFY SOMALI !!
+    en: 'The question must be under 500 characters.',
+  },
+  kulanClosed: {
+    so: 'Kulankan wuu dhammaaday, diiwaangelintuna way xiran tahay.', // !! VERIFY SOMALI !!
+    en: 'This event has ended and registration is closed.',
+  },
+  kulanThanksTitle: {
+    so: 'Mahadsanid, waad is diiwaangelisay', // !! VERIFY SOMALI !!
+    en: 'Thank you, you are registered',
+  },
+  kulanThanksBody: {
+    so: 'Ku dar kalandarkaaga si aadan u illaawin. Xusuusin ayaan kuu soo diri doonnaa maalin ka hor iyo saacad ka hor.', // !! VERIFY SOMALI !!
+    en: 'Add it to your calendar so you do not miss it. We will send a reminder a day before and an hour before.',
+  },
+  kulanMeetLink: { so: 'Xiriirka kulanka', en: 'Meeting link' }, // !! VERIFY SOMALI !!
+  kulanAddGoogle: { so: 'Ku dar Google Calendar', en: 'Add to Google Calendar' }, // !! VERIFY SOMALI !!
+  kulanDownloadIcs: {
+    so: 'Soo deji faylka kalandarka (.ics)', // !! VERIFY SOMALI !!
+    en: 'Download calendar file (.ics)',
+  },
+  kulanUnsubTitle: { so: 'Iimaylada kulanka', en: 'Event emails' }, // !! VERIFY SOMALI !!
+  kulanUnsubDone: {
+    so: 'Waa la joojiyay. Iimayl kale oo ku saabsan kulankan ma heli doontid.', // !! VERIFY SOMALI !!
+    en: 'Done. You will not get any more emails about this event.',
+  },
+  kulanUnsubAlready: {
+    so: 'Horey ayaad uga baxday. Iimayl kale ma heli doontid.', // !! VERIFY SOMALI !!
+    en: 'You had already unsubscribed. No more emails will come.',
+  },
+  kulanUnsubInvalid: {
+    so: 'Xiriirkani ma shaqaynayo.', // !! VERIFY SOMALI !!
+    en: 'This link is not valid.',
+  },
 } as const;
 
 export type TKey = keyof typeof dict;
