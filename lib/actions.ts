@@ -27,11 +27,22 @@ import {
   passwordResetRequests,
   hubiAiRuns,
   hubiAiEvents,
+  eventRegistrations,
 } from './schema';
 import { allow, clientIp } from './ratelimit';
 import { getLang } from './lang';
 import { HUBI_ITEMS, HUBI_PROFILE, scoreHubi } from './hubi-ai';
 import { sendEmail, emailConfigured } from './email';
+import {
+  getEvent,
+  registrationOpen,
+  buildIcs,
+  icsFilename,
+  confirmationEmail,
+  unsubscribeUrl,
+  verifyEventToken,
+  type Lang,
+} from './events';
 import {
   createSession,
   destroySession,
@@ -1462,3 +1473,132 @@ export async function recordHubiEvent(
   }
 }
 
+
+// ---- Events (/kulan) --------------------------------------------------------
+
+// Signs unsubscribe links for event mail. EVENT_TOKEN_SECRET must be set in
+// production; in `next dev` a fixed development secret stands in so the flow
+// can be exercised locally. With no secret in production, registration still
+// works but no confirmation is sent (a mail we cannot let people stop is not
+// one we send).
+function eventTokenSecret(): string | null {
+  const s = process.env.EVENT_TOKEN_SECRET;
+  if (s) return s;
+  return process.env.NODE_ENV === 'development' ? 'dev-only-event-token-secret' : null;
+}
+
+const EVENT_EMAIL_RE = /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i;
+
+export type EventFormState = {
+  error: 'kulanErrName' | 'kulanErrEmail' | 'kulanErrQuestion' | 'kulanClosed' | 'errRateLimited';
+  name: string;
+  email: string;
+  question: string;
+} | null;
+
+// Public, no account. Registering the same address twice is not an error: it
+// lands on the thank-you page again, and the confirmation is re-sent only if
+// it never went out. Mail is best-effort; a missing key or a provider failure
+// never fails the registration.
+export async function registerForEvent(
+  _prev: EventFormState,
+  formData: FormData
+): Promise<EventFormState> {
+  const slug = String(formData.get('event') ?? '');
+  const name = String(formData.get('name') ?? '').trim();
+  const email = String(formData.get('email') ?? '').trim().toLowerCase();
+  const question = String(formData.get('question') ?? '').trim();
+  const back = { name, email, question };
+
+  const ev = getEvent(slug);
+  if (!ev || !registrationOpen(ev)) return { error: 'kulanClosed', ...back };
+  if (!name || name.length > 120) return { error: 'kulanErrName', ...back };
+  if (!EVENT_EMAIL_RE.test(email) || email.length > 254) return { error: 'kulanErrEmail', ...back };
+  if (question.length > 500) return { error: 'kulanErrQuestion', ...back };
+
+  const ip = await clientIp();
+  if (!(await allow(`kulan:${ip}`, 10, 3600))) return { error: 'errRateLimited', ...back };
+
+  const lang: Lang = await getLang();
+
+  const [inserted] = await db
+    .insert(eventRegistrations)
+    .values({ eventSlug: ev.slug, name, email, question: question || null, lang })
+    .onConflictDoNothing()
+    .returning();
+
+  let reg = inserted;
+  if (!reg) {
+    [reg] = await db
+      .select()
+      .from(eventRegistrations)
+      .where(and(eq(eventRegistrations.eventSlug, ev.slug), eq(eventRegistrations.email, email)));
+    // Registering again after unsubscribing is asking for the mail again.
+    if (reg?.unsubscribedAt) {
+      await db
+        .update(eventRegistrations)
+        .set({ unsubscribedAt: null })
+        .where(eq(eventRegistrations.id, reg.id));
+    }
+  }
+
+  const secret = eventTokenSecret();
+  if (reg && !reg.confirmedAt && emailConfigured() && secret) {
+    try {
+      const base = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://qor.unkad.com';
+      const regLang: Lang = reg.lang === 'en' ? 'en' : 'so';
+      const mail = confirmationEmail(ev, regLang, {
+        name: reg.name,
+        unsubUrl: unsubscribeUrl(base, reg.id, secret),
+      });
+      const result = await sendEmail({
+        to: reg.email,
+        subject: mail.subject,
+        text: mail.text,
+        attachments: [
+          {
+            filename: icsFilename(ev),
+            content: Buffer.from(buildIcs(ev, regLang), 'utf8').toString('base64'),
+          },
+        ],
+      });
+      if (result.sent) {
+        await db
+          .update(eventRegistrations)
+          .set({ confirmedAt: new Date() })
+          .where(eq(eventRegistrations.id, reg.id));
+      } else {
+        console.error(`event confirmation not sent: ${result.reason} ${result.detail ?? ''}`);
+      }
+    } catch (e) {
+      console.error('event confirmation failed', e);
+    }
+  } else if (reg && !reg.confirmedAt && emailConfigured() && !secret) {
+    console.error('EVENT_TOKEN_SECRET not set; event confirmation not sent');
+  }
+
+  redirect(`/kulan/mahadsanid?e=${encodeURIComponent(ev.slug)}`);
+}
+
+// One-click stop for one event's mail, from the link in every event email.
+export async function unsubscribeEventByToken(
+  token: string
+): Promise<'done' | 'already' | 'invalid'> {
+  const secret = eventTokenSecret();
+  if (!secret || !token) return 'invalid';
+  const id = verifyEventToken(token, secret);
+  if (!id) return 'invalid';
+
+  const [reg] = await db
+    .select({ id: eventRegistrations.id, unsub: eventRegistrations.unsubscribedAt })
+    .from(eventRegistrations)
+    .where(eq(eventRegistrations.id, id));
+  if (!reg) return 'invalid';
+  if (reg.unsub) return 'already';
+
+  await db
+    .update(eventRegistrations)
+    .set({ unsubscribedAt: new Date() })
+    .where(eq(eventRegistrations.id, id));
+  return 'done';
+}

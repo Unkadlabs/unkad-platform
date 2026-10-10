@@ -38,10 +38,14 @@ export type SendResult =
   | { sent: true }
   | { sent: false; reason: 'not-configured' | 'failed'; detail?: string };
 
+// Base64-encoded file content, passed straight through to the provider.
+export type EmailAttachment = { filename: string; content: string };
+
 export async function sendEmail(opts: {
   to: string;
   subject: string;
   text: string;
+  attachments?: EmailAttachment[];
 }): Promise<SendResult> {
   const key = sendToken();
   if (!key) return { sent: false, reason: 'not-configured' };
@@ -58,6 +62,7 @@ export async function sendEmail(opts: {
         to: [opts.to],
         subject: opts.subject,
         text: opts.text,
+        ...(opts.attachments?.length ? { attachments: opts.attachments } : {}),
       }),
       // A slow provider must not hold a request open. Failing here is safe:
       // the caller falls back to the queue.

@@ -33,8 +33,8 @@ verification step for any change. Local dev needs Postgres (`createdb unkad_plat
 
 **Everything server-side lives in `lib/`; pages are thin.** Route pages are async server
 components that call a guard, resolve language, query, and render. Mutations are server actions
-in `lib/actions.ts` — there are no API routes for writes (`app/api/stats/route.ts` is the only
-route handler, and it's public/read-only).
+in `lib/actions.ts` — there are no API routes for writes (the route handlers, `app/api/stats/route.ts`
+and `app/kulan/event.ics/route.ts`, are public and read-only).
 
 - `lib/schema.ts` — the whole data model, heavily commented with the design goals it enforces.
   Postgres enums are the source of truth for modes, registers, sectors, dialects, roles.
@@ -54,6 +54,10 @@ route handler, and it's public/read-only).
   monitoring models behind `/admin/activity` (activity series, submission breakdowns,
   per-contributor engagement, pipeline health, prompt supply). `CORPUS_GOAL` is the public
   100k-validated-sentences campaign target.
+- `lib/events.ts` — public events (`/kulan`): one config entry per event drives the page, the
+  `.ics` file, the confirmation email and `scripts/event-reminders.mjs`. Unsubscribe links are
+  HMAC-signed with `EVENT_TOKEN_SECRET`. Registrations live in `event_registrations`;
+  `scripts/event-registrations.mjs` prints aggregates only.
 - `lib/ratelimit.ts` — DB-backed fixed windows (works across serverless instances) and
   **fails open** on DB errors.
 - `app/globals.css` — one hand-written stylesheet (~1100 lines), design tokens at the top,
