@@ -37,7 +37,7 @@ const COPY = [
     lang: 'so' as const,
     eyebrow: 'Kulan online ah',
     title: 'AI-ga iyo Af-Soomaaliga',
-    sub: 'Waxa uu qaban karo, iyo halka uu ku khaldamo',
+    sub: 'Waxa uu qaban karo, iyo halka uu ka khaldamo',
     left: 'Waxa AI-gu u qaban karo Af-Soomaaliga maanta, oo si toos ah loo tusayo',
     right: 'Jawaabaha fasiixa ah ee khaldan, sababta, iyo sida loo hubiyo',
     date: DATE.so,

@@ -37,7 +37,7 @@ export const EVENTS: EventConfig[] = [
     slug: 'ai-somali-2026-10-14',
     title: { so: 'AI-ga iyo Af-Soomaaliga', en: 'AI in Somali' }, // !! VERIFY SOMALI !!
     subtitle: {
-      so: 'Waxa uu qaban karo, iyo halka uu ku khaldamo', // !! VERIFY SOMALI !!
+      so: 'Waxa uu qaban karo, iyo halka uu ka khaldamo', // founder-verified 10 Oct 2026
       en: 'What it can do, and where it goes wrong',
     },
     hosts: [
