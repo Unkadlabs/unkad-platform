@@ -22,6 +22,14 @@ STAMP="$(date -u +%FT%TZ)"
 
 mkdir -p "$LOG_DIR"
 
+# Skip dates: one YYYY-MM-DD (local) per line in $LOG_DIR/nudge-skip-dates.
+# Used to leave the bulk allowance to event reminders on event days.
+TODAY="$(date +%F)"
+if [ -f "$LOG_DIR/nudge-skip-dates" ] && grep -qx "$TODAY" "$LOG_DIR/nudge-skip-dates"; then
+  echo "$STAMP nudge skipped: $TODAY is in nudge-skip-dates"
+  exit 0
+fi
+
 DB_URL="$(grep '^DATABASE_URL_UNPOOLED=' "$REPO_DIR/.env.local" | cut -d'"' -f2)"
 if [ -z "$DB_URL" ]; then
   echo "$STAMP DATABASE_URL_UNPOOLED not found in .env.local" >&2
