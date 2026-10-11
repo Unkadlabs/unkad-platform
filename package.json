@@ -27,7 +27,8 @@
     "next": "^15.3.0",
     "pg": "^8.13.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "vercel": "^62.2.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
