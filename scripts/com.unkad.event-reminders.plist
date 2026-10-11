@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- macOS launchd job: reminders for the 14 Oct 2026 /kulan event.
+
+     Fires Tue 13 Oct 20:00 (the "tomorrow" reminder) and Wed 14 Oct 19:00
+     (the "in one hour" reminder), local time (EAT). If the Mac is asleep,
+     launchd runs it on wake; event-reminders.mjs sends nothing once the event
+     has started and never sends the same reminder twice.
+
+     Install:
+       cp scripts/com.unkad.event-reminders.plist ~/Library/LaunchAgents/
+       launchctl load ~/Library/LaunchAgents/com.unkad.event-reminders.plist
+     Logs:     ~/UnkadBackups/event-reminders.log
+     Dry run:  ./scripts/event-reminders-run.sh
+     Remove after the event:
+       launchctl unload ~/Library/LaunchAgents/com.unkad.event-reminders.plist
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.unkad.event-reminders</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>/Users/khalidyusufdahir/research/unkad/unkad-platform/scripts/event-reminders-run.sh</string>
+    <string>--send</string>
+  </array>
+  <key>StartCalendarInterval</key>
+  <array>
+    <dict>
+      <key>Month</key><integer>10</integer><key>Day</key><integer>13</integer>
+      <key>Hour</key><integer>20</integer><key>Minute</key><integer>0</integer>
+    </dict>
+    <dict>
+      <key>Month</key><integer>10</integer><key>Day</key><integer>14</integer>
+      <key>Hour</key><integer>19</integer><key>Minute</key><integer>0</integer>
+    </dict>
+  </array>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+  </dict>
+  <key>RunAtLoad</key>
+  <false/>
+  <key>StandardOutPath</key>
+  <string>/Users/khalidyusufdahir/UnkadBackups/event-reminders.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/khalidyusufdahir/UnkadBackups/event-reminders.log</string>
+</dict>
+</plist>
