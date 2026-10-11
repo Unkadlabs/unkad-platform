@@ -3,7 +3,7 @@
 // in Somali, Unkad Labs on where it goes wrong. Their press-kit logo still shows
 // the old Goobo wordmark, so the name is set as text for now; their Deep Teal #117B72 sits beside
 // our #0F6B5C on white. Date and Meet link confirmed by the founder 10 Oct 2026.
-// Somali: !! VERIFY SOMALI !!  Needs Somast's sign-off before posting.
+// Somali: wording follows the founder-verified Facebook post (11 Oct 2026).  Needs Somast's sign-off before posting.
 //
 // Run: npx tsx scripts/poster-somast-event.tsx
 // Out: ../dhiblabs/assets/promo/fb-somast-event-so.png, -en.png (1080x1350)
@@ -26,7 +26,7 @@ const fonts = [
 ];
 
 // Placeholders until the new date and the sign-up link are confirmed.
-const DATE = { so: 'Arbaco, 14 Oktoobar', en: 'Wednesday 14 October' };
+const DATE = { so: 'Arbaco, 14-ka Oktoobar', en: 'Wednesday 14 October' };
 const LINK = 'qor.unkad.com/kulan';
 // QR to the registration page (not the Meet link) so people get the
 // confirmation email and reminders. Built from assets/promo/qr-kulan.svg.
@@ -35,9 +35,9 @@ const QR = 'data:image/svg+xml;base64,' + fs.readFileSync(path.join(SITE, 'asset
 const COPY = [
   {
     lang: 'so' as const,
-    eyebrow: 'Kulan online ah',
+    eyebrow: 'Kulan fogaan arag ah',
     title: 'AI-ga iyo Af-Soomaaliga',
-    sub: 'Waxa uu qaban karo, iyo halka uu ka khaldamo',
+    sub: 'Waxa uu ku qaban karo iyo halka uu ka khaldamo',
     left: 'Waxa AI-gu u qaban karo Af-Soomaaliga maanta, oo si toos ah loo tusayo',
     right: 'Jawaabaha fasiixa ah ee khaldan, sababta, iyo sida loo hubiyo',
     date: DATE.so,
@@ -84,9 +84,9 @@ function Poster({ c }: { c: (typeof COPY)[number] }) {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         {/* Their press-kit "somast" SVG still draws the old Goobo wordmark (10 Oct 2026),
             so the name is set as text in their Deep Teal until they send the new logo. */}
-        <div style={{ display: 'flex', fontSize: 40, fontWeight: 700, color: SOMAST, letterSpacing: '-0.01em' }}>Somast</div>
+        <div style={{ display: 'flex', flex: 1, fontSize: 40, fontWeight: 700, color: SOMAST, letterSpacing: '-0.01em' }}>Somast</div>
         <div style={{ display: 'flex', fontSize: 30, color: MUTED }}>×</div>
-        <UnkadLockup />
+        <div style={{ display: 'flex', flex: 1, justifyContent: 'flex-end' }}><UnkadLockup /></div>
       </div>
 
       <div style={{ display: 'flex', flexGrow: 1 }} />
@@ -96,16 +96,6 @@ function Poster({ c }: { c: (typeof COPY)[number] }) {
         {c.title.replace(/-/g, '‑')}
       </div>
       <div style={{ display: 'flex', marginTop: 18, fontSize: 34, color: TEXT, lineHeight: 1.3 }} lang={c.lang}>{c.sub}</div>
-
-      <div style={{ display: 'flex', marginTop: 56, borderTop: `2px solid ${RULE}` }}>
-        {[['Somast', SOMAST, c.left], ['Unkad Labs', UNKAD, c.right]].map(([who, col, what], i) => (
-          <div key={who} style={{ display: 'flex', flexDirection: 'column', flex: 1, paddingTop: 26, paddingLeft: i ? 34 : 0, paddingRight: i ? 0 : 34, borderLeft: i ? `2px solid ${RULE}` : 'none' }}>
-            <div style={{ display: 'flex', width: 46, height: 6, backgroundColor: col }} />
-            <div style={{ display: 'flex', marginTop: 16, fontSize: 30, fontWeight: 700, color: col }}>{who}</div>
-            <div style={{ display: 'flex', marginTop: 8, fontSize: 25, color: MUTED, lineHeight: 1.4 }} lang={c.lang}>{what.replace(/-/g, '\u2011')}</div>
-          </div>
-        ))}
-      </div>
 
       <div style={{ display: 'flex', flexGrow: 1 }} />
 
