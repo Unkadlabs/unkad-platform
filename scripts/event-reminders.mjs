@@ -139,10 +139,12 @@ for (const ev of EVENTS) {
   }
 
   const col = kind === 'day' ? 'reminded_day_at' : 'reminded_hour_at';
+  // When the cap bites, the hour run serves people the day run missed first,
+  // so everyone gets at least one reminder before the cap is reached.
   const { rows } = await q(
     `select id, name, email, lang from event_registrations
       where event_slug = $1 and unsubscribed_at is null and ${col} is null
-      order by created_at asc`,
+      order by ${kind === 'hour' ? '(reminded_day_at is not null), ' : ''}created_at asc`,
     [ev.slug]
   );
   console.log(`  ${ev.slug}: starts in ${hrs}h, '${kind}' reminder due for ${rows.length}`);
