@@ -1663,3 +1663,104 @@ a.chip:hover {
 body:has(.seed-page) .site-header,
 body:has(.seed-page) .site-footer { display: none; }
 body:has(.seed-page) #main { padding-top: 0; }
+
+/* ---- Hubi AI-ga live results (/hubi-ai/natiijo) ----------------------------
+   Screen-shared at events, so it is read off a phone at second hand: huge
+   numbers, high contrast, one accent. The AI's verdict is a word, not only a
+   colour. The item that fooled the room most gets a heavy ink border. */
+
+.live-page { max-width: 60rem; }
+
+/* Always the white palette here, whatever the presenter's OS or toggle says:
+   the screen is shared to a room, and the lab's visuals default to white. */
+:root:has(.live-page) {
+  --bg: #FCFBF8;
+  --text: #1A1917;
+  --muted: #6B6862;
+  --accent: #0F6B5C;
+  --accent-soft: rgba(15, 107, 92, 0.08);
+  --rule: #E5E2DA;
+  --card: #FFFFFF;
+  --danger: #A03D2E;
+  --danger-soft: rgba(160, 61, 46, 0.08);
+  --shadow: 0 1px 2px rgba(26, 25, 23, 0.04), 0 4px 16px rgba(26, 25, 23, 0.05);
+  color-scheme: light;
+}
+
+.live-head {
+  display: flex; flex-wrap: wrap; gap: 0.75rem 2rem;
+  align-items: flex-end; justify-content: space-between;
+  border-bottom: 2px solid var(--text); padding-bottom: 1rem;
+}
+.live-title { font-size: clamp(2rem, 5vw, 3rem); margin: 0; line-height: 1.05; }
+.live-sub {
+  margin: 0.4rem 0 0; font-family: var(--mono); font-size: 0.85rem;
+  letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted);
+}
+.live-sep { margin-inline: 0.5rem; }
+.live-dot {
+  display: inline-block; width: 0.6rem; height: 0.6rem; border-radius: 50%;
+  background: var(--accent); vertical-align: 0.05em;
+  animation: live-pulse 2s ease-in-out infinite;
+}
+@keyframes live-pulse { 50% { opacity: 0.25; } }
+@media (prefers-reduced-motion: reduce) { .live-dot { animation: none; } }
+.live-play { margin: 0; font-family: var(--mono); font-size: 0.95rem; color: var(--muted); }
+.live-play b { color: var(--accent); font-weight: 600; white-space: nowrap; }
+
+.live-players {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 1rem;
+  margin: 1.5rem 0 0.5rem;
+}
+.live-players-n {
+  font-size: clamp(5rem, 16vw, 10rem); font-weight: 700; line-height: 0.9;
+  color: var(--accent); letter-spacing: -0.03em;
+}
+.live-players-label { font-size: clamp(1.3rem, 3.2vw, 2rem); }
+
+.live-few { margin: 0.25rem 0 0; font-family: var(--mono); font-size: 0.85rem; color: var(--muted); }
+
+.live-items { list-style: none; padding: 0; margin: 1.75rem 0 0; display: grid; gap: 0.9rem; }
+.live-item {
+  background: var(--card); border: 1px solid var(--rule); border-radius: var(--radius-lg);
+  padding: 1rem 1.25rem 0.9rem; box-shadow: var(--shadow);
+}
+.live-item.is-fooled { border: 3px solid var(--text); }
+.live-item-top { display: flex; gap: 0.9rem; align-items: flex-start; }
+.live-num {
+  font-family: var(--mono); font-size: 1.4rem; font-weight: 600;
+  color: var(--muted); line-height: 1.3; min-width: 1.4rem;
+}
+.live-q { flex: 1; margin: 0; font-size: clamp(1.1rem, 2.4vw, 1.4rem); line-height: 1.35; }
+.live-verdict {
+  flex: none; font-family: var(--mono); font-size: 0.8rem; font-weight: 600;
+  padding: 0.3rem 0.6rem; border-radius: 999px; white-space: nowrap; margin-top: 0.2rem;
+}
+.live-verdict.is-right { color: var(--accent); background: var(--accent-soft); }
+.live-verdict.is-wrong { color: var(--danger); background: var(--danger-soft); }
+.live-fooled-tag {
+  display: inline-block; margin: 0.6rem 0 0; padding: 0.2rem 0.55rem;
+  background: var(--text); color: var(--bg); border-radius: 4px;
+  font-family: var(--mono); font-size: 0.75rem; font-weight: 600;
+  letter-spacing: 0.05em; text-transform: uppercase;
+}
+.live-bar-row { display: flex; align-items: center; gap: 1rem; margin-top: 0.75rem; }
+.live-track {
+  flex: 1; height: 1.6rem; background: var(--rule); border-radius: 6px; overflow: hidden;
+}
+.live-fill {
+  height: 100%; background: var(--accent); border-radius: 6px 0 0 6px;
+  transition: width 0.6s ease;
+}
+.live-pct {
+  font-size: clamp(2rem, 5vw, 3rem); font-weight: 700; line-height: 1;
+  min-width: 4.5ch; text-align: right;
+}
+.live-meta { margin: 0.35rem 0 0; font-family: var(--mono); font-size: 0.8rem; color: var(--muted); }
+
+@media (max-width: 560px) {
+  .live-item-top { flex-wrap: wrap; }
+  .live-q { flex: 1 1 calc(100% - 2.4rem); }
+  .live-verdict { margin: 0 0 0 2.3rem; }
+  .live-fooled-tag { margin-left: 2.3rem; }
+}
