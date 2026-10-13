@@ -643,6 +643,21 @@ const dict = {
     en: 'AI is weak in Somali because verified Somali data barely exists. That is what we are building.',
   },
   hubiCtaBtn: { so: 'Ku biir oo qor', en: 'Join and write' },
+  // Live room results (/hubi-ai/natiijo), screen-shared at events. New 2026-10-13.
+  hubiLiveTitle: { so: 'Natiijada tooska ah', en: 'Live results' }, // !! VERIFY SOMALI !!
+  hubiLiveLive: { so: 'Toos', en: 'Live' }, // !! VERIFY SOMALI !!
+  hubiLivePlayers: { so: 'qof ayaa ka qayb qaatay', en: 'people played' }, // !! VERIFY SOMALI !!
+  hubiLiveSince: { so: 'Laga bilaabo {time}', en: 'Since {time}' }, // !! VERIFY SOMALI !!
+  hubiLiveAllTime: { so: 'Waqtiga oo dhan', en: 'All time' }, // !! VERIFY SOMALI !!
+  hubiLivePlay: { so: 'Ka qayb gal:', en: 'Play along:' }, // !! VERIFY SOMALI !!
+  hubiLiveAiRight: { so: 'AI-gu wuu saxay', en: 'The AI was right' }, // !! VERIFY SOMALI !!
+  hubiLiveAiWrong: { so: 'AI-gu wuu khaldamay', en: 'The AI was wrong' }, // !! VERIFY SOMALI !!
+  hubiLiveJudged: { so: 'si sax ah ayay u garteen', en: 'judged it correctly' }, // !! VERIFY SOMALI !!
+  hubiLiveNoAnswers: { so: 'Weli jawaab ma jirto', en: 'No answers yet' }, // !! VERIFY SOMALI !!
+  hubiLiveFooled: { so: 'Kan ayaa dadka ugu badan khalday', en: 'Fooled the most people' }, // !! VERIFY SOMALI !!
+  hubiLiveFew: { so: 'Dad yar ayaa weli ciyaaray.', en: 'Only a few players so far.' }, // !! VERIFY SOMALI !!
+  hubiLiveSeeAll: { so: 'Eeg natiijada waqtiga oo dhan', en: 'See all-time results' }, // !! VERIFY SOMALI !!
+  hubiLiveBack: { so: 'Ku noqo natiijada tooska ah', en: 'Back to live results' }, // !! VERIFY SOMALI !!
   // Events (/kulan). New 2026-10-10.
   kulanEyebrow: { so: 'Kulan onlayn ah', en: 'Online event' }, // !! VERIFY SOMALI !!
   kulanWhen: { so: 'Goorma', en: 'When' }, // !! VERIFY SOMALI !!
