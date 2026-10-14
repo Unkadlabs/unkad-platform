@@ -30,6 +30,7 @@ const DATE = { so: 'Arbaco, 14-ka Oktoobar', en: 'Wednesday 14 October' };
 const LINK = 'qor.unkad.com/kulan';
 // QR to the registration page (not the Meet link) so people get the
 // confirmation email and reminders. Built from assets/promo/qr-kulan.svg.
+const SOMAST_LOGO = 'data:image/svg+xml;base64,' + fs.readFileSync(path.join(SITE, 'assets', 'partners', 'somast', 'somast-logo-2026-10.svg')).toString('base64');
 const QR = 'data:image/svg+xml;base64,' + fs.readFileSync(path.join(SITE, 'assets', 'promo', 'qr-kulan.svg')).toString('base64');
 
 const COPY = [
@@ -84,7 +85,7 @@ function Poster({ c }: { c: (typeof COPY)[number] }) {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         {/* Their press-kit "somast" SVG still draws the old Goobo wordmark (10 Oct 2026),
             so the name is set as text in their Deep Teal until they send the new logo. */}
-        <div style={{ display: 'flex', flex: 1, fontSize: 40, fontWeight: 700, color: SOMAST, letterSpacing: '-0.01em' }}>Somast</div>
+        <div style={{ display: 'flex', flex: 1 }}><img src={SOMAST_LOGO} width={190} height={57} /></div>
         <div style={{ display: 'flex', fontSize: 30, color: MUTED }}>×</div>
         <div style={{ display: 'flex', flex: 1, justifyContent: 'flex-end' }}><UnkadLockup /></div>
       </div>
