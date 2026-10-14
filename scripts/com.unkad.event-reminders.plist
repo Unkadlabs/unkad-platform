@@ -34,11 +34,16 @@
       <key>Month</key><integer>10</integer><key>Day</key><integer>14</integer>
       <key>Hour</key><integer>19</integer><key>Minute</key><integer>0</integer>
     </dict>
+    <dict>
+      <key>Month</key><integer>10</integer><key>Day</key><integer>14</integer>
+      <key>Hour</key><integer>19</integer><key>Minute</key><integer>25</integer>
+    </dict>
   </array>
   <key>EnvironmentVariables</key>
   <dict>
     <key>PATH</key>
     <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    <key>EVENT_REMINDER_CAP</key><string>97</string>
   </dict>
   <key>RunAtLoad</key>
   <false/>
