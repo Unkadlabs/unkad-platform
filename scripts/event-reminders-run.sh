@@ -25,9 +25,9 @@ DB_URL="$(val DATABASE_URL_UNPOOLED)"
 [ -n "$DB_URL" ] || { echo "$STAMP DATABASE_URL_UNPOOLED not found in .env.local" >&2; exit 1; }
 
 HOST="$(echo "$DB_URL" | sed -E 's|.*@([^/:]+).*|\1|')"
-for attempt in 1 2 3 4 5; do
+for attempt in $(seq 1 20); do
   if host "$HOST" >/dev/null 2>&1 || nslookup "$HOST" >/dev/null 2>&1; then break; fi
-  echo "$STAMP waiting for DNS ($HOST), attempt $attempt" >&2
+  echo "$(date -u +%FT%TZ) waiting for DNS ($HOST), attempt $attempt" >&2
   sleep 30
 done
 
