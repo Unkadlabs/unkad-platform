@@ -34,6 +34,7 @@ const COPY = [
     eyebrow: 'Cilmi-baaris Unkad Labs',
     head: 'AI Models-ka waa wayn (frontier models) ma garan karaan sax ahaanshiyaha suaalaha aan waydiininayno?',
     unit: 'Waxaan Af-Soomaali ku weydiinay 27 gabay iyo dhacdooyin aanan jirin. «Ma aqaan», 27 kaba mid ah:',
+    tag: '«Ma aqaan»',
     g1: 'AI Models-ka waa wayn',
     g2: 'Moodalayada yaryar',
     foot: 'Isku day: qor.unkad.com/hubi-ai',
@@ -43,22 +44,24 @@ const COPY = [
     eyebrow: 'Unkad Labs research',
     head: 'Frontier AI knows when it doesn’t know. Even in Somali.',
     unit: '27 Somali poems and events that never existed, asked in Somali. Times each model said “I don’t know”:',
+    tag: '“I don’t know”',
     g1: 'Frontier models',
     g2: 'Small open models',
     foot: 'Small models invent. Frontier models say “I don’t know”.',
   },
 ];
 
-const BAR = 400;
+const BAR = 290;
 
-function Row({ name, n, color }: { name: string; n: number; color: string }) {
+function Row({ name, n, color, tag }: { name: string; n: number; color: string; tag: string }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', padding: '7px 0' }}>
       <div style={{ display: 'flex', width: 290, fontSize: 27, color: TEXT }}>{name}</div>
       <div style={{ display: 'flex', width: BAR, height: 30, backgroundColor: '#F4F3F0' }}>
         <div style={{ display: 'flex', width: Math.max(BAR * n / 27, 4), height: 30, backgroundColor: color }} />
       </div>
-      <div style={{ display: 'flex', width: 222, justifyContent: 'flex-end', alignItems: 'baseline', fontSize: 32, fontWeight: 700, color }}>{n}<span style={{ fontSize: 24, fontWeight: 400, color: MUTED }}>/27</span></div>
+      <div style={{ display: 'flex', width: 172, marginLeft: 30, fontSize: 22, color: MUTED }}>{tag}</div>
+      <div style={{ display: 'flex', width: 130, justifyContent: 'flex-end', alignItems: 'baseline', fontSize: 32, fontWeight: 700, color }}>{n}<span style={{ fontSize: 24, fontWeight: 400, color: MUTED }}>/27</span></div>
     </div>
   );
 }
@@ -75,12 +78,12 @@ function Poster({ c }: { c: (typeof COPY)[number] }) {
       <div style={{ display: 'flex', flexGrow: 1 }} />
 
       <div style={{ display: 'flex', fontSize: 22, fontWeight: 700, color: ACCENT, letterSpacing: '0.04em', marginBottom: 6 }} lang={c.lang}>{c.g1.toUpperCase()}</div>
-      {FRONTIER.map(([m, n]) => <Row key={m} name={m} n={n} color={ACCENT} />)}
+      {FRONTIER.map(([m, n]) => <Row key={m} name={m} n={n} color={ACCENT} tag={c.tag} />)}
 
       <div style={{ display: 'flex', height: 2, backgroundColor: RULE, margin: '26px 0 18px' }} />
 
       <div style={{ display: 'flex', fontSize: 22, fontWeight: 700, color: MUTED, letterSpacing: '0.04em', marginBottom: 6 }} lang={c.lang}>{c.g2.toUpperCase()}</div>
-      {SMALL.map(([m, n]) => <Row key={m} name={m} n={n} color={MUTED} />)}
+      {SMALL.map(([m, n]) => <Row key={m} name={m} n={n} color={MUTED} tag={c.tag} />)}
 
       <div style={{ display: 'flex', flexGrow: 1 }} />
 
