@@ -49,7 +49,7 @@ const COPY = [
   },
 ];
 
-const BAR = 470;
+const BAR = 400;
 
 function Row({ name, n, color }: { name: string; n: number; color: string }) {
   return (
@@ -58,7 +58,7 @@ function Row({ name, n, color }: { name: string; n: number; color: string }) {
       <div style={{ display: 'flex', width: BAR, height: 30, backgroundColor: '#F4F3F0' }}>
         <div style={{ display: 'flex', width: Math.max(BAR * n / 27, 4), height: 30, backgroundColor: color }} />
       </div>
-      <div style={{ display: 'flex', width: 152, justifyContent: 'flex-end', fontSize: 32, fontWeight: 700, color }}>{n}</div>
+      <div style={{ display: 'flex', width: 222, justifyContent: 'flex-end', alignItems: 'baseline', fontSize: 32, fontWeight: 700, color }}>{n}<span style={{ fontSize: 24, fontWeight: 400, color: MUTED }}>/27</span></div>
     </div>
   );
 }
