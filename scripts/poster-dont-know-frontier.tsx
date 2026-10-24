@@ -32,8 +32,8 @@ const COPY = [
   {
     lang: 'so' as const,
     eyebrow: 'Cilmi-baaris Unkad Labs',
-    head: 'Waxaan AI-ga weydiinay 27 gabay iyo dhacdo Soomaaliyeed oo aan jirin.',
-    unit: 'Inta jeer ee uu yiri «Ma aqaan», Af-Soomaali, 27 kaba mid ah',
+    head: 'AI-ga horumarsan wuu garanayaa waxa uusan aqoon. Xitaa Af-Soomaali.',
+    unit: '27 gabay iyo dhacdo Soomaaliyeed oo aan jirin, Af-Soomaali lagu weydiiyay. Inta jeer ee uu yiri «Ma aqaan»:',
     g1: 'Moodooyinka waaweyn (frontier)',
     g2: 'Moodooyinka yaryar ee furan',
     foot: 'AI-ga yar wuu sameystaa. AI-ga weyn wuxuu yiraahdaa «ma aqaan».',
@@ -41,8 +41,8 @@ const COPY = [
   {
     lang: 'en' as const,
     eyebrow: 'Unkad Labs research',
-    head: 'We asked AI about 27 Somali poems and events that never existed.',
-    unit: 'Times it said “I don’t know”, asked in Somali, out of 27',
+    head: 'Frontier AI knows when it doesn’t know. Even in Somali.',
+    unit: '27 Somali poems and events that never existed, asked in Somali. Times each model said “I don’t know”:',
     g1: 'Frontier models',
     g2: 'Small open models',
     foot: 'Small models invent. Frontier models say “I don’t know”.',
@@ -67,10 +67,10 @@ function Poster({ c }: { c: (typeof COPY)[number] }) {
   return (
     <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', backgroundColor: BG, padding: '96px 84px 80px', fontFamily: 'Literata' }}>
       <div style={{ display: 'flex', fontSize: 24, color: MUTED }} lang={c.lang}>{c.eyebrow}</div>
-      <div style={{ display: 'flex', flexWrap: 'wrap', marginTop: 16, fontSize: 46, fontWeight: 700, color: TEXT, lineHeight: 1.2 }} lang={c.lang}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', marginTop: 16, fontSize: 56, fontWeight: 700, color: TEXT, lineHeight: 1.15 }} lang={c.lang}>
         {c.head.split(' ').map((w, k) => <span key={k} style={{ marginRight: 12 }}>{w}</span>)}
       </div>
-      <div style={{ display: 'flex', marginTop: 18, fontSize: 24, color: MUTED }} lang={c.lang}>{c.unit}</div>
+      <div style={{ display: 'flex', marginTop: 18, fontSize: 24, color: MUTED, lineHeight: 1.4, maxWidth: 900 }} lang={c.lang}>{c.unit}</div>
 
       <div style={{ display: 'flex', flexGrow: 1 }} />
 
