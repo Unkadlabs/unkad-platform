@@ -3,8 +3,8 @@
 // times each model said "I don't know". Claude numbers from
 // unkad-fabrication/results/summary-claude.json, small models from the first
 // study (results/summary.json, same items, same exclusions).
-// Pure white. Somali: headline and unit reuse founder-verified wording; group
-// labels and foot are !! VERIFY SOMALI !!
+// Pure white. Somali headline, sentence and group labels follow the
+// founder-verified post of 24 Oct 2026.
 //
 // Run: npx tsx scripts/poster-dont-know-frontier.tsx
 // Out: ../dhiblabs/assets/promo/fb-dont-know-frontier-so.png, -en.png (1080x1350)
@@ -32,11 +32,11 @@ const COPY = [
   {
     lang: 'so' as const,
     eyebrow: 'Cilmi-baaris Unkad Labs',
-    head: 'AI-ga horumarsan wuu garanayaa waxa uusan aqoon. Xitaa Af-Soomaali.',
-    unit: '27 gabay iyo dhacdo Soomaaliyeed oo aan jirin, Af-Soomaali lagu weydiiyay. Inta jeer ee uu yiri «Ma aqaan»:',
-    g1: 'Moodooyinka waaweyn (frontier)',
-    g2: 'Moodooyinka yaryar ee furan',
-    foot: 'AI-ga yar wuu sameystaa. AI-ga weyn wuxuu yiraahdaa «ma aqaan».',
+    head: 'AI Models-ka waa wayn (frontier models) ma garan karaan sax ahaanshiyaha suaalaha aan waydiininayno?',
+    unit: 'Waxaan Af-Soomaali ku weydiinay 27 gabay iyo dhacdooyin aanan jirin. «Ma aqaan», 27 kaba mid ah:',
+    g1: 'AI Models-ka waa wayn',
+    g2: 'Moodalayada yaryar',
+    foot: 'Isku day: qor.unkad.com/hubi-ai',
   },
   {
     lang: 'en' as const,
@@ -67,7 +67,7 @@ function Poster({ c }: { c: (typeof COPY)[number] }) {
   return (
     <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', backgroundColor: BG, padding: '96px 84px 80px', fontFamily: 'Literata' }}>
       <div style={{ display: 'flex', fontSize: 24, color: MUTED }} lang={c.lang}>{c.eyebrow}</div>
-      <div style={{ display: 'flex', flexWrap: 'wrap', marginTop: 16, fontSize: 56, fontWeight: 700, color: TEXT, lineHeight: 1.15 }} lang={c.lang}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', marginTop: 16, fontSize: c.lang === 'so' ? 46 : 56, fontWeight: 700, color: TEXT, lineHeight: 1.15 }} lang={c.lang}>
         {c.head.split(' ').map((w, k) => <span key={k} style={{ marginRight: 12 }}>{w}</span>)}
       </div>
       <div style={{ display: 'flex', marginTop: 18, fontSize: 24, color: MUTED, lineHeight: 1.4, maxWidth: 900 }} lang={c.lang}>{c.unit}</div>
