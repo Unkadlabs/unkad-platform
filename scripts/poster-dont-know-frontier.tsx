@@ -33,7 +33,7 @@ const COPY = [
     lang: 'so' as const,
     eyebrow: 'Cilmi-baaris Unkad Labs',
     head: 'AI Models-ka waa wayn (frontier models) ma garan karaan sax ahaanshiyaha suaalaha aan waydiininayno?',
-    unit: 'Waxaan Af-Soomaali ku weydiinay 27 gabay iyo dhacdooyin aanan jirin. «Ma aqaan», 27 kaba mid ah:',
+    unit: 'Waxaan Af-Soomaali ku weydiinay 27 gabay iyo dhacdooyin aanan jirin. «Ma aqaan» 27/27',
     tag: '«Ma aqaan»',
     g1: 'AI Models-ka waa wayn',
     g2: 'Moodalayada yaryar',
@@ -51,7 +51,7 @@ const COPY = [
   },
 ];
 
-const BAR = 290;
+const BAR = 400;
 
 function Row({ name, n, color, tag }: { name: string; n: number; color: string; tag: string }) {
   return (
@@ -60,8 +60,7 @@ function Row({ name, n, color, tag }: { name: string; n: number; color: string; 
       <div style={{ display: 'flex', width: BAR, height: 30, backgroundColor: '#F4F3F0' }}>
         <div style={{ display: 'flex', width: Math.max(BAR * n / 27, 4), height: 30, backgroundColor: color }} />
       </div>
-      <div style={{ display: 'flex', width: 172, marginLeft: 30, fontSize: 22, color: MUTED }}>{tag}</div>
-      <div style={{ display: 'flex', width: 130, justifyContent: 'flex-end', alignItems: 'baseline', fontSize: 32, fontWeight: 700, color }}>{n}<span style={{ fontSize: 24, fontWeight: 400, color: MUTED }}>/27</span></div>
+      <div style={{ display: 'flex', width: 222, justifyContent: 'flex-end', alignItems: 'baseline', fontSize: 32, fontWeight: 700, color }}>{n}<span style={{ fontSize: 24, fontWeight: 400, color: MUTED }}>/27</span></div>
     </div>
   );
 }
