@@ -37,13 +37,24 @@ const SECTORS = [
   'religion', 'culture', 'technology', 'general',
 ] as const;
 
+// Two ways in: the unguessable token, or the organisation's short name as a
+// clean link (/barayaasha/ubahs, and /ubahs redirects there). The short name
+// is public by nature, which is acceptable because the sentences are already
+// published and every verdict carries the name its reviewer typed.
 export async function getOrg(token: string): Promise<ReviewOrg | null> {
-  if (!token || token.length < 20 || !/^[A-Za-z0-9_-]+$/.test(token)) return null;
+  if (!token || token.length > 64 || !/^[A-Za-z0-9_-]+$/.test(token)) return null;
 
   const ip = await clientIp();
   if (!(await allow(`org:lookup:${ip}`, 120, 300))) return null;
 
-  const [row] = await db.select().from(reviewOrgs).where(eq(reviewOrgs.token, token));
+  const [row] = await db
+    .select()
+    .from(reviewOrgs)
+    .where(
+      token.length >= 20
+        ? eq(reviewOrgs.token, token)
+        : sql`lower(${reviewOrgs.shortName}) = ${token.toLowerCase()}`
+    );
   if (!row || !row.active) return null;
   return row;
 }
