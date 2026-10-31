@@ -1,5 +1,5 @@
 {
-  "id": "d3febf89-e30d-4dd4-a06f-dda6e4a16307",
+  "id": "0911618b-1b64-44ac-945b-f54b76c21d0c",
   "prevId": "54221a0a-2fbb-407e-a9a3-a2c3ee1f226e",
   "version": "7",
   "dialect": "postgresql",
@@ -497,8 +497,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "submission_id": {
-          "name": "submission_id",
+        "document_id": {
+          "name": "document_id",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
@@ -604,19 +604,6 @@
             "id"
           ],
           "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "org_reviews_submission_id_submissions_id_fk": {
-          "name": "org_reviews_submission_id_submissions_id_fk",
-          "tableFrom": "org_reviews",
-          "tableTo": "submissions",
-          "columnsFrom": [
-            "submission_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
           "onUpdate": "no action"
         }
       },

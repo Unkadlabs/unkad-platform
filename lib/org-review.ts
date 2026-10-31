@@ -3,31 +3,28 @@
 // ============================================================================
 // Organisation review: partner organisations checking released sentences.
 //
-// The sentences come from the database, not from Hugging Face: a released
-// submission is one with release_id set that is still accepted, and splitting
-// its normalised text with the same segmenter scripts/export.ts uses gives the
-// exact rows of data/sentences.jsonl, ids included. So a teacher is reading
-// what the public dataset says, and their verdict is keyed to the same id.
+// The sentences are read from the published file itself, data/sentences.jsonl
+// in the Hugging Face dataset, so the teachers check exactly what the public
+// has downloaded, and each verdict is keyed to that file's sentence id. When a
+// new release lands, the next load picks it up.
 //
 // Access is the seed-set model: one unguessable link per organisation, rate
 // limited, never logged. The reviewer's name lives in a cookie scoped to
 // /barayaasha so they type it once per device.
 // ============================================================================
 
-import { and, eq, isNotNull, sql } from 'drizzle-orm';
+import { and, eq, sql } from 'drizzle-orm';
 import { createHash } from 'crypto';
 import { cookies } from 'next/headers';
 import { db } from './db';
-import { auditLog, orgReviews, prompts, reviewOrgs, submissions } from './schema';
+import { auditLog, orgReviews, reviewOrgs } from './schema';
 import { allow, clientIp } from './ratelimit';
-import { normalizeForRelease } from './normalize';
-import { splitSentences, isUsableSentence } from './sentences';
 
 export type ReviewOrg = typeof reviewOrgs.$inferSelect;
 
 export type OrgSentence = {
-  id: string; // `<submission id>#<position>`
-  submissionId: string;
+  id: string; // `<document id>#<position>`
+  documentId: string;
   sector: string;
   text: string;
   before: string | null; // the sentence before it in the same document
@@ -80,35 +77,42 @@ export async function setReviewerName(token: string, name: string): Promise<stri
   return null;
 }
 
-// Every released sentence, optionally for one sector. A few thousand
-// sentences, split on each call: cheap next to the round trip, and it can
-// never drift from what the release actually contains.
-async function releasedSentences(sector?: string): Promise<OrgSentence[]> {
-  const sectorExpr = sql<string>`coalesce(${submissions.sector}, ${prompts.sector}, 'general')`;
-  const rows = await db
-    .select({ id: submissions.id, textSo: submissions.textSo, sector: sectorExpr })
-    .from(submissions)
-    .leftJoin(prompts, eq(submissions.promptId, prompts.id))
-    .where(
-      and(
-        isNotNull(submissions.releaseId),
-        eq(submissions.status, 'accepted'),
-        sector ? sql`${sectorExpr} = ${sector}` : undefined
-      )
-    )
-    .orderBy(submissions.createdAt);
+// The published sentences, as Hugging Face serves them. About 1.4 MB, so it
+// is held in memory for an hour rather than fetched on every click; too big
+// for Next's fetch cache to keep reliably, which is why that is bypassed.
+const HF_SENTENCES =
+  process.env.ORG_REVIEW_SOURCE ??
+  'https://huggingface.co/datasets/unkadlabs/qor-af-soomaali/resolve/main/data/sentences.jsonl';
+const TTL = 60 * 60 * 1000;
+let memo: { at: number; rows: OrgSentence[] } | null = null;
 
-  return rows.flatMap((r) => {
-    const parts = splitSentences(normalizeForRelease(r.textSo)).filter(isUsableSentence);
-    return parts.map((text, i) => ({
-      id: `${r.id}#${i}`,
-      submissionId: r.id,
-      sector: String(r.sector),
-      text,
-      before: parts[i - 1] ?? null,
-      after: parts[i + 1] ?? null,
+type HfRow = { id: string; document_id: string; position: number; sector: string; text_so: string };
+
+async function releasedSentences(sector?: string): Promise<OrgSentence[]> {
+  if (!memo || Date.now() - memo.at > TTL) {
+    const res = await fetch(HF_SENTENCES, { cache: 'no-store' });
+    if (!res.ok) {
+      // Keep serving the last good copy rather than an empty page.
+      if (memo) return sector ? memo.rows.filter((r) => r.sector === sector) : memo.rows;
+      throw new Error(`Hugging Face returned ${res.status}`);
+    }
+    const raw: HfRow[] = (await res.text())
+      .split('\n')
+      .filter((l) => l.trim())
+      .map((l) => JSON.parse(l));
+    // Neighbours come from the same document, by position.
+    const byId = new Map(raw.map((r) => [r.id, r]));
+    const rows = raw.map((r) => ({
+      id: r.id,
+      documentId: r.document_id,
+      sector: r.sector || 'general',
+      text: r.text_so,
+      before: byId.get(`${r.document_id}#${r.position - 1}`)?.text_so ?? null,
+      after: byId.get(`${r.document_id}#${r.position + 1}`)?.text_so ?? null,
     }));
-  });
+    memo = { at: Date.now(), rows };
+  }
+  return sector ? memo.rows.filter((r) => r.sector === sector) : memo.rows;
 }
 
 export async function sectorProgress(orgId: string) {
@@ -171,15 +175,8 @@ export async function saveReview(
   const ip = await clientIp();
   if (!(await allow(`org:write:${org.id}:${ip}`, 600, 3600))) return 'ERR:too fast';
 
-  // The sentence must be one the release actually contains, read from the
-  // database rather than trusted from the browser.
-  const [submissionId] = sentenceId.split('#');
-  if (!/^[0-9a-f-]{36}$/.test(submissionId ?? '')) return 'ERR:sentence';
-  const [doc] = await db
-    .select({ id: submissions.id })
-    .from(submissions)
-    .where(and(eq(submissions.id, submissionId), isNotNull(submissions.releaseId)));
-  if (!doc) return 'ERR:sentence';
+  // The sentence must be one the published file actually contains, looked up
+  // on the server rather than trusted from the browser.
   const sentence = (await releasedSentences()).find((s) => s.id === sentenceId);
   if (!sentence) return 'ERR:sentence';
 
@@ -192,7 +189,7 @@ export async function saveReview(
     .values({
       orgId: org.id,
       sentenceId,
-      submissionId: sentence.submissionId,
+      documentId: sentence.documentId,
       sector: sentence.sector as (typeof SECTORS)[number],
       reviewerName: name,
       verdict,
