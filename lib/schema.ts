@@ -597,3 +597,66 @@ export const eventRegistrations = pgTable(
   },
   (t) => [uniqueIndex('event_registrations_event_email_idx').on(t.eventSlug, t.email)]
 );
+
+// ---- Organisation review of released sentences -----------------------------
+//
+// Partner organisations checking what we already published. The first is
+// UBAHS (Ururka Barayaasha Afka Hooyo ee Sweden), the association of Somali
+// mother-tongue teachers in Sweden, who asked to read the Hugging Face release.
+//
+// Same access model as the seed set: one unguessable link per organisation and
+// no accounts. A teacher types their name once, then marks released sentences
+// one at a time: correct, corrected, or wrong. Nothing here changes a
+// contributor's stored text. A review is a label that travels with the next
+// release, so the dataset can say which sentences the teachers checked and
+// what they changed, while the contributor's original stays on record.
+export const reviewOrgs = pgTable(
+  'review_orgs',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    // Full name, shown on the page and in the dataset card.
+    name: text('name').notNull(),
+    // The label carried by every sentence they review (e.g. "UBAHS").
+    shortName: text('short_name').notNull(),
+    // The credential. 32 random bytes, never logged.
+    token: text('token').notNull(),
+    active: boolean('active').notNull().default(true),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex('review_orgs_token_idx').on(t.token)]
+);
+
+// One row per sentence per organisation: the first teacher to mark a sentence
+// gives the organisation's verdict on it, so the group covers the release
+// instead of everyone reading the same first page.
+//   verdict 'approve'  the sentence is correct Somali as published
+//   verdict 'edit'     corrected; edited_text is the teacher's version
+//   verdict 'reject'   wrong and not fixable in place; note says why
+// `original_text` is the sentence exactly as shown, so the export only applies
+// a review while the published sentence still reads the same.
+export const orgReviews = pgTable(
+  'org_reviews',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    orgId: uuid('org_id')
+      .notNull()
+      .references(() => reviewOrgs.id, { onDelete: 'cascade' }),
+    // The released sentence id, `<submission id>#<position>`, as in
+    // data/sentences.jsonl on Hugging Face.
+    sentenceId: text('sentence_id').notNull(),
+    submissionId: uuid('submission_id')
+      .notNull()
+      .references(() => submissions.id),
+    sector: sectorEnum('sector').notNull(),
+    reviewerName: text('reviewer_name').notNull(),
+    verdict: text('verdict').notNull(),
+    originalText: text('original_text').notNull(),
+    editedText: text('edited_text'),
+    note: text('note'),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex('org_reviews_org_sentence_idx').on(t.orgId, t.sentenceId),
+    index('org_reviews_org_sector_idx').on(t.orgId, t.sector),
+  ]
+);
