@@ -641,12 +641,12 @@ export const orgReviews = pgTable(
     orgId: uuid('org_id')
       .notNull()
       .references(() => reviewOrgs.id, { onDelete: 'cascade' }),
-    // The released sentence id, `<submission id>#<position>`, as in
-    // data/sentences.jsonl on Hugging Face.
+    // The sentence id in data/sentences.jsonl on Hugging Face,
+    // `<document id>#<position>`.
     sentenceId: text('sentence_id').notNull(),
-    submissionId: uuid('submission_id')
-      .notNull()
-      .references(() => submissions.id),
+    // The released document it came from (document_id on Hugging Face). Not a
+    // foreign key: what is being reviewed is the published file, not a row.
+    documentId: uuid('document_id').notNull(),
     sector: sectorEnum('sector').notNull(),
     reviewerName: text('reviewer_name').notNull(),
     verdict: text('verdict').notNull(),
