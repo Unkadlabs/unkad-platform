@@ -18,7 +18,7 @@
 import fs from 'fs';
 import path from 'path';
 import { and, desc, eq, isNull, sql } from 'drizzle-orm';
-import { submissions, prompts, users, releases } from '../lib/schema';
+import { submissions, prompts, users, releases, orgReviews, reviewOrgs } from '../lib/schema';
 import { normalizeForRelease, needsNormalizing } from '../lib/normalize';
 import { splitSentences, isUsableSentence } from '../lib/sentences';
 
@@ -259,7 +259,31 @@ async function main() {
         created_at: r.created_at,
       }))
   );
-  const sentenceJsonl = sentences.map((s) => JSON.stringify(s)).join('\n') + '\n';
+  // ---- 2c. Partner organisation reviews --------------------------------------
+  //
+  // Teachers' verdicts from /barayaasha ride along as a label. text_so stays
+  // the contributor's sentence; a correction is offered beside it, never
+  // substituted, so train.jsonl and sentences.jsonl still carry the same text
+  // and nobody's words change without the record saying so. A review applies
+  // only while the published sentence reads exactly as the teacher saw it.
+  const reviewRows = await db
+    .select({ r: orgReviews, by: reviewOrgs.shortName })
+    .from(orgReviews)
+    .innerJoin(reviewOrgs, eq(orgReviews.orgId, reviewOrgs.id));
+  const reviewBy = new Map(reviewRows.map((x) => [x.r.sentenceId, x]));
+  let reviewed = 0;
+  const sentencesOut = sentences.map((s) => {
+    const x = reviewBy.get(s.id);
+    if (!x || x.r.originalText !== s.text_so) return { ...s, org_review: null };
+    reviewed++;
+    return {
+      ...s,
+      org_review: { by: x.by, verdict: x.r.verdict, text_so_corrected: x.r.editedText ?? null },
+    };
+  });
+  if (reviewRows.length) console.log(`Org reviews: ${reviewed} of ${reviewRows.length} applied to sentences.jsonl`);
+
+  const sentenceJsonl = sentencesOut.map((s) => JSON.stringify(s)).join('\n') + '\n';
   // Lines the segmenter split off but the filter rejected (Arabic quotations,
   // citations, glossary lines). Counted rather than typed into the card: the
   // number was hardcoded once and quietly went stale a release later.
@@ -397,6 +421,12 @@ prompted items only, ${withRegister} of ${sentences.length} sentences; free writ
 nobody assigned it a register)
 · \`sector\` · \`topic\` · \`dialect\` (the contributor's spoken variety, not the text's orthography; maxaa_tiri/maay/both/other, if shared) · \`verified\` ·
 \`license\` · \`created_at\`
+
+\`data/sentences.jsonl\` also carries \`org_review\`: null, or a check by a partner organisation of
+Somali language teachers (\`by\`, e.g. UBAHS, the association of Somali mother-tongue teachers in
+Sweden). \`verdict\` is \`approve\` (correct as published), \`edit\` (corrected; the teacher's version
+is in \`text_so_corrected\`, while \`text_so\` keeps the contributor's original) or \`reject\`.
+${reviewed} sentences carry one in this release.
 
 ## Consent and credit
 

@@ -37,6 +37,8 @@ export default function robots(): MetadataRoute.Robots {
         '/unsubscribe/',
         '/seed',
         '/seed/',
+        '/barayaasha',
+        '/barayaasha/',
       ],
     },
     sitemap: 'https://qor.unkad.com/sitemap.xml',
