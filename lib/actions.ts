@@ -982,9 +982,10 @@ async function applyRuling(
 //      text is written. Nothing an author wrote is ever destroyed.
 //   2. Authorship does not move. submissions.userId still points at the
 //      contributor; the editor is recorded on the revision, not on the work.
-//   3. Editing resets an accepted item to pending. Peers approved specific
-//      words, and their approval does not automatically transfer to different
-//      ones. A reviewer who is sure can accept it again in the same visit.
+//   3. Editing resets an accepted item to pending and clears its votes. Peers
+//      approved specific words, and their approval does not automatically
+//      transfer to different ones. A reviewer who is sure can accept it again
+//      in the same visit.
 export async function reviseSubmission(id: string, formData: FormData): Promise<void> {
   const reviewer = await requireRole('reviewer');
 
@@ -1016,6 +1017,17 @@ export async function reviseSubmission(id: string, formData: FormData): Promise<
     note,
   });
 
+  // The votes on record were cast on the old words, so they must go with them.
+  // Resetting the status alone was not enough: castValidation tallies every
+  // vote on the item, so an edited item that had two approvals was accepted
+  // again by the very next vote, even a reject. Clearing them also lets the
+  // same peers vote again on the new text. Who voted what is kept in the
+  // audit entry below, so the history is not lost.
+  const staleVotes = await db
+    .delete(validations)
+    .where(eq(validations.submissionId, id))
+    .returning({ userId: validations.userId, verdict: validations.verdict });
+
   await db
     .update(submissions)
     .set({
@@ -1044,6 +1056,7 @@ export async function reviseSubmission(id: string, formData: FormData): Promise<
     before_chars: submission.charCount,
     after_chars: textSo.length,
     note,
+    cleared_votes: staleVotes,
   });
 
   // In place, same reason as applyRuling: the fix happens mid-list during a
