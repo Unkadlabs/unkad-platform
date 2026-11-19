@@ -5,7 +5,7 @@ low-resource languages — by the community that speaks them.**
 
 Live instance: **[qor.unkad.com](https://qor.unkad.com)** — where Somali speakers are
 building an open Somali corpus, sentence by sentence. Built and operated by
-[Unkad Labs](https://unkad.com), a non-profit AI research laboratory,
+[Unkad Labs](https://unkad.com), an independent Somali AI research lab based in
 Somalia. *Unkad* is Somali for "creation from nothing."
 
 This repo is the whole platform. If your language is missing from the digital record,
