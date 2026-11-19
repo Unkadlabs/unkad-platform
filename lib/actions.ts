@@ -661,7 +661,7 @@ export async function verifyBatch(formData: FormData): Promise<void> {
   if (ids.length === 0) redirect('/review');
 
   const now = new Date();
-  let verified = 0;
+  const verified: string[] = [];
   for (const id of ids) {
     const result = await db
       .update(submissions)
@@ -674,11 +674,13 @@ export async function verifyBatch(formData: FormData): Promise<void> {
         )
       )
       .returning({ id: submissions.id });
-    verified += result.length;
+    verified.push(...result.map((r) => r.id));
   }
 
+  // The ids, not just the count, so a verified item can be traced to its batch.
   await audit(reviewer.id, 'review.batch_verified', 'submission', undefined, {
-    count: verified,
+    count: verified.length,
+    ids: verified,
   });
   // In place. The verify queue is worked top to bottom in long passes, and the
   // redirect reset scroll on every batch.
@@ -912,7 +914,10 @@ async function applyRuling(
   }
 
   const now = new Date();
-  let changed = 0;
+  // Which items changed, and from what. The audit row used to carry only a
+  // count, so a ruled item could not be traced back to its ruling: the only
+  // evidence was an updated_at that happened to match the audit timestamp.
+  const items: { id: string; from: string; to: string }[] = [];
 
   for (const id of ids) {
     const [submission] = await db.select().from(submissions).where(eq(submissions.id, id));
@@ -926,7 +931,7 @@ async function applyRuling(
         .update(submissions)
         .set({ verifiedAt: now, verifiedBy: admin.id, updatedAt: now })
         .where(eq(submissions.id, id));
-      changed++;
+      items.push({ id, from: 'accepted', to: 'verified' });
       continue;
     }
 
@@ -952,14 +957,23 @@ async function applyRuling(
     if (nowAccepted && !wasAccepted) await bump(submission.userId, REP_ACCEPTED_SUBMISSION);
     if (wasAccepted && !nowAccepted) await bump(submission.userId, -REP_ACCEPTED_SUBMISSION);
 
-    changed++;
+    items.push({ id, from: submission.status, to: status });
   }
 
-  await audit(admin.id, `admin.ruled_${decision}`, 'submission', undefined, {
-    count: changed,
-    requested: ids.length,
-    author: authorId,
-  });
+  // A single-row ruling also names its item as the audit entity, so the usual
+  // "everything that happened to this submission" query finds it.
+  await audit(
+    admin.id,
+    `admin.ruled_${decision}`,
+    'submission',
+    ids.length === 1 && items.length === 1 ? items[0].id : undefined,
+    {
+      count: items.length,
+      requested: ids.length,
+      author: authorId,
+      items,
+    }
+  );
 
   // Refresh in place, no redirect. The redirect was a full navigation, which
   // reset scroll to the top of a page hundreds of cards long; whoever was
