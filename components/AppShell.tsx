@@ -13,7 +13,7 @@ import ThemeToggle from './ThemeToggle';
 import ViewportFit from './ViewportFit';
 import { logout } from '@/lib/actions';
 import type { Lang } from '@/lib/i18n';
-import { IconHome, IconPen, IconCheck, IconChart, IconTrophy, IconSeal, IconGear } from './icons';
+import { IconHome, IconPen, IconCheck, IconChart, IconTrophy, IconTree, IconSeal, IconGear } from './icons';
 
 type NavItem = {
   href: string;
@@ -42,6 +42,7 @@ export default function AppShell({
     { href: '/validate', label: labels.validate, icon: <IconCheck />, tab: true },
     { href: '/dashboard', label: labels.dashboard, icon: <IconChart />, tab: true },
     { href: '/leaderboard', label: labels.leaderboard, icon: <IconTrophy /> },
+    { href: '/ereyada', label: labels.words, icon: <IconTree /> },
   ];
   if (isReviewer) {
     items.push({ href: '/review', label: labels.review, icon: <IconSeal /> });

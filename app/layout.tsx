@@ -197,6 +197,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               validate: t('navValidate'),
               dashboard: t('navDashboard'),
               leaderboard: t('navLeaderboard'),
+              words: t('navWords'),
               review: t('navReview'),
               admin: t('navAdmin'),
               logout: t('logout'),

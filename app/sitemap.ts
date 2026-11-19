@@ -33,6 +33,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'daily',
       priority: 0.7,
     },
+    {
+      // The word tree. Public, and changes with each corpus release.
+      url: `${base}/ereyada`,
+      changeFrequency: 'weekly',
+      priority: 0.6,
+    },
   ];
   // /login is deliberately absent: it is noindex, and listing a noindex URL in
   // a sitemap is a contradiction Search Console reports as an error.

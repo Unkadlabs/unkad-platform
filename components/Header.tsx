@@ -22,6 +22,11 @@ export default function Header({ lang, user }: { lang: Lang; user: CurrentUser |
             <li>
               <Link href="/leaderboard">{t('navLeaderboard')}</Link>
             </li>
+            {/* Hidden on the narrowest phones, where it would push the header
+                onto a third line; signed-in users reach it from the app menu. */}
+            <li className="nav-optional">
+              <Link href="/ereyada">{t('navWords')}</Link>
+            </li>
             {user ? (
               <li>
                 <form action={logout} style={{ display: 'inline' }}>

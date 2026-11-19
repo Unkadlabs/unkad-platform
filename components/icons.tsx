@@ -47,6 +47,18 @@ export function IconChart({ size = 16 }: IconProps) {
   );
 }
 
+// A branching tree, for the word tree page.
+export function IconTree({ size = 16 }: IconProps) {
+  return (
+    <svg {...base(size)}>
+      <path d="M3 8h3M6 8V4h3M6 8v4h3M9 4h1.5M9 12h1.5M6 8h4.5" />
+      <circle cx="12.5" cy="4" r="1.3" />
+      <circle cx="12.5" cy="8" r="1.3" />
+      <circle cx="12.5" cy="12" r="1.3" />
+    </svg>
+  );
+}
+
 export function IconTrophy({ size = 16 }: IconProps) {
   return (
     <svg {...base(size)}>

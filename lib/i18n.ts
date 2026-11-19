@@ -251,6 +251,54 @@ const dict = {
   reputation: { so: 'Sumcad', en: 'Reputation' },
   recentWork: { so: 'Shaqadaadii u dambaysay', en: 'Your recent work' },
 
+  // Word tree (/ereyada). !! VERIFY SOMALI !! All drafts, added 2026-11-19.
+  navWords: { so: 'Ereyada', en: 'Words' },
+  wordsTitle: { so: 'Geedka ereyada', en: 'The word tree' },
+  wordsSub: {
+    so: 'Erey kasta oo ku jira kaydka Qor ee la daabacay, oo loo sawiray sidii geed.',
+    en: 'Every word in the released Qor corpus, drawn as a tree.',
+  },
+  wordsTabFamilies: { so: 'Qoysaska ereyada', en: 'Word families' },
+  wordsTabPhrases: { so: 'Geedka weedhaha', en: 'Phrase tree' },
+  wordsFamiliesHelp: {
+    so: 'Ereyada isku bilow ah. Laan kasta waa dhammaad cusub; ereyga oo dhan wuxuu ku qoran yahay hoostiisa.',
+    en: 'Words that begin the same way. Each branch is a new ending; the whole word is written under it.',
+  },
+  wordsPhrasesHelp: {
+    so: 'Dooro erey, oo arag waxa ka dambeeya jumladaha kaydka oo dhan. Laanta ballaadhan waa tan ugu badan.',
+    en: 'Pick a word and see what follows it across every sentence in the corpus. Wider branches are more common.',
+  },
+  wordsSearch: { so: 'Raadi erey', en: 'Find a word' },
+  wordsSearchBtn: { so: 'Raadi', en: 'Search' },
+  wordsDistinct: { so: 'ereyo kala duwan', en: 'different words' },
+  wordsTotal: { so: 'ereyo guud ahaan', en: 'words in all' },
+  wordsOnce: { so: 'hal mar keliya la arkay', en: 'seen only once' },
+  wordsSentences: { so: 'jumladood', en: 'sentences' },
+  wordsPickFamily: { so: 'Dooro qoys', en: 'Pick a family' },
+  wordsEndings: { so: 'Dhammaadyada ugu badan', en: 'Most common endings' },
+  wordsEndingsHelp: {
+    so: 'Inta erey ee kala duwan ee sidan ku dhammaada.',
+    en: 'How many different words end this way.',
+  },
+  wordsTop: { so: 'Ereyada ugu badan', en: 'Most used words' },
+  wordsNotFound: { so: 'Eraygan weli kuma jiro kaydka.', en: 'This word is not in the corpus yet.' },
+  wordsNear: { so: 'Ereyo u dhow', en: 'Close words' },
+  wordsMissingCta: {
+    so: 'Ma taqaan jumlad uu ku jiro? Ku qor Qor.',
+    en: 'Know a sentence that uses it? Write it on Qor.',
+  },
+  wordsFollows: { so: 'jeer ayuu ka muuqdaa kaydka', en: 'times in the corpus' },
+  wordsForms: { so: 'qaab', en: 'forms' },
+  wordsMore: { so: 'kale', en: 'more' },
+  wordsSource: {
+    so: 'Xogta: kaydka Qor Af-Soomaali ee la daabacay, CC BY-SA 4.0. Jumladaha aan weli la daabicin halkan kama muuqdaan.',
+    en: 'Data: the released Qor Af-Soomaali corpus, CC BY-SA 4.0. Sentences not yet released do not appear here.',
+  },
+  wordsUnavailable: {
+    so: 'Xogta lama heli karo hadda. Fadlan dib u isku day.',
+    en: 'The word data could not be loaded right now. Please try again.',
+  },
+
   // Leaderboard
   leaderboardTitle: { so: 'Hormoodka', en: 'Leaderboard' },
   leaderboardSub: {
