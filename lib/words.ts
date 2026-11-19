@@ -14,6 +14,8 @@
 // this page, which is what keeps it inside standing rule 5: the text shown is
 // already public, and the page only rearranges it.
 
+import wikiWordsJson from './data/wiki-words.json';
+
 const HF_SENTENCES =
   process.env.WORDS_SOURCE ??
   process.env.ORG_REVIEW_SOURCE ??
@@ -305,4 +307,65 @@ export function topWords(idx: WordIndex, limit = 40, minLength = 1): [string, nu
     .filter(([w]) => w.length >= minLength)
     .sort((a, b) => b[1] - a[1])
     .slice(0, limit);
+}
+
+// ---- Missing words ----------------------------------------------------------
+
+// The reference list: the 10,000 most common words on Somali Wikipedia, built
+// by scripts/build-wiki-words.mjs. This is the web layer, used only to ask
+// "which common words has Qor not seen yet". It is never mixed into Qor and
+// the page says where it comes from (standing rule 4).
+
+const WIKI_WORDS = wikiWordsJson as [string, number][];
+
+export type Coverage = { top: number; have: number }[];
+
+export function coverage(idx: WordIndex, tops = [100, 1000, 10000]): Coverage {
+  return tops.map((top) => ({
+    top,
+    have: WIKI_WORDS.slice(0, top).filter(([w]) => idx.freq.has(w)).length,
+  }));
+}
+
+// Common words Qor has never seen, most common first. `rank` is the word's
+// place on the Wikipedia list, so "shaah" can be shown as a common word, not a
+// rare one. Short words are skipped: at two or three letters they are mostly
+// particles written differently, not missing vocabulary.
+export function missingWords(
+  idx: WordIndex,
+  limit = 60,
+  within = 3000
+): { word: string; rank: number; count: number }[] {
+  const out: { word: string; rank: number; count: number }[] = [];
+  for (let i = 0; i < Math.min(within, WIKI_WORDS.length) && out.length < limit; i++) {
+    const [word, count] = WIKI_WORDS[i];
+    if (word.length >= 4 && !idx.freq.has(word)) out.push({ word, rank: i + 1, count });
+  }
+  return out;
+}
+
+export function missingCount(idx: WordIndex, within = 3000): number {
+  return WIKI_WORDS.slice(0, within).filter(([w]) => w.length >= 4 && !idx.freq.has(w)).length;
+}
+
+// Where a word sits on the Wikipedia list, if it does: used to say "this is a
+// common Somali word" on a failed search.
+export function wikiRank(word: string): number | null {
+  const i = WIKI_WORDS.findIndex(([w]) => w === word);
+  return i >= 0 ? i + 1 : null;
+}
+
+// The daily spotlight. Everyday words every speaker knows, checked by hand to be
+// absent from Qor on 2026-11-19. A word drops out by itself once the released
+// corpus has it, so the spotlight moves on as people fill the gaps.
+const SPOTLIGHT = [
+  'shaah', 'oktoobar', 'madaxweyne', 'qalinka', 'telefoon', 'janaayo',
+  'doorashada', 'maarso', 'baarlamaanka', 'abriil', 'wasiirka', 'diseembar',
+];
+
+export function wordOfTheDay(idx: WordIndex, date = new Date()): { word: string; left: number } | null {
+  const open = SPOTLIGHT.filter((w) => !idx.freq.has(w));
+  if (open.length === 0) return null;
+  const day = Math.floor(date.getTime() / 86_400_000);
+  return { word: open[day % open.length], left: open.length };
 }

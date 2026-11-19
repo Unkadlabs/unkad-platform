@@ -294,6 +294,36 @@ const dict = {
     so: 'Xogta: kaydka Qor Af-Soomaali ee la daabacay, CC BY-SA 4.0. Jumladaha aan weli la daabicin halkan kama muuqdaan.',
     en: 'Data: the released Qor Af-Soomaali corpus, CC BY-SA 4.0. Sentences not yet released do not appear here.',
   },
+  wordsTabMissing: { so: 'Ereyada maqan', en: 'Missing words' },
+  wordsToday: { so: 'Ereyga maqan ee maanta', en: "Today's missing word" },
+  wordsTodayHelp: {
+    so: 'Erey kasta oo Soomaali ahi yaqaan, balse kaydka Qor weli ma arag.',
+    en: 'A word every Somali speaker knows, and Qor has never seen.',
+  },
+  wordsMissingHelp: {
+    so: 'Ereyo caadi ah oo Af-Soomaaliga qoran ku badan, balse weli aan lagu arag kaydka Qor. Taabo erey si aad jumlad ugu qorto.',
+    en: 'Common written Somali words that Qor has never seen. Tap one to write a sentence with it.',
+  },
+  wordsCoverageTitle: { so: 'Inta Qor hayo', en: 'How much Qor has' },
+  wordsCoverageHelp: {
+    so: 'Ereyada ugu badan ee Wikipedia-da Soomaaliga, inta ka mid ah ee Qor ku jira.',
+    en: 'Of the most common words on Somali Wikipedia, how many Qor has.',
+  },
+  wordsCoverageTop: { so: 'Ugu badan', en: 'Top' },
+  wordsMissingStat: {
+    so: 'erey oo caadi ah ayaa weli ka maqan Qor',
+    en: 'common words still missing from Qor',
+  },
+  wordsWriteWith: { so: 'Jumlad ku qor', en: 'Write a sentence' },
+  wordsWikiRank: {
+    so: 'Waa ereyga {n}-aad ee ugu badan Wikipedia-da Soomaaliga.',
+    en: 'It is the {n}th most common word on Somali Wikipedia.',
+  },
+  wordsWikiSource: {
+    so: 'Liiska ereyada caadiga ah waxaa laga soo saaray Wikipedia-da Soomaaliga, oo tixraac keliya ah. Qoraalka Wikipedia lama geliyo Qor.',
+    en: 'The list of common words comes from Somali Wikipedia, used as a reference only. No Wikipedia text goes into Qor.',
+  },
+  freeWriteWithWord: { so: 'Qor jumlad uu ku jiro ereyga', en: 'Write a sentence that uses the word' },
   wordsUnavailable: {
     so: 'Xogta lama heli karo hadda. Fadlan dib u isku day.',
     en: 'The word data could not be loaded right now. Please try again.',

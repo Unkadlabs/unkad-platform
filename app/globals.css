@@ -1892,3 +1892,28 @@ a.wt-node:hover { border-color: var(--accent); text-decoration: none; }
 @media (max-width: 26rem) {
   .nav-optional { display: none; }
 }
+
+/* Missing words (/ereyada?v=maqan) */
+.words-coverage li { grid-template-columns: 8rem 1fr 3rem; }
+.words-coverage .words-bar-label { white-space: nowrap; }
+.words-missing-grid {
+  list-style: none; padding: 0; margin: 0.75rem 0 1rem;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr)); gap: 0.5rem;
+}
+.words-missing-grid a {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem;
+  padding: 0.55rem 0.75rem; border: 1px dashed var(--rule); border-radius: var(--radius);
+  background: var(--card); color: var(--text); text-decoration: none;
+}
+.words-missing-grid a:hover { border-style: solid; border-color: var(--accent); color: var(--accent); }
+.mw-word { font-weight: 600; overflow-wrap: anywhere; }
+.mw-rank { font-family: var(--mono); font-size: 0.66rem; color: var(--muted); flex: none; }
+
+.words-today {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 0.5rem;
+  margin: 1rem 0 0.5rem; padding: 1.25rem 1.4rem; border-radius: var(--radius-lg);
+  background: var(--accent-soft); border: 1px solid var(--accent);
+}
+.words-today-label { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--accent); }
+.words-today-word { font-size: 2.6rem; font-weight: 700; line-height: 1.05; letter-spacing: -0.01em; }
+.words-today .btn { margin-top: 0.4rem; }

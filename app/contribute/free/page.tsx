@@ -11,14 +11,19 @@ import { prompts } from '@/lib/schema';
 import SomaliTextarea from '@/components/SomaliTextarea';
 import ClearDraft from '@/components/ClearDraft';
 import SubmitButton from '@/components/SubmitButton';
+import { tokenize } from '@/lib/words';
 
 const ERROR_KEY = { short: 'errShort', cap: 'errCap', sector: 'errSector' } as const;
 
-type Props = { searchParams: Promise<{ done?: string; error?: string }> };
+type Props = { searchParams: Promise<{ done?: string; error?: string; erey?: string }> };
 
 export default async function FreeWritePage({ searchParams }: Props) {
   await requireOnboarded();
-  const { done, error } = await searchParams;
+  const { done, error, erey } = await searchParams;
+  // Arriving from a missing word on /ereyada: ask for a sentence that uses it,
+  // and pre-fill the topic with the word so the campaign can be counted later.
+  // One word, letters only, so the parameter can never carry anything else.
+  const word = done ? '' : tokenize((erey ?? '').slice(0, 40))[0] ?? '';
   const errorKey = error && error in ERROR_KEY ? ERROR_KEY[error as keyof typeof ERROR_KEY] : null;
 
   const lang = await getLang();
@@ -41,6 +46,11 @@ export default async function FreeWritePage({ searchParams }: Props) {
           {t(errorKey)}
         </p>
       )}
+      {word && (
+        <p className="notice rise">
+          {t('freeWriteWithWord')}: <strong lang="so">{word}</strong>
+        </p>
+      )}
 
       <form className="form form-wide" action={submitFreeWrite}>
         <div className="mode-grid">
@@ -59,7 +69,7 @@ export default async function FreeWritePage({ searchParams }: Props) {
           </div>
           <div>
             <label htmlFor="topic">{t('topicField')}</label>
-            <input id="topic" name="topic" maxLength={120} lang="so" />
+            <input id="topic" name="topic" maxLength={120} lang="so" defaultValue={word} />
           </div>
         </div>
 

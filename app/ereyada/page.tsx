@@ -5,6 +5,7 @@
 //
 //   ?v=qoys&q=qor       word family: every word that begins with "qor"
 //   ?v=weedho&q=dadka   phrase tree: what follows "dadka" across the corpus
+//   ?v=maqan            missing words: common Somali words Qor has never seen
 //
 // The data is the RELEASED corpus only (lib/words.ts), so nothing unreleased or
 // unverified is shown. The Somali strings in lib/i18n.ts are drafts.
@@ -14,7 +15,12 @@ import Link from 'next/link';
 import { getLang } from '@/lib/lang';
 import { makeT } from '@/lib/i18n';
 import {
+  coverage,
   familyTree,
+  missingCount,
+  missingWords,
+  wikiRank,
+  wordOfTheDay,
   nearWords,
   phraseTree,
   tokenize,
@@ -60,7 +66,7 @@ export default async function WordsPage({ searchParams }: Props) {
     );
   }
 
-  const view = v === 'weedho' ? 'weedho' : 'qoys';
+  const view = v === 'weedho' ? 'weedho' : v === 'maqan' ? 'maqan' : 'qoys';
   // One word only, letters and inner apostrophes, so a query can never be more
   // than a lookup key.
   const query = tokenize((q ?? '').slice(0, 40))[0] ?? '';
@@ -110,10 +116,13 @@ export default async function WordsPage({ searchParams }: Props) {
         >
           {t('wordsTabPhrases')}
         </Link>
+        <Link href="/ereyada?v=maqan" aria-current={view === 'maqan' ? 'page' : undefined}>
+          {t('wordsTabMissing')}
+        </Link>
       </nav>
 
       <form className="words-search" action="/ereyada" method="get" role="search">
-        <input type="hidden" name="v" value={view} />
+        <input type="hidden" name="v" value={view === 'maqan' ? 'weedho' : view} />
         <label htmlFor="words-q" className="sr-only">
           {t('wordsSearch')}
         </label>
@@ -136,8 +145,10 @@ export default async function WordsPage({ searchParams }: Props) {
 
       {view === 'qoys' ? (
         <FamiliesView idx={idx} stem={active} families={families} t={t} link={link} />
-      ) : (
+      ) : view === 'weedho' ? (
         <PhrasesView idx={idx} word={active} t={t} link={link} />
+      ) : (
+        <MissingView idx={idx} t={t} />
       )}
 
       <p className="muted words-source">{t('wordsSource')}</p>
@@ -261,10 +272,12 @@ function NotFound({
   link: LinkFn;
 }) {
   const near = nearWords(idx, word);
+  const rank = wikiRank(word);
   return (
     <div className="card words-missing">
       <p>
         <strong lang="so">{word}</strong>: {t('wordsNotFound')}
+        {rank && <> {t('wordsWikiRank').replace('{n}', fmt(rank))}</>}
       </p>
       {near.length > 0 && (
         <p>
@@ -280,9 +293,70 @@ function NotFound({
         </p>
       )}
       <p>
-        <Link href="/contribute">{t('wordsMissingCta')}</Link>
+        <Link href={writeLink(word)}>{t('wordsMissingCta')}</Link>
       </p>
     </div>
+  );
+}
+
+const writeLink = (word: string) => `/contribute/free?erey=${encodeURIComponent(word)}`;
+
+// Common Somali words Qor has never seen. The list they are checked against is
+// Somali Wikipedia's (web layer, reference only); the page says so.
+function MissingView({ idx, t }: { idx: WordIndex; t: T }) {
+  const cov = coverage(idx);
+  const words = missingWords(idx, 60);
+  const total = missingCount(idx);
+  const today = wordOfTheDay(idx);
+
+  return (
+    <>
+      {today && (
+        <div className="words-today">
+          <span className="words-today-label">{t('wordsToday')}</span>
+          <span className="words-today-word" lang="so">
+            {today.word}
+          </span>
+          <span className="muted">{t('wordsTodayHelp')}</span>
+          <Link className="btn" href={writeLink(today.word)}>
+            {t('wordsWriteWith')}
+          </Link>
+        </div>
+      )}
+
+      <h2>{t('wordsCoverageTitle')}</h2>
+      <p className="muted words-help">{t('wordsCoverageHelp')}</p>
+      <ol className="words-bars words-coverage">
+        {cov.map((c) => (
+          <li key={c.top}>
+            <span className="words-bar-label">
+              {t('wordsCoverageTop')} {fmt(c.top)}
+            </span>
+            <span className="words-bar-track">
+              <span className="words-bar-fill" style={{ width: `${(c.have / c.top) * 100}%` }} />
+            </span>
+            <span className="words-bar-n">{Math.round((c.have / c.top) * 100)}%</span>
+          </li>
+        ))}
+      </ol>
+
+      <h2>{t('wordsTabMissing')}</h2>
+      <p className="words-count">
+        <strong>{fmt(total)}</strong> {t('wordsMissingStat')}
+      </p>
+      <p className="muted words-help">{t('wordsMissingHelp')}</p>
+      <ul className="words-missing-grid" lang="so">
+        {words.map((w) => (
+          <li key={w.word}>
+            <Link href={writeLink(w.word)} title={t('wordsWriteWith')}>
+              <span className="mw-word">{w.word}</span>
+              <span className="mw-rank">#{fmt(w.rank)}</span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+      <p className="muted words-source">{t('wordsWikiSource')}</p>
+    </>
   );
 }
 
