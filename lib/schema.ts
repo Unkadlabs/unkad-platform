@@ -685,6 +685,10 @@ export const blindVotes = pgTable(
     isContributor: boolean('is_contributor').notNull().default(false),
     native: text('native'), // 'yes' | 'no' | null (not answered)
     msOnSet: integer('ms_on_set'), // time from the set being shown to the vote
+    // The order the voter saw the essays in, as the set's own letters top to
+    // bottom (e.g. 'CAB'); lets position bias be checked. Votes store the
+    // set's own letters, never the on-screen ones.
+    displayOrder: text('display_order'),
     lang: text('lang').notNull().default('so'),
     createdAt: timestamp('created_at').notNull().defaultNow(),
   },

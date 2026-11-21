@@ -69,3 +69,19 @@ export async function voteTotals(): Promise<{ votes: number; voters: number }> {
     .from(blindVotes);
   return { votes: row?.votes ?? 0, voters: row?.voters ?? 0 };
 }
+
+// The order this visitor sees the three essays in. Each set's A/B/C were
+// already shuffled across conditions when the sets were built; this shuffles
+// again per visitor, so the essay a voter reads first differs from person to
+// person and any "first one wins" habit spreads across all three. Stable for
+// a returning voter (seeded by their key), random for a first-time visitor.
+// Returns indexes into set.essays, in display order.
+export function displayOrder(voterKey: string | null, setId: string): [number, number, number] {
+  const PERMS: [number, number, number][] = [
+    [0, 1, 2], [0, 2, 1], [1, 0, 2], [1, 2, 0], [2, 0, 1], [2, 1, 0],
+  ];
+  const n = voterKey
+    ? parseInt(createHash('sha256').update(`${voterKey}:${setId}`).digest('hex').slice(0, 8), 16)
+    : Math.floor(Math.random() * 6);
+  return PERMS[n % 6];
+}

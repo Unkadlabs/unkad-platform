@@ -15,6 +15,7 @@ import {
   LETTERS,
   NATIVE_COOKIE,
   currentVoterKey,
+  displayOrder,
   isClosed,
   nextSet,
   voteTotals,
@@ -68,6 +69,7 @@ export default async function QiimeePage({ searchParams }: Props) {
   const retry = error && errSet ? BLIND_SETS.find((s) => s.id === errSet && !doneSets.has(s.id)) : undefined;
   const set = retry ?? (await nextSet(voterKey, doneSets));
   const native = (await cookies()).get(NATIVE_COOKIE)?.value;
+  const order = set ? displayOrder(voterKey, set.id) : null;
   const errorKey =
     error === 'same' ? 'qErrSame' : error === 'missing' ? 'qErrMissing' : error === 'rate' ? 'qErrRate' : null;
 
@@ -100,24 +102,28 @@ export default async function QiimeePage({ searchParams }: Props) {
         <form action={castBlindVote} className="q-form" key={set.id}>
           <input type="hidden" name="setId" value={set.id} />
           <input type="hidden" name="shownAt" value={Date.now()} />
+          <input type="hidden" name="order" value={order!.map((i) => LETTERS[i]).join('')} />
           <div className="q-essays">
-            {set.essays.map((text, i) => {
-              const L = LETTERS[i];
+            {order!.map((idx, pos) => {
+              // On screen the essays are always labelled A, B, C top to bottom;
+              // the vote carries the set's own letter for the essay shown here.
+              const shown = LETTERS[pos];
+              const real = LETTERS[idx];
               return (
-                <article className="q-essay" key={L}>
+                <article className="q-essay" key={real}>
                   <h2 className="q-essay-head">
-                    {t('qEssay')} {L}
+                    {t('qEssay')} {shown}
                   </h2>
                   <div className="q-text" lang="so">
-                    {text}
+                    {set.essays[idx]}
                   </div>
-                  <div className="q-picks" role="group" aria-label={`${t('qEssay')} ${L}`}>
+                  <div className="q-picks" role="group" aria-label={`${t('qEssay')} ${shown}`}>
                     <label className="q-pick q-pick-best">
-                      <input type="radio" name="best" value={L} required />
+                      <input type="radio" name="best" value={real} required />
                       <span>{t('qBest')}</span>
                     </label>
                     <label className="q-pick q-pick-worst">
-                      <input type="radio" name="worst" value={L} required />
+                      <input type="radio" name="worst" value={real} required />
                       <span>{t('qWorst')}</span>
                     </label>
                   </div>

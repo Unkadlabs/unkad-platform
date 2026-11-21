@@ -1652,6 +1652,9 @@ export async function castBlindVote(formData: FormData): Promise<void> {
   if (!letter(best) || !letter(worst)) redirect(`/qiimee?error=missing&set=${setId}`);
   if (best === worst) redirect(`/qiimee?error=same&set=${setId}`);
 
+  const rawOrder = String(formData.get('order') ?? '');
+  const displayOrder = /^[ABC]{3}$/.test(rawOrder) && new Set(rawOrder).size === 3 ? rawOrder : null;
+
   const rawNative = String(formData.get('native') ?? '');
   const native = rawNative === 'yes' || rawNative === 'no' ? rawNative : null;
 
@@ -1683,6 +1686,7 @@ export async function castBlindVote(formData: FormData): Promise<void> {
       isContributor: !!user && !user.isGuest,
       native,
       msOnSet,
+      displayOrder,
       lang: await getLang(),
     })
     .onConflictDoNothing();

@@ -1,0 +1,1 @@
+ALTER TABLE "blind_votes" ADD COLUMN "display_order" text;

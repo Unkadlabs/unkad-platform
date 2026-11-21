@@ -51,7 +51,7 @@ console.log(`sets with votes ${per.length}/40 · fewest ${ns.length ? Math.min(.
 
 if (out) {
   const rows = (await c.query(`
-    select set_id, best, worst, voter_key, is_contributor, native, ms_on_set, lang, created_at
+    select set_id, best, worst, display_order, voter_key, is_contributor, native, ms_on_set, lang, created_at
     from blind_votes order by created_at`)).rows;
   fs.writeFileSync(out, JSON.stringify(rows, null, 1));
   console.log(`wrote ${rows.length} votes to ${out}`);
