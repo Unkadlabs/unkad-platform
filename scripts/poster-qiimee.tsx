@@ -34,7 +34,7 @@ const COPY = [
   {
     lang: 'so' as const,
     title: 'Qoraalkee Af-Soomaaligiisu wanaagsanyahay?',
-    sub: 'Saddexdan qoraal oo isku mawduuc ah waxaa qoray AI (Garaag gacmeed).',
+    sub: 'Saddexdan qoraal oo isku mawduuc ah waxaa qoray AI (Garaad gacmeed).',
     essay: 'QORAAL',
     best: 'Ugu wanaagsan',
     worst: 'Ugu liita',
@@ -53,7 +53,7 @@ const COPY = [
 
 function Poster({ c }: { c: (typeof COPY)[number] }) {
   // Keep a date and a two-word name on one line (display only; wording unchanged).
-  const nb = (t: string) => t.replace(/26 (Nofembar|November)/, '26\u00a0$1').replace('Garaag gacmeed', 'Garaag\u00a0gacmeed');
+  const nb = (t: string) => t.replace(/26 (Nofembar|November)/, '26\u00a0$1').replace('Garaad gacmeed', 'Garaad\u00a0gacmeed');
   return (
     <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', backgroundColor: BG, padding: '84px 72px 72px', fontFamily: 'Literata' }}>
       <div style={{ display: 'flex', fontSize: 24, color: MUTED }}>Qor Af-Soomaali · Unkad Labs</div>

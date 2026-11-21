@@ -255,7 +255,7 @@ const dict = {
   // (title, intro, why line and closing date rewritten by him; the rest approved as drafted).
   qTitle: { so: 'Qoraalkee Af-Soomaaligiisu wanaagsanyahay?', en: 'Which essay has the better Somali?' },
   qIntro: {
-    so: 'Saddexdan qoraal oo isku mawduuc ah waxaa qoray AI (Garaag gacmeed). Akhri dhammaantood, kadib dooro midka Af-Soomaaligiisu ugu dabiicsan yahay iyo midka ugu liita. Ha ka fiirin sheekada; ka fiiri luqadda oo kaliya.',
+    so: 'Saddexdan qoraal oo isku mawduuc ah waxaa qoray AI (Garaad gacmeed). Akhri dhammaantood, kadib dooro midka Af-Soomaaligiisu ugu dabiicsan yahay iyo midka ugu liita. Ha ka fiirin sheekada; ka fiiri luqadda oo kaliya.',
     en: 'These three short essays on the same topic were written by AI. Read all three, then choose the one whose Somali is most natural and the one that is least. Judge the language, not the story.',
   },
   qWhy: {
