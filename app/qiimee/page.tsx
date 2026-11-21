@@ -24,7 +24,7 @@ import SubmitButton from '@/components/SubmitButton';
 
 export const dynamic = 'force-dynamic';
 
-const TITLE = 'Qoraalkee Af-Soomaali ka wanaagsan?';
+const TITLE = 'Qoraalkee Af-Soomaaligiisu wanaagsanyahay?'; // founder-verified 2026-11-21
 const DESCRIPTION = 'Akhri saddex qoraal oo AI qoray, kadib dooro midka Af-Soomaaligiisu ugu dabiicsan yahay.';
 const URL = 'https://qor.unkad.com/qiimee';
 
@@ -55,7 +55,7 @@ export default async function QiimeePage({ searchParams }: Props) {
   if (isClosed()) {
     return (
       <div className="container q-page">
-        <h1 lang="so">{t('qTitle')}</h1>
+        <h1 lang="so">{t('qTitle').replace(/-/g, '\u2011')}</h1>
         <p className="notice">{t('qClosed')}</p>
         {counter}
       </div>
@@ -73,7 +73,7 @@ export default async function QiimeePage({ searchParams }: Props) {
 
   return (
     <div className="container q-page">
-      <h1 lang="so">{t('qTitle')}</h1>
+      <h1 lang="so">{t('qTitle').replace(/-/g, '\u2011')}</h1>
       <p className="q-lede">{t('qIntro')}</p>
       <p className="muted q-why">
         {t('qWhy')} {t('qClosesAt')}

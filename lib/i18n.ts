@@ -252,13 +252,14 @@ const dict = {
   recentWork: { so: 'Shaqadaadii u dambaysay', en: 'Your recent work' },
 
   // Blind essay vote (/qiimee). !! VERIFY SOMALI !! All drafts, added 2026-11-21.
-  qTitle: { so: 'Qoraalkee Af-Soomaali ka wanaagsan?', en: 'Which essay has the better Somali?' },
+  // qTitle, qIntro, qWhy, qClosesAt: Somali verified by Khalid Yusuf Dahir 2026-11-21.
+  qTitle: { so: 'Qoraalkee Af-Soomaaligiisu wanaagsanyahay?', en: 'Which essay has the better Somali?' },
   qIntro: {
-    so: 'Saddexdan qoraal oo isku mawduuc ah waxaa qoray AI (sirdoon macmal). Akhri dhammaantood, kadib dooro midka Af-Soomaaligiisu ugu dabiicsan yahay iyo midka ugu liita. Ha ka fiirin sheekada; ka fiiri luqadda.',
+    so: 'Saddexdan qoraal oo isku mawduuc ah waxaa qoray AI (Garaag gacmeed). Akhri dhammaantood, kadib dooro midka Af-Soomaaligiisu ugu dabiicsan yahay iyo midka ugu liita. Ha ka fiirin sheekada; ka fiiri luqadda oo kaliya.',
     en: 'These three short essays on the same topic were written by AI. Read all three, then choose the one whose Somali is most natural and the one that is least. Judge the language, not the story.',
   },
   qWhy: {
-    so: 'Tani waa cilmi-baaris Unkad Labs ah: waxaan rabnaa inaan ogaanno waxa AI-ga ka caawiya inuu Af-Soomaali fiican qoro. Ma u baahnid akoon. Natiijooyinka guud oo keliya ayaa la daabacaa.',
+    so: 'Tani waa cilmi-baaris Unkad Labs ay waddo: waxaan rabnaa inaan ogaanno waxa AI-ga ka caawiya inuu Af-Soomaali fiican qoro. Ma u baahnid akoon. Natiijooyinka guud oo keliya ayaa la daabacaa.',
     en: 'This is Unkad Labs research: we want to learn what helps AI write good Somali. No account needed. Only overall results are published.',
   },
   qEssay: { so: 'Qoraal', en: 'Essay' },
