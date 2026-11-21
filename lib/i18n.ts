@@ -251,6 +251,50 @@ const dict = {
   reputation: { so: 'Sumcad', en: 'Reputation' },
   recentWork: { so: 'Shaqadaadii u dambaysay', en: 'Your recent work' },
 
+  // Blind essay vote (/qiimee). !! VERIFY SOMALI !! All drafts, added 2026-11-21.
+  qTitle: { so: 'Qoraalkee Af-Soomaali ka wanaagsan?', en: 'Which essay has the better Somali?' },
+  qIntro: {
+    so: 'Saddexdan qoraal oo isku mawduuc ah waxaa qoray AI (sirdoon macmal). Akhri dhammaantood, kadib dooro midka Af-Soomaaligiisu ugu dabiicsan yahay iyo midka ugu liita. Ha ka fiirin sheekada; ka fiiri luqadda.',
+    en: 'These three short essays on the same topic were written by AI. Read all three, then choose the one whose Somali is most natural and the one that is least. Judge the language, not the story.',
+  },
+  qWhy: {
+    so: 'Tani waa cilmi-baaris Unkad Labs ah: waxaan rabnaa inaan ogaanno waxa AI-ga ka caawiya inuu Af-Soomaali fiican qoro. Ma u baahnid akoon. Natiijooyinka guud oo keliya ayaa la daabacaa.',
+    en: 'This is Unkad Labs research: we want to learn what helps AI write good Somali. No account needed. Only overall results are published.',
+  },
+  qEssay: { so: 'Qoraal', en: 'Essay' },
+  qBest: { so: 'Ugu dabiicsan', en: 'Most natural' },
+  qWorst: { so: 'Ugu liita', en: 'Least natural' },
+  qNative: { so: 'Af-Soomaaligu ma afkaaga hooyo baa?', en: 'Is Somali your mother tongue?' },
+  qYes: { so: 'Haa', en: 'Yes' },
+  qNo: { so: 'Maya', en: 'No' },
+  qSubmit: { so: 'Dir codkayga', en: 'Send my vote' },
+  qThanks: { so: 'Mahadsanid. Codkaaga waa la diiwaangeliyay.', en: 'Thank you. Your vote is recorded.' },
+  qNextHint: {
+    so: 'Haddii aad waqti haysato, mid kale ka codee. Koox kasta oo dheeraad ah waa caawimaad.',
+    en: 'If you have time, vote on another. Every extra set helps.',
+  },
+  qProgress: { so: 'Waxaad ka codaysay {n} ka mid ah 40 koox.', en: 'You have voted on {n} of 40 sets.' },
+  qAllDone: {
+    so: 'Waad ka codaysay dhammaan 40ka koox. Mahadsanid.',
+    en: 'You have voted on all 40 sets. Thank you.',
+  },
+  qClosed: {
+    so: 'Codbixintu way xirantahay. Natiijada waxaa la daabici doonaa dhawaan.',
+    en: 'Voting has closed. The results will be published soon.',
+  },
+  qClosesAt: { so: 'Codbixintu waxay xirmaysaa Khamiista, 26 Nofembar.', en: 'Voting closes on Thursday, 26 November.' },
+  qVotes: { so: 'cod', en: 'votes' },
+  qVoters: { so: 'qof ayaa codeeyay', en: 'people have voted' },
+  qErrSame: {
+    so: 'Isku qoraal ma noqon karo kan ugu dabiicsan iyo kan ugu liita. Dooro laba kala duwan.',
+    en: 'The same essay cannot be both the most and the least natural. Choose two different ones.',
+  },
+  qErrMissing: {
+    so: 'Dooro hal qoraal oo ugu dabiicsan iyo hal qoraal oo ugu liita.',
+    en: 'Choose one most natural essay and one least natural essay.',
+  },
+  qErrRate: { so: 'Cod badan ayaa hal mar la diray. Fadlan dib u isku day.', en: 'Too many votes at once. Please try again later.' },
+
   // Word tree (/ereyada). !! VERIFY SOMALI !! All drafts, added 2026-11-19.
   navWords: { so: 'Ereyada', en: 'Words' },
   wordsTitle: { so: 'Geedka ereyada', en: 'The word tree' },

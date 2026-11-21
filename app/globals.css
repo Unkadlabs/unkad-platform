@@ -1917,3 +1917,33 @@ a.wt-node:hover { border-color: var(--accent); text-decoration: none; }
 .words-today-label { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.09em; text-transform: uppercase; color: var(--accent); }
 .words-today-word { font-size: 2.6rem; font-weight: 700; line-height: 1.05; letter-spacing: -0.01em; }
 .words-today .btn { margin-top: 0.4rem; }
+
+/* ---- Blind essay vote (/qiimee) ------------------------------------------------------ */
+.q-page { max-width: 76rem; }
+.q-lede { font-size: 1.05rem; max-width: var(--measure); }
+.q-why { max-width: var(--measure); font-size: .9rem; }
+.q-counter { margin: .5rem 0 1.25rem; }
+.q-form { display: flex; flex-direction: column; gap: 1.25rem; }
+.q-essays { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+@media (max-width: 52rem) { .q-essays { grid-template-columns: minmax(0, 1fr); } }
+.q-essay {
+  display: flex; flex-direction: column; gap: .8rem; min-width: 0;
+  background: var(--card); border: 1px solid var(--rule); border-radius: var(--radius); padding: 1rem 1.1rem;
+}
+.q-essay:has(input[name='best']:checked) { border-color: var(--accent); }
+.q-essay:has(input[name='worst']:checked) { border-color: var(--danger); }
+.q-essay-head { margin: 0; font-family: var(--mono); font-size: .75rem; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+.q-text { font-family: var(--serif); line-height: 1.7; white-space: pre-wrap; overflow-wrap: anywhere; flex: 1; }
+.q-picks { display: flex; flex-wrap: wrap; gap: .5rem; }
+.q-pick { position: relative; }
+.q-pick input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.q-pick span {
+  display: inline-block; padding: .5rem .85rem; border-radius: 999px; border: 1px solid var(--rule);
+  font-size: .9rem; color: var(--text); background: var(--bg);
+}
+.q-pick-best input:checked + span { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+.q-pick-worst input:checked + span { background: var(--danger); border-color: var(--danger); color: var(--bg); }
+.q-pick input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+.q-native { border: 1px solid var(--rule); border-radius: var(--radius); padding: .75rem 1rem; display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
+.q-native legend { padding: 0 .35rem; font-size: .9rem; }
+.q-submit { align-self: flex-start; }

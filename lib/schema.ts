@@ -660,3 +660,36 @@ export const orgReviews = pgTable(
     index('org_reviews_org_sector_idx').on(t.orgId, t.sector),
   ]
 );
+
+// ---- Blind essay vote (/qiimee) ---------------------------------------------
+//
+// The public vote for the Unkad study "does Qor in context make Claude write
+// better Somali?" (research repo unkad-qor-context). Each row is one voter's
+// verdict on one set of three AI-written essays: which reads most natural
+// (best) and which least (worst). The essays ship with the code
+// (lib/data/blind-sets.json); which condition wrote which letter is NOT here
+// and never in this repo, so the database cannot unblind the study.
+//
+// voter_key is a SHA-256 of a random cookie token: one vote per set per
+// browser, and nothing that identifies a person. user_id is set only for a
+// signed-in Qor account, so contributors can be analysed separately.
+export const blindVotes = pgTable(
+  'blind_votes',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    setId: text('set_id').notNull(),
+    best: text('best').notNull(), // 'A' | 'B' | 'C'
+    worst: text('worst').notNull(),
+    voterKey: text('voter_key').notNull(),
+    userId: uuid('user_id').references(() => users.id, { onDelete: 'set null' }),
+    isContributor: boolean('is_contributor').notNull().default(false),
+    native: text('native'), // 'yes' | 'no' | null (not answered)
+    msOnSet: integer('ms_on_set'), // time from the set being shown to the vote
+    lang: text('lang').notNull().default('so'),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex('blind_votes_voter_set').on(t.voterKey, t.setId),
+    index('blind_votes_set_idx').on(t.setId),
+  ]
+);

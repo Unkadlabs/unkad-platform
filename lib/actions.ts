@@ -27,11 +27,14 @@ import {
   passwordResetRequests,
   hubiAiRuns,
   hubiAiEvents,
+  blindVotes,
   eventRegistrations,
 } from './schema';
 import { allow, clientIp } from './ratelimit';
 import { getLang } from './lang';
 import { HUBI_ITEMS, HUBI_PROFILE, scoreHubi } from './hubi-ai';
+import { cookies } from 'next/headers';
+import { BLIND_SETS, LETTERS, NATIVE_COOKIE, VOTER_COOKIE, hashVoter, isClosed } from './blind';
 import { sendEmail, emailConfigured } from './email';
 import {
   getEvent,
@@ -1628,4 +1631,61 @@ export async function unsubscribeEventByToken(
     .set({ unsubscribedAt: new Date() })
     .where(eq(eventRegistrations.id, id));
   return 'done';
+}
+
+// ---- Blind essay vote (/qiimee) ----------------------------------------------
+
+// One vote on one set: the most and the least natural essay. No account needed.
+// One vote per set per browser (a random cookie, stored only as a hash);
+// rate limited per address so one person cannot flood a set. Closes at the
+// pre-registered time; a vote after that is ignored.
+export async function castBlindVote(formData: FormData): Promise<void> {
+  if (isClosed()) redirect('/qiimee');
+  const ip = await clientIp();
+  if (!(await allow(`blind:${ip}`, 120, 3600))) redirect('/qiimee?error=rate');
+
+  const setId = String(formData.get('setId') ?? '');
+  const best = String(formData.get('best') ?? '');
+  const worst = String(formData.get('worst') ?? '');
+  const letter = (v: string) => (LETTERS as readonly string[]).includes(v);
+  if (!BLIND_SETS.some((s) => s.id === setId)) redirect('/qiimee');
+  if (!letter(best) || !letter(worst)) redirect(`/qiimee?error=missing&set=${setId}`);
+  if (best === worst) redirect(`/qiimee?error=same&set=${setId}`);
+
+  const rawNative = String(formData.get('native') ?? '');
+  const native = rawNative === 'yes' || rawNative === 'no' ? rawNative : null;
+
+  // Time on the set, measured from the server-rendered timestamp. Used only to
+  // exclude votes too fast to have read three essays (pre-registered: 30 s).
+  const shownAt = Number(formData.get('shownAt') ?? NaN);
+  const ms = Number.isFinite(shownAt) ? Date.now() - shownAt : NaN;
+  const msOnSet = Number.isFinite(ms) && ms >= 0 && ms < 6 * 3600 * 1000 ? Math.round(ms) : null;
+
+  const jar = await cookies();
+  let token = jar.get(VOTER_COOKIE)?.value;
+  if (!token || !/^[0-9a-f]{64}$/.test(token)) {
+    token = randomBytes(32).toString('hex');
+  }
+  const year = 60 * 60 * 24 * 365;
+  const opts = { httpOnly: true, sameSite: 'lax' as const, secure: process.env.NODE_ENV === 'production', path: '/qiimee', maxAge: year };
+  jar.set(VOTER_COOKIE, token, opts);
+  if (native) jar.set(NATIVE_COOKIE, native, opts);
+
+  const user = await getCurrentUser();
+  await db
+    .insert(blindVotes)
+    .values({
+      setId,
+      best,
+      worst,
+      voterKey: hashVoter(token),
+      userId: user?.id ?? null,
+      isContributor: !!user && !user.isGuest,
+      native,
+      msOnSet,
+      lang: await getLang(),
+    })
+    .onConflictDoNothing();
+
+  redirect('/qiimee?done=1');
 }

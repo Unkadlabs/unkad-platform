@@ -134,6 +134,13 @@
       "when": 1793448227883,
       "tag": "0018_superb_serpent_society",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1795244847225,
+      "tag": "0019_unique_deathbird",
+      "breakpoints": true
     }
   ]
 }
