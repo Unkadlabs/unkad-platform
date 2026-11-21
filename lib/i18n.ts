@@ -251,8 +251,8 @@ const dict = {
   reputation: { so: 'Sumcad', en: 'Reputation' },
   recentWork: { so: 'Shaqadaadii u dambaysay', en: 'Your recent work' },
 
-  // Blind essay vote (/qiimee). !! VERIFY SOMALI !! All drafts, added 2026-11-21.
-  // qTitle, qIntro, qWhy, qClosesAt: Somali verified by Khalid Yusuf Dahir 2026-11-21.
+  // Blind essay vote (/qiimee). All Somali below verified by Khalid Yusuf Dahir 2026-11-21
+  // (title, intro, why line and closing date rewritten by him; the rest approved as drafted).
   qTitle: { so: 'Qoraalkee Af-Soomaaligiisu wanaagsanyahay?', en: 'Which essay has the better Somali?' },
   qIntro: {
     so: 'Saddexdan qoraal oo isku mawduuc ah waxaa qoray AI (Garaag gacmeed). Akhri dhammaantood, kadib dooro midka Af-Soomaaligiisu ugu dabiicsan yahay iyo midka ugu liita. Ha ka fiirin sheekada; ka fiiri luqadda oo kaliya.',

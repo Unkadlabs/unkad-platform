@@ -3,7 +3,7 @@
 // One set of three AI-written essays per screen; the voter picks the most and
 // the least natural Somali. Never shows which model or condition wrote what,
 // and shows no per-essay results before voting closes; only vote counts.
-// Somali strings are drafts in lib/i18n.ts (qTitle ...).
+// Somali strings in lib/i18n.ts (qTitle ...), founder-verified 2026-11-21.
 
 import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
@@ -26,7 +26,7 @@ import SubmitButton from '@/components/SubmitButton';
 export const dynamic = 'force-dynamic';
 
 const TITLE = 'Qoraalkee Af-Soomaaligiisu wanaagsanyahay?'; // founder-verified 2026-11-21
-const DESCRIPTION = 'Akhri saddex qoraal oo AI qoray, kadib dooro midka Af-Soomaaligiisu ugu dabiicsan yahay.';
+const DESCRIPTION = 'Akhri saddex qoraal oo AI qoray, kadib dooro midka Af-Soomaaligiisu ugu dabiicsan yahay.'; // founder-verified 2026-11-21
 const URL = 'https://qor.unkad.com/qiimee';
 
 export const metadata: Metadata = {
