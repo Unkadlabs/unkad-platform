@@ -263,8 +263,9 @@ const dict = {
     en: 'This is Unkad Labs research: we want to learn what helps AI write good Somali. No account needed. Only overall results are published.',
   },
   qEssay: { so: 'Qoraal', en: 'Essay' },
-  qBest: { so: 'Ugu dabiicsan', en: 'Most natural' },
-  qWorst: { so: 'Ugu liita', en: 'Least natural' },
+  // Buttons changed by the founder 2026-11-21: 'Ugu dabiicsan' (most natural) -> 'Ugu wanaagsan' (best).
+  qBest: { so: 'Ugu wanaagsan', en: 'Best' },
+  qWorst: { so: 'Ugu liita', en: 'Worst' },
   qNative: { so: 'Af-Soomaaligu ma afkaaga hooyo baa?', en: 'Is Somali your mother tongue?' },
   qYes: { so: 'Haa', en: 'Yes' },
   qNo: { so: 'Maya', en: 'No' },
