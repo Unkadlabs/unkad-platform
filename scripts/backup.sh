@@ -19,6 +19,12 @@ if [ -z "$DB_URL" ]; then
   exit 1
 fi
 
+# The connection string asks for sslmode=verify-full, and by default libpq
+# looks for the CA in ~/.postgresql/root.crt, which does not exist here. Every
+# run from 19 Nov to 22 Nov 2026 failed on that. Point libpq at the system's
+# trusted roots instead (libpq 16+), which keeps full certificate checking.
+export PGSSLROOTCERT="${PGSSLROOTCERT:-system}"
+
 # Neon runs Postgres 17; use a matching client if one is installed.
 PG_DUMP="$(ls /opt/homebrew/opt/postgresql@17/bin/pg_dump 2>/dev/null || command -v pg_dump)"
 
