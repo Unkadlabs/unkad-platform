@@ -30,7 +30,14 @@ function loadEnv() {
   return Object.fromEntries(
     fs.readFileSync(f, 'utf8').split('\n')
       .filter((l) => l.includes('=') && !l.trim().startsWith('#'))
-      .map((l) => { const i = l.indexOf('='); return [l.slice(0, i).trim(), l.slice(i + 1).trim().replace(/^["']|["']$/g, '')]; })
+      .map((l) => {
+        const i = l.indexOf('=');
+        const raw = l.slice(i + 1).trim();
+        // A quoted value ends at its closing quote; anything after it (a note
+        // in .env.local) is not part of the value. Same as nudge-daily.sh.
+        const m = raw.match(/^(["'])(.*?)\1/);
+        return [l.slice(0, i).trim(), m ? m[2] : raw.replace(/\s+#.*$/, '')];
+      })
   );
 }
 const env = { ...loadEnv(), ...process.env };
